@@ -11,7 +11,6 @@
             JOIN `affiliations` a on (a.`user_id` = u.`id` and a.`program_id`=prog.`id`) 
             JOIN `institutions` i on i.`id`=a.`domestic_institution_id` 
             WHERE `is_showcase` = 1  
-            GROUP BY pres.`id`
             order by prog.`language`
             ";
         $sqlData = doSQLQuery($queryStatement,3); 
@@ -52,7 +51,6 @@
         JOIN `affiliations` a on (a.`user_id` = u.`id` and a.`program_id`=prog.`id`) 
         JOIN `institutions` i on i.`id`=a.`domestic_institution_id` 
         WHERE $where 
-        GROUP BY pres.`id`
         ";
     $sqlData = doSQLQuery($queryStatement,3); 
     return $sqlData;
