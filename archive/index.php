@@ -146,7 +146,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
 <!-- Able Player CSS -->
-<link rel="stylesheet" href="../archive.css" type="text/css"/>
+<link rel="stylesheet" href="../css/archive.css" type="text/css"/>
 <script>
 	$( document ).ready(function() {
     $('.videoPanel').each(function() {
