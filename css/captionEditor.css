@@ -1,0 +1,116 @@
+	.able-transcript-area-long {
+    border-width: 1px;
+    border-style: solid;
+    height: 1800px;
+    z-index: 7000;
+    outline: 0;
+	}
+	.able-transcript-long {
+    position: relative;
+    overflow-y: scroll;
+    padding-left: 5%;
+    padding-right: 5%;
+    background-color: #FFF;
+    height: 1800px;
+	}
+	.resizable {
+	  background: white;
+	  display:block;
+	  width: 600px;
+	  height: 100px;
+	  position: relative;
+	  -border:1px solid red;
+	}
+	.resizable .resizers{
+	  width: 100%;
+	  height: 100%;
+	  border: 1px solid #eee;
+	  box-sizing: border-box;
+	  position:relative;
+	}
+
+	.resizable .resizers .resizer{
+	  width: 50px;
+	  height: 15px;
+	  background: #fff;
+	  border: 2px solid #ccc;
+	  position: absolute;
+	  background: #ccc;
+	  color:red;
+	  cursor: row-resize;
+	  text-align:center;
+	  left: 50%;
+	}
+	.resizable .resizers .resizer.top {
+	  top: 0px;
+	  padding:0px;
+	  margin:0px;
+	  border-bottom-left-radius:5px;
+	  border-bottom-right-radius:5px;
+	}
+
+	.resizable .resizers .resizer.bottom { 
+	  bottom: 0px;
+	  padding: 0px 0px 10px 0px;
+	  border-top-left-radius:5px;
+	  border-top-right-radius:5px;
+	}
+	.fa-sort-down {
+		border:1px solid blue;
+		top: 0px;
+	}
+	.resizable .resizers .resizer.both {
+	  top: -15px;
+	  left: 20%;
+	  border-bottom-left-radius:5px;
+	  border-bottom-right-radius:5px;
+	  border-top-left-radius:5px;
+	  border-top-right-radius:5px;
+	  padding:0px 0px 27px 0px;
+	}
+	.startTime {
+	  top: 0px;
+	  padding-top:5px;
+	  -border: solid 1px #000;
+	  left: 73%;
+	  width:150px;
+	  position: absolute;
+	  text-align:right;
+	}
+	.endTime {
+	  bottom: 0px;
+	  padding-bottom:5px;
+	  -border: solid 1px #000;
+	  left: 73%;
+	  width:150px;
+	  position: absolute;
+	  text-align:right;
+	}
+	.resize_header {
+	  width: 100%;
+	  height: 50px;
+	  -border: 3px solid red;
+	  text-align:right;				
+	}
+	.captionEditInput {
+  	width:95%;
+  	height:50%;
+  	border:1px solid #000;
+			-moz-border-radius:3px;
+			-webkit-border-radius:3px;
+		border-radius:3px;
+    vertical-align: middle; 
+		position:absolute;
+  	top: 0; bottom: 0; left: 0; right: 0;
+  	margin: auto;
+  	overflow-wrap: normal;
+
+  }
+	.griddy {
+		position:absolute;
+		top:0px;
+		left:1px;
+		-z-index: -10;
+		height:100%;
+		width:100%;
+		background: repeating-linear-gradient(#000, #000 1px, #fff 1px, #fff 30px);

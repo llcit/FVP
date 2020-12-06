@@ -1,0 +1,138 @@
+	div.able-descriptions {
+    display: none !important;
+  }
+
+	div.videoPanel {
+	  width:30%;
+	  border: solid 1px #000;
+	  border-radius:3px;
+	  padding:10px;
+	  display:block;
+	  margin:3px;
+	}
+	div.videoPanel:hover{
+	  background-color: #CAF5D1;
+	}
+	img.thumb {
+		width:100px;
+	}
+	.btn  {
+		padding: 1px 2px!important;
+		font-size:12px!important;
+	}
+	.dropdown-menu>li>a {
+    padding: 1px 2px!important;
+    font-size:14px!important;
+	}
+	.fv_selects_wrapper {
+		font-size:11px;
+		font-weight:bold;
+		border:solid 1px #000;
+		border-radius:3px;
+		max-width:800px;
+		padding:10px;
+
+	}
+	.fv_select_row {
+		max-width:700px;
+
+	}
+	.fv_select {
+		-border:solid 1px red;
+	}
+	.fv_select_label {
+		margin-top:5px;
+		margin-bottom:5px;
+	}
+	.fv_filterButton_wrapper {
+		padding-top:25px;
+	}
+	.fv_filterButton {
+		padding:15px;
+		margin:20px,;
+	}
+	.empty {
+		margin-top:50px;
+		font-size:18px;
+		font-weight:bold;
+		border:solid 1px #000;
+		border-radius:3px;
+		padding:25px;
+		text-align:center;
+	}
+	.modal-title {
+		width:75%;
+		list-style-type: none;
+		border:solid 1px #000;
+		border-radius:3px;
+		padding-bottom:10px;
+	}
+	.modal-title > :first-child {
+  	font-size:18px;
+  	font-weight:bold;
+  	padding-bottom:10px;
+	}
+	.modal-title > :not(:first-child) {
+  	font-size:12px;
+  	margin-left: 20px;
+  	line-height: 120%;
+	}
+
+	:not( element ) {
+  // CSS property
+} 
+	div.videoDetails {
+	  font-size:12px;
+	  padding-left:15px;
+	  line-height: 95%;
+	}
+	div.videoListWrapper {
+		max-width:900px;
+		-border: solid 1px #000;
+	}
+	p.studentName {
+		font-weight:bold;
+		padding:0px 0px 5px 0px;
+		margin:0px;
+	}
+	p.details {
+		font-size:11px;
+		padding:0px 0px 0px 3px;
+		margin:0px;
+	}
+
+	.footer {
+	    position: fixed;
+	    left: 0;
+	    bottom: 0;
+	    width: 100%;
+	    background-color: #181b26;
+	    color: white;
+	    text-align: center;
+	}
+  .controlWrapper {
+	  width:100%;
+  }
+  .playerFrame {
+	  width:100%;
+	  height:800px;
+	  margin-top:20px;
+	  border:none;
+	
+  }
+  .fv_block {
+	  display:block !important;
+	  width:250px !important;
+  }
+  .controlsTable td {
+  padding:10px;	
+  font-size:14px;
+  font-weight:bold;
+  }
+  .fv_heading {
+	  background-color: #181b26 !important;
+	  color:#dfd8c9 !important;
+	  font-size:28px !important;
+	  margin:0px !important;
+	  padding:5px 10px !important; 
+  }
