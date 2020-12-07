@@ -47,31 +47,27 @@
                         <div class="col-md-12 mb-5">
                             <div class="card soloCard">
                                 <div class="card-body">
-                                   <h2 class="card-title">Login</h2>
-                                   <p class="card-text">Please enter your email password then click submit.</p>
+                                   <h2 class="card-title">Password Setup</h2>
+                                   <p class="card-text">Enter your email address below to receive a message with a password setup link.</p>
                                 </div>
                                 <div class="card-footer">
                                     <div class="form-group">
                                       <div>
-                                         <label for="username">Username:</label>
-                                         <input type="text" class="textbox" id="username" name="username" placeholder="Username" />
+                                         <label for="username">Email:</label>
+                                         <input type="text" class="textbox" id="username" name="username" placeholder="Email" />
                                       </div>
+                                     
                                       <div>
-                                         <label for="password">Password:</label>
-                                         <input type="password" class="textbox" id="password" name="password" placeholder="Password"/>
-                                      </div>
-                                      <div>
-                                         <input type="submit" value="Submit" name="login" id="login" />
+                                         <input type="submit" value="Send Link" name="login" id="login" />
                                       </div>
                                    </div>
                                 </div>
                             </div>
                         </div>
-                           <a class ="pull-right loginLink" href='passwordSetup.php'>Set/reset your password</a>
+                        <a class ="pull-right loginLink" href='login.php'>Return to Login</a>
                     </div>
                 </div>
             </div>
         </form>
     </body>
 </html>
-

@@ -43,6 +43,10 @@
     margin-bottom: 10px;
     margin-top: 10px;
 }
+.loginLink {
+    padding-right:15px;
+    padding-bottom:15px;
+}
 .audioDescription {
     width:95%;
     background-color: #EEE;
