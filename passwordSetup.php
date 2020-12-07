@@ -18,7 +18,7 @@
             $expDate = date("Y-m-d H:i:s",$expFormat);
             $update = mysqli_query($dbcnx,"UPDATE users set  password='" . $password . "', reset_link_token='" . $token . "' ,exp_date='" . $expDate . "' WHERE email='" . $emailId . "'");
 
-            $link = "<a href='".$SES_settings['password_reset_base_url']."/passwordSetup.php?key=".$email."&token=".$token."'>Click To Reset password</a>";
+            $link = "<a href='".$SES_settings['password_reset_base_url']."/passwordSet.php?key=".$email."&token=".$token."'>Click To Reset password</a>";
 
             require 'vendor/autoload.php';
 
