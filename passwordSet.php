@@ -15,12 +15,12 @@
             </div>
             <div class="card-body">
                <?php
-                  if($_GET['key'] &amp;&amp; $_GET['token'])
+                  if($_GET['key'] && $_GET['token'])
                   {
                   include "db.php";
                   $email = $_GET['key'];
                   $token = $_GET['token'];
-                  $query = mysqli_query($conn,
+                  $query = mysqli_query($dbcnx,
                   "SELECT * FROM `users` WHERE `reset_link_token`='".$token."' and `email`='".$email."';"
                   );
                   $curDate = date("Y-m-d H:i:s");
