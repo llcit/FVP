@@ -46,7 +46,10 @@
 	<main role="main">
 	  <div id="player">
 		  <video id="video1" preload="auto" width=720 height="360" poster="../ableplayer/media/wwa.jpg" data-able-player data-transcript-div="transcript" playsinline>
-				<source type="video/mp4" src="../assets/videos/<?php echo($videoId); ?>.mp4">
+				<!--                           
+        <source type="video/mp4" src="../assets/videos/<?php echo($videoId); ?>.mp4"> 
+        -->
+        <source type="video/mp4" src="https://flagship-video-project.s3.amazonaws.com/187.mp4">
 		  </video>
 		</div>
 	</main>
