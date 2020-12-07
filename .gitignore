@@ -7,6 +7,7 @@ FVP_DB_Seed.sql
 coding_schema.txt
 composer.json
 composer.lock
+composer.phar
 docs/
 import/
 long/
