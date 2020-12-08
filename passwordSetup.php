@@ -19,7 +19,7 @@
             $expDate = date("Y-m-d H:i:s",$expFormat);
             $update = mysqli_query($dbcnx,"UPDATE users set  password='" . $password . "', reset_link_token='" . $token . "' ,exp_date='" . $expDate . "' WHERE email='" . $emailId . "'");
 
-            $link = "<a href='".$SES_settings['password_reset_base_url']."/passwordSet.php?key=".$emailId."&token=".$token."'>Click To Reset password</a>";
+            $link = "<p>Click or copy & paste the link below to set your password.</p> <a href='".$SES_settings['password_reset_base_url']."/passwordSet.php?key=".$emailId."&token=".$token."'>'".$SES_settings['password_reset_base_url']."/passwordSet.php?key=".$emailId."&token=".$token."'</a>";
 
             require 'vendor/autoload.php';
 
@@ -58,7 +58,7 @@
                 $mail->Body       = $bodyHtml;
                 $mail->AltBody    = $bodyText;
                 $mail->Send();
-                $userMsg =  "Check your email and click on the link to set our new password.";
+                $userMsg =  "Check your email and click on the link to set your new password.";
                 $msgClass = "loginMsg_success";
             } catch (phpmailerException $e) {
                 $userMsg =  "An error occurred. {$e->errorMessage()}"; //Catch errors from PHPMailer.
