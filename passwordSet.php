@@ -21,6 +21,7 @@
                      $token    = $_POST['reset_link_token'];
                      $password=password_hash($_POST['password'], PASSWORD_DEFAULT);
                      $query    = mysqli_query($dbcnx, "SELECT * FROM `users` WHERE `reset_link_token`='" . $token . "' and `email`='" . $emailId . "'");
+
                      $row = mysqli_num_rows($query);
                      if ($row) {
                        mysqli_query($dbcnx, "UPDATE users set  password='" . $password . "', reset_link_token='" . NULL . "' ,exp_date='" . NULL . "' WHERE email='" . $emailId . "'");
@@ -43,8 +44,8 @@
                         if($row['exp_date'] >= $curDate){ 
                            $pageContent = "
                               <form action='' method='post'>
-                                 <input type='hidden' name='email' value='<?php echo $email;?>'>
-                                 <input type='hidden' name='reset_link_token' value='<?php echo $token;?>'>
+                                 <input type='hidden' name='email' value='$email'>
+                                 <input type='hidden' name='reset_link_token' value='$token'>
                                  <div class='form-group'>
                                     <label>Password</label>
                                     <input type='password' name='password' class='form-control'>
