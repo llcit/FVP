@@ -20,11 +20,11 @@
                      $row = mysqli_num_rows($query);
                      if ($row) {
                        mysqli_query($dbcnx, "UPDATE users set  password='" . $password . "', reset_link_token='" . NULL . "' ,exp_date='" . NULL . "' WHERE email='" . $emailId . "'");
-                       echo '<p>Congratulations! Your password has been updated successfully.</p>';
+                       $pageContent = '<p>Congratulations! Your password has been updated successfully.</p>';
                      } 
                      else {
                         // how about validation ?
-                       echo "<p>Something has gone wrong. Please try again</p>";
+                       $pageContent =  "<p>Something has gone wrong. Please try again</p>";
                      }
                   }
                   else if($_GET['key'] && $_GET['token']) {

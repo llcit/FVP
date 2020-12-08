@@ -58,7 +58,7 @@
                 $mail->Body       = $bodyHtml;
                 $mail->AltBody    = $bodyText;
                 $mail->Send();
-                $userMsg =  "Check Your Email and Click on the link sent to your email.";
+                $userMsg =  "Check your email and click on the link to set our new password.";
                 $msgClass = "loginMsg_success";
             } catch (phpmailerException $e) {
                 $userMsg =  "An error occurred. {$e->errorMessage()}"; //Catch errors from PHPMailer.
@@ -69,7 +69,7 @@
             }
           }
           else {
-                $userMsg =  "Please Enter a Valid Email address!"; 
+                $userMsg =  "We are unable to locate that email address in the system.  Please use the address to which your invitation was sent."; 
                 $msgClass = " loginMsg_error";
           }
         }
@@ -82,10 +82,22 @@
         }
       ?>
       <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-
-
       <!-- Able Player CSS -->
       <link rel="stylesheet" href="./css/main.css" type="text/css"/>
+
+      <script>
+        function enableSend() {
+          var email = document.getElementById('email').value;
+          if (isEmail(email)) {
+            document.getElementById("password-reset").disabled = false;
+          }
+
+        }
+        function isEmail(email) {
+          var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+          return regex.test(email);
+        }
+      </script>
     </head>
     <body>
       <div class="panel panel-default">
@@ -113,11 +125,11 @@
                                       <div class="form-group">
                                         <div>
                                            <label for="username">Email:</label>
-                                           <input type="text" class="textbox" id="email" name="email" placeholder="Email" />
+                                           <input type="text" class="textbox" id="email" name="email" placeholder="Email" / onkeyup="enableSend();">
                                         </div>
 
                                         <div>
-                                           <input type="submit" value="Send Link" name="password-reset" id="password-reset" />
+                                           <input type="submit" value="Send Link" name="password-reset" id="password-reset" disabled/>
                                         </div>
                                      </div>
                                   </div>
