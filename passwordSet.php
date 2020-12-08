@@ -16,7 +16,22 @@
             <div class="card-body">
                <?php
                   include "./inc/db.php";
-                  if($_GET['key'] && $_GET['token']) {
+                  if (isset($_POST['password']) || $_POST['reset_link_token'] || $_POST['email']) {
+                     $emailId  = $_POST['email'];
+                     $token    = $_POST['reset_link_token'];
+                     $password=password_hash($_POST['password'], PASSWORD_DEFAULT);
+                     $query    = mysqli_query($dbcnx, "SELECT * FROM `users` WHERE `reset_link_token`='" . $token . "' and `email`='" . $emailId . "'");
+                     $row = mysqli_num_rows($query);
+                     if ($row) {
+                       mysqli_query($dbcnx, "UPDATE users set  password='" . $password . "', reset_link_token='" . NULL . "' ,exp_date='" . NULL . "' WHERE email='" . $emailId . "'");
+                       echo '<p>Congratulations! Your password has been updated successfully.</p>';
+                     } 
+                     else {
+                        // how about validation ?
+                       echo "<p>Something has gone wrong. Please try again</p>";
+                     }
+                  }
+                  else if($_GET['key'] && $_GET['token']) {
                      $email = $_GET['key'];
                      $token = $_GET['token'];
                      $query = mysqli_query($dbcnx,
@@ -50,22 +65,6 @@
                         $pageContent = "<p>Email <i>$email</i> not found.</p>";
                      }  
                   }
-                  else if (isset($_POST['password']) || $_POST['reset_link_token'] || $_POST['email']) {
-                     $emailId  = $_POST['email'];
-                     $token    = $_POST['reset_link_token'];
-                     $password=password_hash($_POST['password'], PASSWORD_DEFAULT);
-                     $query    = mysqli_query($dbcnx, "SELECT * FROM `users` WHERE `reset_link_token`='" . $token . "' and `email`='" . $emailId . "'");
-                     $row = mysqli_num_rows($query);
-                     if ($row) {
-                       mysqli_query($dbcnx, "UPDATE users set  password='" . $password . "', reset_link_token='" . NULL . "' ,exp_date='" . NULL . "' WHERE email='" . $emailId . "'");
-                       echo '<p>Congratulations! Your password has been updated successfully.</p>';
-                     } 
-                     else {
-                        // how about validation ?
-                       echo "<p>Something has gone wrong. Please try again</p>";
-                     }
-                  }
-
                   else {
                      $pageContent = "<p>Invalid request. This page requires an email address and a valid token. You may want to try copying and pasting the entire link from the email you received.</p>";
                   }
