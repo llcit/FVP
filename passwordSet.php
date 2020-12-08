@@ -27,7 +27,7 @@
                         $row= mysqli_fetch_array($query);
                         if($row['exp_date'] >= $curDate){ 
                            $pageContent = "
-                              <form action='update-forget-password.php' method='post'>
+                              <form action='' method='post'>
                                  <input type='hidden' name='email' value='<?php echo $email;?>'>
                                  <input type='hidden' name='reset_link_token' value='<?php echo $token;?>'>
                                  <div class='form-group'>
@@ -43,7 +43,7 @@
                            ";
                         } 
                         else{
-                           $pageContent = "<p>This forget password link has been expired</p>";
+                           $pageContent = "<p>This password link has expired</p>";
                         }
                      } 
                      else {
@@ -69,11 +69,6 @@
                   else {
                      $pageContent = "<p>Invalid request. This page requires an email address and a valid token. You may want to try copying and pasting the entire link from the email you received.</p>";
                   }
-
-
-
-
-
                   echo($pageContent);
                   ?>
             </div>
