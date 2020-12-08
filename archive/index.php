@@ -146,6 +146,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
 <!-- Able Player CSS -->
+<link rel="stylesheet" href="../css/main.css" type="text/css"/>
 <link rel="stylesheet" href="../css/archive.css" type="text/css"/>
 <script>
 	$( document ).ready(function() {
@@ -212,10 +213,10 @@
 <!-- ----------- /PLAYER MODAL ----------------- -->
 <div class="panel panel-default">
 	<div class="panel-heading fv_heading">
-		<img src='../player/logo_lf.png'>
+		<img src='../img/logo_lf.png'>
 		&nbsp;&nbsp;&nbsp;Flagship Video Archive 
 		<span class='pull-right'>
-			<img src='../player/logo_ac.png'>
+			<img src='../img/logo_ac.png'>
 		</span>
 	</div>
 	<div class="panel-body">

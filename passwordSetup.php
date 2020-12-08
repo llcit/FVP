@@ -4,6 +4,7 @@
       <?php
         use PHPMailer\PHPMailer\PHPMailer;
         use PHPMailer\PHPMailer\Exception;
+        $userMsg = '';
         if (isset($_POST['password-reset']) && $_POST['email']) {
           include "./inc/db.php";
           include "./inc/ses_settings.php";
@@ -57,55 +58,80 @@
                 $mail->Body       = $bodyHtml;
                 $mail->AltBody    = $bodyText;
                 $mail->Send();
-                echo "Check Your Email and Click on the link sent to your email." , PHP_EOL;
+                $userMsg =  "Check Your Email and Click on the link sent to your email.";
+                $msgClass = "loginMsg_success";
             } catch (phpmailerException $e) {
-                echo "An error occurred. {$e->errorMessage()}", PHP_EOL; //Catch errors from PHPMailer.
+                $userMsg =  "An error occurred. {$e->errorMessage()}"; //Catch errors from PHPMailer.
+                $msgClass = "loginMsg_error";
             } catch (Exception $e) {
-                echo "Email not sent. {$mail->ErrorInfo}", PHP_EOL; //Catch errors from Amazon SES.
+                $userMsg =  "Email not sent. {$mail->ErrorInfo}"; //Catch errors from Amazon SES.
+                $msgClass = " loginMsg_error";
             }
           }
+          else {
+                $userMsg =  "Please Enter a Valid Email address!"; 
+                $msgClass = " loginMsg_error";
+          }
+        }
+        if ($userMsg != '') {
+          $userMsgPanel = "
+                                <div class='loginMsg $msgClass'>
+                                    $userMsg
+                                  </div>
+          ";
         }
       ?>
-      <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-      <script src="../ableplayer/thirdparty/js.cookie.js"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
       <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+
 
       <!-- Able Player CSS -->
       <link rel="stylesheet" href="./css/main.css" type="text/css"/>
     </head>
     <body>
-        <form method="post" action="">
-            <div class="container">
-                <div class="container" style="max-width: 1200px;">
-                   <div class="row div_login">
-                        <div class="col-md-12 mb-5">
-                            <div class="card soloCard">
-                                <div class="card-body">
-                                   <h2 class="card-title">Password Setup</h2>
-                                   <p class="card-text">Enter your email address below to receive a message with a password setup link.</p>
-                                </div>
-                                <div class="card-footer">
-                                    <div class="form-group">
-                                      <div>
-                                         <label for="username">Email:</label>
-                                         <input type="text" class="textbox" id="email" name="email" placeholder="Email" />
-                                      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading fv_heading">
+          <img src='./img/logo_lf.png'>
+          &nbsp;&nbsp;&nbsp;Flagship Video Password Setup
+          <span class='pull-right'>
+            <img src='./img/logo_ac.png'>
+          </span>
+        </div>
+        <div class="panel-body">
+          <form method="post" action="">
+              <div class="container">
+                  <div class="container" style="max-width: 1200px;">
+                     <div class="row div_login">
+                          <div class="col-md-12 mb-5">
+                              <div class="card soloCard">
+                                  <div class="card-body">
+                                     <h2 class="card-title">Password Setup</h2>
+                                     <p class="card-text">Enter your email address below to receive a message with a password setup link.</p>
+                                  </div>
+                                  <?php echo($userMsgPanel); ?>
+                                  
+                                  <div class="card-footer">
+                                      <div class="form-group">
+                                        <div>
+                                           <label for="username">Email:</label>
+                                           <input type="text" class="textbox" id="email" name="email" placeholder="Email" />
+                                        </div>
 
-                                      <div>
-                                         <input type="submit" value="Send Link" name="password-reset" id="password-reset" />
-                                      </div>
-                                   </div>
-                                </div>
-                            </div>
-                        </div>
-                        <a class ="pull-right loginLink" href='login.php'>Return to Login</a>
-                    </div>
-                </div>
-            </div>
-        </form>
+                                        <div>
+                                           <input type="submit" value="Send Link" name="password-reset" id="password-reset" />
+                                        </div>
+                                     </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <a class ="pull-right loginLink" href='login.php'>Return to Login</a>
+                      </div>
+                  </div>
+              </div>
+          </form>
+        </div>
+        <div class="footer">
+          <p> </p>
+        </div>
+      </div>
     </body>
 </html>

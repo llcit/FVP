@@ -5,15 +5,10 @@
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
       <title>Reset Password In PHP MySQL</title>
       <!-- CSS -->
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="./css/main.css" type="text/css"/>
    </head>
    <body>
-      <div class="container">
-         <div class="card">
-            <div class="card-header text-center">
-               Reset Password In PHP MySQL
-            </div>
-            <div class="card-body">
                <?php
                   include "./inc/db.php";
                   if (isset($_POST['password']) || $_POST['reset_link_token'] || $_POST['email']) {
@@ -69,9 +64,31 @@
                   else {
                      $pageContent = "<p>Invalid request. This page requires an email address and a valid token. You may want to try copying and pasting the entire link from the email you received.</p>";
                   }
-                  echo($pageContent);
                   ?>
-            </div>
+
+
+      <div class="panel panel-default">
+         <div class="panel-heading fv_heading">
+            <img src='./img/logo_lf.png'>
+            &nbsp;&nbsp;&nbsp;Flagship Video Password Reset 
+            <span class='pull-right'>
+               <img src='./img/logo_ac.png'>
+            </span>
+         </div>
+         <div class="panel-body">
+            <div class="container">
+               <div class="card">
+                  <div class="card-header text-center">
+                     Reset Password For Flagship Video
+                  </div>
+                  <div class="card-body">
+                     <?php echo($pageContent); ?>
+                  </div>
+               </div>
+            </div>           
+         </div>
+         <div class="footer">
+           <p> </p>
          </div>
       </div>
    </body>

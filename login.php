@@ -40,38 +40,52 @@
         <link rel="stylesheet" href="./css/main.css" type="text/css"/>
     </head>
     <body>
-        <form method="post" action="">
-            <div class="container"> 
-                <div class="container" style="max-width: 1200px;">
-                   <div class="row div_login">
-                        <div class="col-md-12 mb-5">
-                            <div class="card soloCard">
-                                <div class="card-body">
-                                   <h2 class="card-title">Login</h2>
-                                   <p class="card-text">Please enter your email password then click submit.</p>
+        <div class="panel panel-default">
+            <div class="panel-heading fv_heading">
+                <img src='./img/logo_lf.png'>
+                &nbsp;&nbsp;&nbsp;Flagship Video Login 
+                <span class='pull-right'>
+                    <img src='./img/logo_ac.png'>
+                </span>
+            </div>
+            <div class="panel-body">      
+                <form method="post" action="">
+                    <div class="container"> 
+                        <div class="container" style="max-width: 1200px;">
+                           <div class="row div_login">
+                                <div class="col-md-12 mb-5">
+                                    <div class="card soloCard">
+                                        <div class="card-body">
+                                           <h2 class="card-title">Login</h2>
+                                           <p class="card-text">Please enter your email password then click submit.</p>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="form-group">
+                                              <div>
+                                                 <label for="username">Username:</label>
+                                                 <input type="text" class="textbox" id="username" name="username" placeholder="Username" />
+                                              </div>
+                                              <div>
+                                                 <label for="password">Password:</label>
+                                                 <input type="password" class="textbox" id="password" name="password" placeholder="Password"/>
+                                              </div>
+                                              <div>
+                                                 <input type="submit" value="Submit" name="login" id="login" />
+                                              </div>
+                                           </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="card-footer">
-                                    <div class="form-group">
-                                      <div>
-                                         <label for="username">Username:</label>
-                                         <input type="text" class="textbox" id="username" name="username" placeholder="Username" />
-                                      </div>
-                                      <div>
-                                         <label for="password">Password:</label>
-                                         <input type="password" class="textbox" id="password" name="password" placeholder="Password"/>
-                                      </div>
-                                      <div>
-                                         <input type="submit" value="Submit" name="login" id="login" />
-                                      </div>
-                                   </div>
-                                </div>
+                                   <a class ="pull-right loginLink" href='passwordSetup.php'>Set/reset your password</a>
                             </div>
                         </div>
-                           <a class ="pull-right loginLink" href='passwordSetup.php'>Set/reset your password</a>
                     </div>
-                </div>
+                </form>
             </div>
-        </form>
+            <div class="footer">
+              <p> </p>
+            </div>
+        </div>
     </body>
 </html>
 
