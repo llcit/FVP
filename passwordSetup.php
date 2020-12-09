@@ -19,7 +19,7 @@
             $expDate = date("Y-m-d H:i:s",$expFormat);
             $update = mysqli_query($dbcnx,"UPDATE users set  password='" . $password . "', reset_link_token='" . $token . "' ,exp_date='" . $expDate . "' WHERE email='" . $emailId . "'");
 
-            $link = "<p>Click or copy & paste the link below to set your password.</p> <a href='".$SES_settings['password_reset_base_url']."/passwordSet.php?key=".$emailId."&token=".$token."'>'".$SES_settings['password_reset_base_url']."/passwordSet.php?key=".$emailId."&token=".$token."'</a>";
+            $link = "<p>Click or copy & paste the link below to set your password.</p> <a href='".$SES_settings['password_reset_base_url']."/passwordSet.php?key=".$emailId."&token=".$token."'>".$SES_settings['password_reset_base_url']."/passwordSet.php?key=".$emailId."&token=".$token."</a>";
 
             require 'vendor/autoload.php';
 
@@ -129,7 +129,7 @@
                                         </div>
 
                                         <div>
-                                           <input type="submit" value="Send Link" name="password-reset" id="password-reset" disabled/>
+                                           <input type="submit" value="Send Link" name="password-reset" id="password-reset" class='btn btn-primary' disabled/>
                                         </div>
                                      </div>
                                   </div>

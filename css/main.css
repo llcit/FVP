@@ -191,3 +191,25 @@
     i.descriptor-icon_linguistic {
         color: #042D87;
     }
+    .rating {
+        font-weight: bold;
+        border-radius: 3px;
+        color: white;
+        display: inline-block;
+        padding: 3px;
+        text-transform: uppercase;
+        font-size:12px;
+        float:right;
+    }
+
+    .weakPassword {
+        background-color: #EF1111;
+    }
+
+    .moderatePassword {
+        background-color: #FFC700;
+    }
+
+    .strongPassword {
+        background-color: #22BA3E;
+    }
