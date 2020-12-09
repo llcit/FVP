@@ -26,7 +26,6 @@
               $returnToLogin = "<a class ='pull-right loginLink' href='login.php'>Return to Login</a>";
             } 
             else {
-               // how about validation ?
               $userMsg =  "<p>Something has gone wrong. Please try again</p>";
               $msgClass = " loginMsg_error";
             }
@@ -102,9 +101,9 @@
                               </div>
                            </div>
                         </div>
+                        <?php echo($returnToLogin); ?>
                      </div>
                   </div>
-                  <?php echo($returnToLogin); ?>
                </div>
             </div>           
          </div>
