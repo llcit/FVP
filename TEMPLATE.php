@@ -7,7 +7,7 @@
         include "./inc/sqlFunctions.php";
 				$pageTitle = "Flagship Video Home";
 				$subTitle = "Main Menu";
-				$titleText = "Select one of the links below.";
+				$titleText = "Select one of the links below...";
 				session_start();
 				if (!isset($_SESSION['username'])) { 
 			    $role = 'anonymous'; 
@@ -17,30 +17,10 @@
 			  	$role =  $user->roles;
 			  	$userName = $user->first_name . " " . $user->last_name;
 			  }
-			  $links = [
-			  	['label'=>'Login','href'=>'./login.php'],
-			  	['label'=> $userName.'\'s Videos','href'=>'./player/','req'=>['student']],
-          ['label'=>'Upload Video','href'=>'./upload/','req'=>['student','staff','admin']],
-          ['label'=>'Manage Users and Events','href'=>'./manage/','req'=>['staff','admin']],
-			  	['label'=>'Video Showcase','href'=>'./player/'],
-			  	['label'=>'Video Archive','href'=>'./archive/','req'=>['staff','admin']],
-			  	['label'=>'About This Site','href'=>'./about.php'],
 
-			  	
-			  ];
-			  $linkList = "
-			  	<ul class='linkList'>
-			  ";
-			  foreach($links as $link) {
-			  	if (!$link['req'] || in_array($role,$link['req'])) {
-			  		$linkList .= "
-			  			<li><a href='".$link['href']."'>".$link['label']."</a></li>
-			  		";
-			  	}
-			  }
        	$pageContent = "
        		<div class='fv_pageContent'>
-       			$linkList
+       			Welcome $userName!
        		</div>";
       ?>
       <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
@@ -61,9 +41,6 @@
           <span class='pull-right'>
             <img src='./img/logo_ac.png'>
           </span>
-        </div>
-        <div class='fv_subHeader'>
-          Welcome <?php echo($userName); ?>!
         </div>
         <form method="post" action="">
           <div class="container">

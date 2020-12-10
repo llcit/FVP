@@ -1,7 +1,14 @@
 /* Container */
+    span.pageTitle {
+        padding-left:15px;
+    }
     .container{
         width:100%;
         margin:0 auto;
+        vertical-align: middle;
+        display:table;
+        max-width:1200px;
+        min-height:95vh;
     }
     .fv_selects_wrapper {
         font-size:11px;
@@ -39,44 +46,58 @@
         color: white;
         text-align: center;
     }
-  .controlWrapper {
+    .controlWrapper {
       width:100%;
-  }
-  .playerFrame {
+    }
+    .playerFrame {
       width:100%;
       height:800px;
       margin-top:20px;
       border:none;
-    
-  }
-  .fv_block {
+
+    }
+    .fv_block {
       display:block !important;
       width:250px !important;
-  }
-  .controlsTable td {
-  padding:10px; 
-  font-size:14px;
-  font-weight:bold;
-  }
-  .fv_heading {
+    }
+    .controlsTable td {
+    padding:10px; 
+    font-size:14px;
+    font-weight:bold;
+    }
+    .fv_heading {
       background-color: #181b26 !important;
       color:#dfd8c9 !important;
       font-size:28px !important;
       margin:0px !important;
       padding:5px 10px !important; 
-  }
-
+    }
+    .fv_subHeader {
+      background-color: #eee !important;
+      color:#000 !important;
+      font-size:20px !important;
+      margin:0px !important;
+      padding:5px 10px !important;
+      width:100%;
+      border-bottom:solid 1px #000;
+      text-align:right; 
+    }
     /* Login */
-    .div_login{
+    .fv_main{
         border: 1px solid gray;
         border-radius: 3px;
-        width: 470px;
-        -height: 270px;
+        min-width: 450px;
+        max-width:800px;
+        min-height: 300px;
         box-shadow: 0px 2px 2px 0px  gray;
-        margin: 0 auto;
+        vertical-align: middle;
+        margin-left:auto;
+        margin-right:auto;
+        margin-top: 60px;
+
     }
 
-    .div_login h1{
+    .fv_main h1{
         margin-top: 0px;
         font-weight: normal;
         padding: 10px;
@@ -85,10 +106,19 @@
         font-family: sans-serif;
     }
 
-    .div_login div{
+    .fv_main div{
         clear: both;
-        margin-top: 10px;
-        padding: 5px;
+    }
+    .fv_card {
+        min-height: 300px;
+        padding:0px;
+    }
+
+    .fv_card_body {
+        padding:15px;
+    }
+    p.card-text {
+        padding-left:15px;
     }
     .loginMsg {
         width:70%;
@@ -126,6 +156,13 @@
         padding-right:15px;
         padding-bottom:15px;
     }
+    .linkList li{
+        list-style-type: none;
+        padding-left:25px;
+        padding-top:10px;
+        padding-bottom:10px;
+        font-size:18px;
+    }
     .audioDescription {
         width:95%;
         background-color: #EEE;
@@ -138,6 +175,9 @@
         margin-left:25px;   
         text-align:left;
         -display:none;
+    }
+    .fv_button {
+        margin-top:20px;
     }
     div.descriptor {
         background-color: #fff;

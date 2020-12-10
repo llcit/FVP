@@ -124,10 +124,10 @@
 
     <div class="panel panel-default">
     	<div class="panel-heading fv_heading">
-    		<img src='./logo_lf.png'>
+    		<img src='../img/logo_lf.png'>
     		&nbsp;&nbsp;&nbsp;Flagship Video Showcase 
     		<span class='pull-right'>
-  				<img src='./logo_ac.png'>
+  				<img src='../img/logo_ac.png'>
   			</span>
     	</div>
     	<div class="panel-body">
@@ -159,7 +159,7 @@
 						<?php echo($audioDescription);?>
 					</table>
 			</div>
-			<iframe class='playerFrame' src='./player.php?v=<?php echo($_GET['v']); ?>&t=<?php echo(implode(',',$_GET['t'])); ?>&l=<?php echo($language);?>&cm=<?php echo($captionMode);?>' allowfullscreen>
+			<iframe class='playerFrame' src='./player.php?v=<?php echo($_GET['v']); ?>&t=<?php echo(implode(',',$includeTracks)); ?>&l=<?php echo($language);?>&cm=<?php echo($captionMode);?>' allowfullscreen>
 			</iframe>
     	</div>
 

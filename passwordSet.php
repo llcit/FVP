@@ -53,7 +53,7 @@
                            <label>Confirm Password</label>
                            <input type='password' name='cpassword' id='cpassword' class='form-control'>
                         </div>
-                        <input type='submit' name='new-password' id='new-password' class='btn btn-primary' disabled>
+                        <input type='submit' name='new-password' id='new-password' class='btn btn-primary fv_button' disabled>
                      </form>
                   ";
                } 
@@ -91,7 +91,7 @@
          <div class="panel-body">
            <div class="container">
                <div class="container" style="max-width: 1200px;">
-                  <div class="row div_login">
+                  <div class="row fv_main">
                        <div class="col-md-12 mb-5">
                            <div class="card soloCard">
                                <div class="card-body">

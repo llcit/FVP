@@ -7,7 +7,6 @@
         $userMsg = '';
         if (isset($_POST['password-reset']) && $_POST['email']) {
           include "./inc/db.php";
-          include "./inc/ses_settings.php";
           $emailId = $_POST['email'];
           $result = mysqli_query($dbcnx,"SELECT * FROM users WHERE email='" . $emailId . "'");
           $row= mysqli_fetch_array($result);
@@ -24,26 +23,21 @@
             require 'vendor/autoload.php';
 
             $mailer = new PHPMailer();
-            $sender = $SES_settings['sender'];
-            $senderName = $SES_settings['senderName'];
             $recipient = $_POST['email'];
-            $usernameSmtp = $SES_settings['usernameSmtp'];
-            $passwordSmtp = $SES_settings['passwordSmtp'];
-            $host = $SES_settings['host'];
-            $port = 587;
             $subject = 'Flagship Video: Reset Password';
             $bodyText =  "Click On This Link to Reset Password '.$link.'";
             $bodyHtml = '<h1>Password Reset for the Flagship Video Project</h1>
                 <p>Click On This Link to Reset Password '.$link.'</p>';
+            $SETTINGS = parse_ini_file(__DIR__."inc/settings.ini");
             $mail = new PHPMailer(true);
             try {
                 $mail->CharSet =  "utf-8";
                 $mail->isSMTP();
-                $mail->setFrom($sender, $senderName);
-                $mail->Username   = $usernameSmtp;
-                $mail->Password   = $passwordSmtp;
-                $mail->Host       = $host;
-                $mail->Port       = $port;
+                $mail->setFrom($SETTINGS['sender'], $SETTINGS['senderName']);
+                $mail->Username   = $SETTINGS['usernameSmtp'];
+                $mail->Password   = $SETTINGS['passwordSmtp'];
+                $mail->Host       = $SETTINGS['hostSmtp'];
+                $mail->Port       = $SETTINGS['portSmtp'];
                 $mail->SMTPAuth   = true;
                 $mail->SMTPSecure = 'tls';
                 $mail->addCustomHeader('X-SES-CONFIGURATION-SET', $configurationSet);
@@ -112,7 +106,7 @@
           <form method="post" action="">
               <div class="container">
                   <div class="container" style="max-width: 1200px;">
-                     <div class="row div_login">
+                     <div class="row fv_main">
                           <div class="col-md-12 mb-5">
                               <div class="card soloCard">
                                   <div class="card-body">
@@ -129,7 +123,7 @@
                                         </div>
 
                                         <div>
-                                           <input type="submit" value="Send Link" name="password-reset" id="password-reset" class='btn btn-primary' disabled/>
+                                           <input type="submit" value="Send Link" name="password-reset" id="password-reset" class='btn btn-primary fv_button' disabled/>
                                         </div>
                                      </div>
                                   </div>

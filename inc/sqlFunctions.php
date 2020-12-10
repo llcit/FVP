@@ -1,5 +1,19 @@
 <?php
 
+    function getUser($pdo,$username) {
+        $sql ="SELECT u.`first_name`,u.`last_name`, a.`roles` 
+               FROM `users` u
+               JOIN `affiliations` a ON a.`user_id` = u.`id` 
+               WHERE (u.`username`=:username)
+               ";
+        $query= $pdo->prepare($sql);
+        $query->bindParam(':username', $username, PDO::PARAM_STR);
+        $query->execute();
+        if($query->rowCount() > 0) {
+            $result = $query->fetch(PDO::FETCH_OBJ);
+            return($result); 
+        }  
+    }
     function getShowcaseVideos(){
         $queryStatement = "
             SELECT pres.`id`,pres.`description`,u.`first_name`,u.`last_name`,i.`name` as `institution`,

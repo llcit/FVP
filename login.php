@@ -16,7 +16,6 @@
 
                 if($query->rowCount() > 0) {
                     $result = $query->fetch(PDO::FETCH_OBJ);
-                    $results=$query->fetchAll(PDO::FETCH_OBJ);
                     if (password_verify($_POST["password"], $result->password)) {
                         $_SESSION["username"] = $_POST["username"];
                         exit(header("location:archive/index.php"));
@@ -52,7 +51,7 @@
                 <form method="post" action="">
                     <div class="container"> 
                         <div class="container" style="max-width: 1200px;">
-                           <div class="row div_login">
+                           <div class="row fv_main">
                                 <div class="col-md-12 mb-5">
                                     <div class="card soloCard">
                                         <div class="card-body">
@@ -70,7 +69,7 @@
                                                  <input type="password" class="textbox" id="password" name="password" placeholder="Password"/>
                                               </div>
                                               <div>
-                                                 <input type="submit" value="Submit" name="login" id="login" />
+                                                 <input type="submit" class='btn btn-primary fv_button'value="Submit" name="login" id="login" />
                                               </div>
                                            </div>
                                         </div>
