@@ -15,10 +15,11 @@
              $expFormat = mktime(
              date("H"), date("i"), date("s"), date("m") ,date("d")+1, date("Y")
              );
+            $SETTINGS = parse_ini_file(__DIR__."/inc/settings.ini");
             $expDate = date("Y-m-d H:i:s",$expFormat);
             $update = mysqli_query($dbcnx,"UPDATE users set  password='" . $password . "', reset_link_token='" . $token . "' ,exp_date='" . $expDate . "' WHERE email='" . $emailId . "'");
 
-            $link = "<p>Click or copy & paste the link below to set your password.</p> <a href='".$SES_settings['password_reset_base_url']."/passwordSet.php?key=".$emailId."&token=".$token."'>".$SES_settings['password_reset_base_url']."/passwordSet.php?key=".$emailId."&token=".$token."</a>";
+            $link = "<p>Click or copy & paste the link below to set your password.</p> <a href='".$SETTINGS['password_reset_base_url']."/passwordSet.php?key=".$emailId."&token=".$token."'>".$SETTINGS['password_reset_base_url']."/passwordSet.php?key=".$emailId."&token=".$token."</a>";
 
             require 'vendor/autoload.php';
 
@@ -28,7 +29,6 @@
             $bodyText =  "Click On This Link to Reset Password '.$link.'";
             $bodyHtml = '<h1>Password Reset for the Flagship Video Project</h1>
                 <p>Click On This Link to Reset Password '.$link.'</p>';
-            $SETTINGS = parse_ini_file(__DIR__."inc/settings.ini");
             $mail = new PHPMailer(true);
             try {
                 $mail->CharSet =  "utf-8";
