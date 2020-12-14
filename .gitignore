@@ -16,7 +16,6 @@ phpinfo.php
 presentations/
 rs3.html
 trimit/
-upload/
+upload.bak/
 vendor/
-settings.ini
-
+inc/settings.ini
