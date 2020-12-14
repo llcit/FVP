@@ -19,3 +19,10 @@ trimit/
 upload.bak/
 vendor/
 inc/settings.ini
+upload/s3.fine-uploader
+upload/package.json
+upload/package-lock.json
+upload/php-s3-server-master/vendor
+upload/php-s3-server-master/composer.lock
+upload/php-s3-server-master/composer.json
+
