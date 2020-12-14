@@ -25,21 +25,16 @@
         handleCorsRequest();
         if (isset($_REQUEST["success"])) {
             verifyFileInS3(shouldIncludeThumbnail());
-            ripAudio($_REQUEST["bucket"],$_REQUEST["key"])
+            //ripAudio($_REQUEST["bucket"],$_REQUEST["key"])
         }
         else {
             signRequest();
         }
     }
-    function ripAudio($bucket,$key) {
+    /*function ripAudio($bucket,$key) {
         $audio_extension = 'flac';
         $video_extension = 'mp4';
-
         $in_file = '';
-        $bucket = $argv[1];
-        $key = $argv[2];
-
-
         if ($stream = fopen("s3://$bucket/$key", 'r')) {
             // While the stream is still open
             while (!feof($stream)) {
@@ -50,7 +45,7 @@
             fclose($stream);
         }
 
-    }
+    } */
     function getRequestMethod() {
         global $HTTP_RAW_POST_DATA;
         if(isset($HTTP_RAW_POST_DATA)) {
