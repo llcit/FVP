@@ -21,31 +21,66 @@
         deleteObject();
     }
 
-    else if	($method == 'POST') {
+    else if ($method == 'POST') {
         handleCorsRequest();
         if (isset($_REQUEST["success"])) {
-            verifyFileInS3(shouldIncludeThumbnail());
-            //ripAudio($_REQUEST["bucket"],$_REQUEST["key"])
+            $tmpLink = verifyFileInS3(shouldIncludeThumbnail());
+            ripAudio($tmpLink);
         }
         else {
             signRequest();
         }
     }
-    /*function ripAudio($bucket,$key) {
+    function ripAudio($tmpLink) {
         $audio_extension = 'flac';
         $video_extension = 'mp4';
+	$output_dir = './tmpAudio/';
         $in_file = '';
+	echo("\n\n LINK:  $tmpLink \n\n");
+/*
         if ($stream = fopen("s3://$bucket/$key", 'r')) {
             // While the stream is still open
             while (!feof($stream)) {
                 // Read 1,024 bytes from the stream
-                $in_file .= fread($stream, 1024);
+                $in_file .= stream_get_contents($stream, 1024);
             }
             // Be sure to close the stream resource when you're done with it
             fclose($stream);
         }
+	echo("\n\nfile: \n\n");
+	echo($in_file);
 
-    } */
+*/
+$ffmpeg = FFMpeg\FFMpeg::create([
+    'ffmpeg.binaries'  => '/usr/bin/ffmpeg', // the path to the FFMpeg binary
+    'ffprobe.binaries' => '/usr/bin/ffprobe', // the path to the FFProbe binary
+    'timeout' => 3600, // the timeout for the underlying process
+    'ffmpeg.threads'   => 1   // the number of threads that FFMpeg should use
+]);
+$ffmpeg->getFFMpegDriver()->listen(new \Alchemy\BinaryDriver\Listeners\DebugListener());
+$ffmpeg->getFFMpegDriver()->on('debug', function ($message) {       
+    echo "MSG: " . $message."\n";
+});
+$video = $ffmpeg->open($tmpLink);
+if ($audio_extension == 'mp3') {
+	$output_format = new FFMpeg\Format\Audio\Mp3(); // Here you choose your output format
+	$output_format->setAudioCodec("libmp3lame");
+}
+
+if ($audio_extension == 'flac') {
+	$output_format = new FFMpeg\Format\Audio\Flac(); // Here you choose your output format  
+	$output_format->setAudioChannels(2);
+	$output_format->setAudioKiloBitrate(256);
+}
+$fileName='test';
+$saveFile = addslashes($output_dir . $fileName . "." . $audio_extension);
+$video->save($output_format, $saveFile);
+
+//$output_format->on('progress', function ($video, $format, $percentage) use($log_id) {
+  //  file_put_contents('./progress/'. $log_id . '.txt', $percentage);
+//}); 
+
+    } 
     function getRequestMethod() {
         global $HTTP_RAW_POST_DATA;
         if(isset($HTTP_RAW_POST_DATA)) {
@@ -222,7 +257,6 @@
         return hash_hmac('sha256', $stringToSign, $signingKey);
     }
 
-    // This is not needed if you don't require a callback on upload success.
     function verifyFileInS3($includeThumbnail) {
         global $expectedMaxSize;
 
@@ -231,21 +265,20 @@
     	echo("MAX SIZE: " . $expectedMaxSize ."\n\n");
             echo("ACTUAL SIZE: " . getObjectSize($bucket, $key) ."\n\n"); 
        if (isset($expectedMaxSize) && getObjectSize($bucket, $key) > $expectedMaxSize) {
-            // You can safely uncomment this next line if you are not depending on CORS
             header("HTTP/1.0 500 Internal Server Error");
             deleteObject();
             echo json_encode(array("error" => "File is too big!", "preventRetry" => true));
         }
         else {
             $link = getTempLink($bucket, $key);
-    	echo("GOT  TMP LINK -> $link\n\n");
+    	    echo("GOT TMP LINK -> $link\n\n");
             $response = array("tempLink" => $link);
 
             if ($includeThumbnail) {
                 $response["thumbnailUrl"] = $link;
             }
-
             echo json_encode($response);
+	    return $link;
         }
     }
 
