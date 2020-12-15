@@ -54,8 +54,8 @@
         	$output_format->setAudioChannels(2);
         	$output_format->setAudioKiloBitrate(256);
         }
-        $output_format->on('progress', function ($video, $format, $percentage) use($log_id) {
-            file_put_contents('./progress/'. $log_id . '.txt', $percentage);
+        $output_format->on('progress', function ($video, $format, $percentage) use($key) {
+            file_put_contents('./progress/'. $key . '.txt', $percentage);
         }); 
         $saveFile = addslashes($output_dir . $key . "." . $audio_extension);
         $video->save($output_format, $saveFile); 
