@@ -1,4 +1,6 @@
 <?php
+    // blow open memory limit
+    ini_set('memory_limit', '-1');
     require './vendor/autoload.php';
     use Aws\S3\S3Client;
     $SETTINGS = parse_ini_file(__DIR__."/../../inc/settings.ini");
@@ -22,11 +24,15 @@
         handleCorsRequest();
         if (isset($_REQUEST["success"])) {
             $tmpLink = verifyFileInS3(shouldIncludeThumbnail());
-            ripAudio($tmpLink,$_REQUEST['key']);
+            $audioFile = ripAudio($tmpLink,$_REQUEST['key']);
+            $transcript = trancscribe($audioFile);
         }
         else {
             signRequest();
         }
+    }
+    function transcribe($audioFile) {
+        echo("\n\nAUDIO FILE: \n\n$audioFile\n\n");
     }
     function ripAudio($tmpLink,$key) {
         echo("\n\nKEY: $key\n\n");
@@ -59,6 +65,7 @@
         }); 
         $saveFile = addslashes($output_dir . $key . "." . $audio_extension);
         $video->save($output_format, $saveFile); 
+        return $saveFile;
     } 
     function getRequestMethod() {
         global $HTTP_RAW_POST_DATA;
