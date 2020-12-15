@@ -25,6 +25,7 @@
         if (isset($_REQUEST["success"])) {
             $tmpLink = verifyFileInS3(shouldIncludeThumbnail());
             $audioFile = ripAudio($tmpLink,$_REQUEST['key']);
+            echo("\n\nTAINT: \n\n$audioFile\n\n");
             $transcript = trancscribe($audioFile);
         }
         else {
@@ -64,6 +65,7 @@
             file_put_contents('./progress/'. $key . '.txt', $percentage);
         }); 
         $saveFile = addslashes($output_dir . $key . "." . $audio_extension);
+        echo("\n\nSAVE FILE: \n\n$saveFile\n\n");
         $video->save($output_format, $saveFile); 
         return $saveFile;
     } 
