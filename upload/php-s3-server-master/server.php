@@ -54,11 +54,11 @@
         	$output_format->setAudioChannels(2);
         	$output_format->setAudioKiloBitrate(256);
         }
-        $saveFile = addslashes($output_dir . $key . "." . $audio_extension);
-        $video->save($output_format, $saveFile);
-        $output_format->on('progress', function ($video, $format, $percentage) use($key) {
-           file_put_contents('./progress/'. $key . '.txt', $percentage);
+        $output_format->on('progress', function ($video, $format, $percentage) use($log_id) {
+            file_put_contents('./progress/'. $log_id . '.txt', $percentage);
         }); 
+        $saveFile = addslashes($output_dir . $key . "." . $audio_extension);
+        $video->save($output_format, $saveFile); 
     } 
     function getRequestMethod() {
         global $HTTP_RAW_POST_DATA;
