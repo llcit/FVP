@@ -1,16 +1,13 @@
 <?php
     require './vendor/autoload.php';
     use Aws\S3\S3Client;
-
     $SETTINGS = parse_ini_file(__DIR__."/../../inc/settings.ini");
-
     $clientPrivateKey = $SETTINGS['AWS_CLIENT_SECRET_KEY'];
     $serverPublicKey = $SETTINGS['AWS_SERVER_PUBLIC_KEY'];
     $serverPrivateKey = $SETTINGS['AWS_SERVER_PRIVATE_KEY'];
     $expectedBucketName = $SETTINGS['S3_BUCKET_NAME'];
     $expectedHostName = $SETTINGS['S3_HOST_NAME']; // v4-only
     $expectedMaxSize = (isset($SETTINGS['S3_MAX_FILE_SIZE']) ? $SETTINGS['S3_MAX_FILE_SIZE'] : null);
-
     $method = getRequestMethod();
 
     if ($method == 'OPTIONS') {
@@ -25,88 +22,63 @@
         handleCorsRequest();
         if (isset($_REQUEST["success"])) {
             $tmpLink = verifyFileInS3(shouldIncludeThumbnail());
-            ripAudio($tmpLink);
+            ripAudio($tmpLink,$_REQUEST['key']);
         }
         else {
             signRequest();
         }
     }
-    function ripAudio($tmpLink) {
+    function ripAudio($tmpLink,$key) {
+        echo("\n\nKEY: $key\n\n");
         $audio_extension = 'flac';
         $video_extension = 'mp4';
-	$output_dir = './tmpAudio/';
+        $output_dir = './tmpAudio/';
         $in_file = '';
-	echo("\n\n LINK:  $tmpLink \n\n");
-/*
-        if ($stream = fopen("s3://$bucket/$key", 'r')) {
-            // While the stream is still open
-            while (!feof($stream)) {
-                // Read 1,024 bytes from the stream
-                $in_file .= stream_get_contents($stream, 1024);
-            }
-            // Be sure to close the stream resource when you're done with it
-            fclose($stream);
+        $ffmpeg = FFMpeg\FFMpeg::create([
+            'ffmpeg.binaries'  => '/usr/bin/ffmpeg', // the path to the FFMpeg binary
+            'ffprobe.binaries' => '/usr/bin/ffprobe', // the path to the FFProbe binary
+            'timeout' => 3600, // the timeout for the underlying process
+            'ffmpeg.threads'   => 1   // the number of threads that FFMpeg should use
+        ]);
+        $ffmpeg->getFFMpegDriver()->listen(new \Alchemy\BinaryDriver\Listeners\DebugListener());
+        $ffmpeg->getFFMpegDriver()->on('debug', function ($message) {       
+        echo "MSG: " . $message."\n";
+        });
+        $video = $ffmpeg->open($tmpLink);
+        if ($audio_extension == 'mp3') {
+        	$output_format = new FFMpeg\Format\Audio\Mp3(); 
+        	$output_format->setAudioCodec("libmp3lame");
         }
-	echo("\n\nfile: \n\n");
-	echo($in_file);
-
-*/
-$ffmpeg = FFMpeg\FFMpeg::create([
-    'ffmpeg.binaries'  => '/usr/bin/ffmpeg', // the path to the FFMpeg binary
-    'ffprobe.binaries' => '/usr/bin/ffprobe', // the path to the FFProbe binary
-    'timeout' => 3600, // the timeout for the underlying process
-    'ffmpeg.threads'   => 1   // the number of threads that FFMpeg should use
-]);
-$ffmpeg->getFFMpegDriver()->listen(new \Alchemy\BinaryDriver\Listeners\DebugListener());
-$ffmpeg->getFFMpegDriver()->on('debug', function ($message) {       
-    echo "MSG: " . $message."\n";
-});
-$video = $ffmpeg->open($tmpLink);
-if ($audio_extension == 'mp3') {
-	$output_format = new FFMpeg\Format\Audio\Mp3(); // Here you choose your output format
-	$output_format->setAudioCodec("libmp3lame");
-}
-
-if ($audio_extension == 'flac') {
-	$output_format = new FFMpeg\Format\Audio\Flac(); // Here you choose your output format  
-	$output_format->setAudioChannels(2);
-	$output_format->setAudioKiloBitrate(256);
-}
-$fileName='test';
-$saveFile = addslashes($output_dir . $fileName . "." . $audio_extension);
-$video->save($output_format, $saveFile);
-
-//$output_format->on('progress', function ($video, $format, $percentage) use($log_id) {
-  //  file_put_contents('./progress/'. $log_id . '.txt', $percentage);
-//}); 
-
+        if ($audio_extension == 'flac') {
+        	$output_format = new FFMpeg\Format\Audio\Flac();  
+        	$output_format->setAudioChannels(2);
+        	$output_format->setAudioKiloBitrate(256);
+        }
+        $saveFile = addslashes($output_dir . $key . "." . $audio_extension);
+        $video->save($output_format, $saveFile);
+        $output_format->on('progress', function ($video, $format, $percentage) use($key) {
+           file_put_contents('./progress/'. $key . '.txt', $percentage);
+        }); 
     } 
     function getRequestMethod() {
         global $HTTP_RAW_POST_DATA;
         if(isset($HTTP_RAW_POST_DATA)) {
         	parse_str($HTTP_RAW_POST_DATA, $_POST);
         }
-
         if (isset($_REQUEST['_method'])) {
             return $_REQUEST['_method'];
         }
-
         return $_SERVER['REQUEST_METHOD'];
     }
-
-    // Only needed in cross-origin setups
     function handleCorsRequest() {
         // If you are relying on CORS, you will need to adjust the allowed domain here.
         header('Access-Control-Allow-Origin: http://fineuploader.com');
     }
-
-    // Only needed in cross-origin setups
     function handlePreflight() {
         handleCorsRequest();
         header('Access-Control-Allow-Methods: POST');
         header('Access-Control-Allow-Headers: Content-Type');
     }
-
     function getS3Client() {
         global $clientPrivateKey, $serverPrivateKey;
 
@@ -115,8 +87,6 @@ $video->save($output_format, $saveFile);
             'secret' => $clientPrivateKey
         ));
     }
-
-    // Only needed if the delete file feature is enabled
     function deleteObject() {
         getS3Client()->deleteObject(array(
             'Bucket' => $_REQUEST['bucket'],
@@ -126,7 +96,6 @@ $video->save($output_format, $saveFile);
 
     function signRequest() {
         header('Content-Type: application/json');
-
         $responseBody = file_get_contents('php://input');
         $contentAsObject = json_decode($responseBody, true);
         $jsonContent = json_encode($contentAsObject);
@@ -164,15 +133,12 @@ $video->save($output_format, $saveFile);
             global $expectedHostName;
             $pattern = "/host:$expectedHostName/";
         }
-
         preg_match($pattern, $headersStr, $matches);
-
         return count($matches) > 0;
     }
 
     function signPolicy($policyStr) {
         $policyObj = json_decode($policyStr, true);
-
         if (isPolicyValid($policyObj)) {
             $encodedPolicy = base64_encode($policyStr);
             if (isset($_REQUEST["v4"])) {
@@ -190,11 +156,9 @@ $video->save($output_format, $saveFile);
 
     function isPolicyValid($policy) {
         global $expectedMaxSize, $expectedBucketName;
-
         $conditions = $policy["conditions"];
         $bucket = null;
         $parsedMaxSize = null;
-
         for ($i = 0; $i < count($conditions); ++$i) {
             $condition = $conditions[$i];
 
@@ -205,13 +169,11 @@ $video->save($output_format, $saveFile);
                 $parsedMaxSize = $condition[2];
             }
         }
-
         return $bucket == $expectedBucketName && $parsedMaxSize == (string)$expectedMaxSize;
     }
 
     function sign($stringToSign) {
         global $clientPrivateKey;
-
         return base64_encode(hash_hmac(
                 'sha1',
                 $stringToSign,
@@ -222,63 +184,50 @@ $video->save($output_format, $saveFile);
 
     function signV4Policy($stringToSign, $policyObj) {
         global $clientPrivateKey;
-
         foreach ($policyObj["conditions"] as $condition) {
             if (isset($condition["x-amz-credential"])) {
                 $credentialCondition = $condition["x-amz-credential"];
             }
         }
-
         $pattern = "/.+\/(.+)\\/(.+)\/s3\/aws4_request/";
         preg_match($pattern, $credentialCondition, $matches);
-
         $dateKey = hash_hmac('sha256', $matches[1], 'AWS4' . $clientPrivateKey, true);
         $dateRegionKey = hash_hmac('sha256', $matches[2], $dateKey, true);
         $dateRegionServiceKey = hash_hmac('sha256', 's3', $dateRegionKey, true);
         $signingKey = hash_hmac('sha256', 'aws4_request', $dateRegionServiceKey, true);
-
         return hash_hmac('sha256', $stringToSign, $signingKey);
     }
 
     function signV4RestRequest($rawStringToSign) {
         global $clientPrivateKey;
-
         $pattern = "/.+\\n.+\\n(\\d+)\/(.+)\/s3\/aws4_request\\n(.+)/s";
         preg_match($pattern, $rawStringToSign, $matches);
-
         $hashedCanonicalRequest = hash('sha256', $matches[3]);
         $stringToSign = preg_replace("/^(.+)\/s3\/aws4_request\\n.+$/s", '$1/s3/aws4_request'."\n".$hashedCanonicalRequest, $rawStringToSign);
-
         $dateKey = hash_hmac('sha256', $matches[1], 'AWS4' . $clientPrivateKey, true);
         $dateRegionKey = hash_hmac('sha256', $matches[2], $dateKey, true);
         $dateRegionServiceKey = hash_hmac('sha256', 's3', $dateRegionKey, true);
         $signingKey = hash_hmac('sha256', 'aws4_request', $dateRegionServiceKey, true);
-
         return hash_hmac('sha256', $stringToSign, $signingKey);
     }
 
     function verifyFileInS3($includeThumbnail) {
         global $expectedMaxSize;
-
         $bucket = $_REQUEST["bucket"];
         $key = $_REQUEST["key"];
-    	echo("MAX SIZE: " . $expectedMaxSize ."\n\n");
-            echo("ACTUAL SIZE: " . getObjectSize($bucket, $key) ."\n\n"); 
-       if (isset($expectedMaxSize) && getObjectSize($bucket, $key) > $expectedMaxSize) {
+        if (isset($expectedMaxSize) && getObjectSize($bucket, $key) > $expectedMaxSize) {
             header("HTTP/1.0 500 Internal Server Error");
             deleteObject();
             echo json_encode(array("error" => "File is too big!", "preventRetry" => true));
         }
         else {
             $link = getTempLink($bucket, $key);
-    	    echo("GOT TMP LINK -> $link\n\n");
             $response = array("tempLink" => $link);
-
             if ($includeThumbnail) {
                 $response["thumbnailUrl"] = $link;
             }
             echo json_encode($response);
-	    return $link;
+            return $link;
         }
     }
 
@@ -287,34 +236,29 @@ $video->save($output_format, $saveFile);
         $client = getS3Client();
         $url = "{$bucket}/{$key}";
         $request = $client->get($url);
-
         return $client->createPresignedUrl($request, '+24 hours');
     }
 
     function getObjectSize($bucket, $key) {
-    try {    
-            echo("BUCKET: " .$bucket . "\n\n");
-            echo("KEY: " .$key . "\n\n");
-    	$objInfo = getS3Client()->headObject(array(
-                'Bucket' => $bucket,
-                'Key' => $key
-            ));
-    } catch (Exception $e) {
-      echo json_encode(array("error" => "$e"));
-    }
+        try {    
+        	$objInfo = getS3Client()->headObject(array(
+                    'Bucket' => $bucket,
+                    'Key' => $key
+                ));
+        } catch (Exception $e) {
+          echo json_encode(array("error" => "$e"));
+        }
         return $objInfo['ContentLength'];
     }
     function isFileViewableImage($filename) {
         $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
         $viewableExtensions = array("jpeg", "jpg", "gif", "png");
-
         return in_array($ext, $viewableExtensions);
     }
     function shouldIncludeThumbnail() {
         $filename = $_REQUEST["name"];
         $isPreviewCapable = $_REQUEST["isBrowserPreviewCapable"] == "true";
         $isFileViewableImage = isFileViewableImage($filename);
-
         return !$isPreviewCapable && $isFileViewableImage;
     }
 ?>
