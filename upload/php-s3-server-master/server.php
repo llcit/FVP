@@ -24,31 +24,34 @@
     else if ($method == 'POST') {
         handleCorsRequest();
         if (isset($_REQUEST["success"])) {
-		
-        $linkPromise = new Promise();
-		$audioPromise = new Promise();
-		$transcriptPromise = new Promise();
-
-		$linkPromise
-			->then(function ($includeThumb) use ($audioPromise) {
-				echo "\n\nlinkPromise, expecting shouldIncludeThumbnail() :  $includeThumb\n\n";
-				$tmpLink = verifyFileInS3(shouldIncludeThumbnail());
-				return $tmpLink;
-			})
-            ->then(function ($tmpLink) use ($transcriptPromise) {
-                echo "\n\audioPromise, expecting tmpLink :  $tmpLink\n\n";
-                $audioFile = $audioFile = ripAudio($tmpLink,$_REQUEST['key']);
-                return $audioFile;
+            $linkPromise = new Promise();
+    		$audioPromise = new Promise();
+    		$transcriptPromise = new Promise();
+            $confirmPromise = new Promise();
+    		$linkPromise
+    			->then(function () use ($audioPromise) {
+    				$tmpLink = verifyFileInS3();
+                    echo "\n\nout - tmpLink :  $tmpLink\n\n";
+    				return $tmpLink;
+    			})
+                ->then(function ($tmpLink) use ($transcriptPromise) {
+                    echo "\n\audioPromise, expecting tmpLink :  $tmpLink\n\n";
+                    $audioFile = $audioFile = ripAudio($tmpLink,$_REQUEST['key']);
+                    return $audioFile;
+                })
+    			->then(function ($audioFile use ($confirmPromise)) {
+    				echo "\n\ntranscriptPromise, expecting audioFile :  $audioFile\n\n";
+    			})
+                ->then(function () {
+                    confirmUpload($tmpLink,shouldIncludeThumbnail());
             })
-			->then(function ($audioFile) {
-				echo "\n\ntranscriptPromise, expecting audioFile :  $audioFile\n\n";
-			});
-        $linkPromise->resolve(shouldIncludeThumbnail());
-		$audioPromise->resolve($tmpLink);
-		$transcriptPromise->resolve('caption');
-            //$audioFile = ripAudio($tmpLink,$_REQUEST['key']);
-            //echo("\n\nTAINT: \n\n$audioFile\n\n");
-            //$transcript = trancscribe($audioFile);
+            $linkPromise->resolve();
+    		$audioPromise->resolve($tmpLink);
+    		$transcriptPromise->resolve('caption');
+            $confirmPromise->resolve();
+                //$audioFile = ripAudio($tmpLink,$_REQUEST['key']);
+                //echo("\n\nTAINT: \n\n$audioFile\n\n");
+                //$transcript = trancscribe($audioFile);
         }
         else {
             signRequest();
@@ -240,7 +243,7 @@
         return hash_hmac('sha256', $stringToSign, $signingKey);
     }
 
-    function verifyFileInS3($includeThumbnail) {
+    function verifyFileInS3() {
         global $expectedMaxSize;
         $bucket = $_REQUEST["bucket"];
         $key = $_REQUEST["key"];
@@ -251,13 +254,15 @@
         }
         else {
             $link = getTempLink($bucket, $key);
-            $response = array("tempLink" => $link);
-            if ($includeThumbnail) {
-                $response["thumbnailUrl"] = $link;
-            }
-            echo json_encode($response);
             return $link;
         }
+    }
+    function confirmUpload($link,$includeThumbnail) {
+        $response = array("tempLink" => $link);
+        if ($includeThumbnail) {
+            $response["thumbnailUrl"] = $link;
+        }
+        echo json_encode($response);
     }
 
     // Provide a time-bombed public link to the file.
