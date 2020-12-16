@@ -25,6 +25,6 @@ upload/package-lock.json
 upload/php-s3-server-master/vendor
 upload/php-s3-server-master/composer.lock
 upload/php-s3-server-master/composer.json
-upload/php-s3-server-master/tmpAudio
+upload/php-s3-server-master/tmpAudio/
 upload/php-s3-server-master/progress/
 
