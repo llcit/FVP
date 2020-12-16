@@ -31,17 +31,17 @@
 
 		$linkPromise
 			->then(function ($includeThumb) use ($audioPromise) {
-				echo "\n\nFIRST :  $tmpLink\n\n";
+				echo "\n\nlinkPromise, expecting shouldIncludeThumbnail() :  $includeThumb\n\n";
 				$tmpLink = verifyFileInS3(shouldIncludeThumbnail());
 				return $tmpLink;
 			})
             ->then(function ($tmpLink) use ($transcriptPromise) {
-                echo "\n\nSECOND :  $tmpLink\n\n";
-                $audioFile = ripAudiox();
+                echo "\n\audioPromise, expecting tmpLink :  $tmpLink\n\n";
+                $audioFile = $audioFile = ripAudio($tmpLink,$_REQUEST['key']);
                 return $audioFile;
             })
 			->then(function ($audioFile) {
-				echo "\n\nTHIRD :  $audioFile\n\n";
+				echo "\n\ntranscriptPromise, expecting audioFile :  $audioFile\n\n";
 			});
         $linkPromise->resolve(shouldIncludeThumbnail());
 		$audioPromise->resolve($tmpLink);
@@ -53,12 +53,6 @@
         else {
             signRequest();
         }
-    }
-    
-    function ripAudiox() {
-
-        sleep(5);
-        return 'foo';
     }
     function transcribe($audioFile) {
         echo("\n\nAUDIO FILE: \n\n$audioFile\n\n");
@@ -95,7 +89,7 @@
         $saveFile = addslashes($output_dir . $key . "." . $audio_extension);
         echo("\n\nSAVE FILE: \n\n$saveFile\n\n");
         $video->save($output_format, $saveFile); 
-        return $saveFile;
+        return $key . "." . $audio_extension;
     } 
     function getRequestMethod() {
         global $HTTP_RAW_POST_DATA;
