@@ -44,7 +44,7 @@
     			})
                 ->then(function () {
                     confirmUpload($tmpLink,shouldIncludeThumbnail());
-            })
+                })
             $linkPromise->resolve();
     		$audioPromise->resolve($tmpLink);
     		$transcriptPromise->resolve('caption');
