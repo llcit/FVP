@@ -3,6 +3,7 @@
     ini_set('memory_limit', '-1');
     require './vendor/autoload.php';
     use Aws\S3\S3Client;
+	 use GuzzleHttp\Promise\Promise;
     $SETTINGS = parse_ini_file(__DIR__."/../../inc/settings.ini");
     $clientPrivateKey = $SETTINGS['AWS_CLIENT_SECRET_KEY'];
     $serverPublicKey = $SETTINGS['AWS_SERVER_PUBLIC_KEY'];
@@ -23,10 +24,37 @@
     else if ($method == 'POST') {
         handleCorsRequest();
         if (isset($_REQUEST["success"])) {
-            $tmpLink = verifyFileInS3(shouldIncludeThumbnail());
-            $audioFile = ripAudio($tmpLink,$_REQUEST['key']);
-            echo("\n\nTAINT: \n\n$audioFile\n\n");
-            $transcript = trancscribe($audioFile);
+		$tmpLink = verifyFileInS3(shouldIncludeThumbnail());
+
+		$audioPromise = new Promise();
+		$transcriptPromise = new Promise();
+
+		$audioPromise
+			->then(function ($tmpLink) use ($transcriptPromise) {
+				echo "\n\nFIRST :  $tmpLink\n\n";
+				$foo = ripAudiox();
+				return $foo;
+			})
+			->then(function ($audioFile) {
+				echo "\n\nSECOND :  $audioFile\n\n";
+			});
+
+		// Triggers the first callback and outputs "A"
+		$tmpLink = 'http://aws.com';
+		$audioPromise->resolve($tmpLink);
+		// Triggers the second callback and outputs "B"
+		$transcriptPromise->resolve('caption');
+
+		function ripAudiox() {
+
+				sleep(5);
+				return 'foo';
+		}
+
+
+            //$audioFile = ripAudio($tmpLink,$_REQUEST['key']);
+            //echo("\n\nTAINT: \n\n$audioFile\n\n");
+            //$transcript = trancscribe($audioFile);
         }
         else {
             signRequest();

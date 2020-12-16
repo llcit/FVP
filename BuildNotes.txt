@@ -18,7 +18,16 @@ EC2
 		- Secret Access Key: 23WbtiAgyy4zzEZM+pgdfOin+o8B3V3ngTCFMuar
 
 
+FFMPEG
 
+	sudo apt-get install ffmpeg
+	./upload/php-s3-server-master
+		composer require php-ffmpeg/php-ffmpeg
+
+ASYNC FUNCTIONALITY FOR PHP
+
+	./upload/php-s3-server-master
+		composer require spatie/async
 
 SES
 	SMTP Credentials: 
