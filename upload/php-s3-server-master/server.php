@@ -3,7 +3,7 @@
     ini_set('memory_limit', '-1');
     require './vendor/autoload.php';
     use Aws\S3\S3Client;
-	 use GuzzleHttp\Promise\Promise;
+	use GuzzleHttp\Promise\Promise;
     $SETTINGS = parse_ini_file(__DIR__."/../../inc/settings.ini");
     $clientPrivateKey = $SETTINGS['AWS_CLIENT_SECRET_KEY'];
     $serverPublicKey = $SETTINGS['AWS_SERVER_PUBLIC_KEY'];
