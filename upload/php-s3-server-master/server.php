@@ -58,7 +58,6 @@
         echo("\n\nAUDIO FILE: \n\n$audioFile\n\n");
     }
     function ripAudio($tmpLink,$key) {
-        echo("\n\nKEY: $key\n\n");
         $audio_extension = 'flac';
         $video_extension = 'mp4';
         $output_dir = './tmpAudio/';
@@ -70,9 +69,9 @@
             'ffmpeg.threads'   => 1   // the number of threads that FFMpeg should use
         ]);
         $ffmpeg->getFFMpegDriver()->listen(new \Alchemy\BinaryDriver\Listeners\DebugListener());
-        $ffmpeg->getFFMpegDriver()->on('debug', function ($message) {       
-        echo "MSG: " . $message."\n";
-        });
+        /* $ffmpeg->getFFMpegDriver()->on('debug', function ($message) {       
+            echo "MSG: " . $message."\n";
+        }); */
         $video = $ffmpeg->open($tmpLink);
         if ($audio_extension == 'mp3') {
         	$output_format = new FFMpeg\Format\Audio\Mp3(); 
@@ -87,7 +86,6 @@
             file_put_contents('./progress/'. $key . '.txt', $percentage);
         }); 
         $saveFile = addslashes($output_dir . $key . "." . $audio_extension);
-        echo("\n\nSAVE FILE: \n\n$saveFile\n\n");
         $video->save($output_format, $saveFile); 
         return $key . "." . $audio_extension;
     } 
