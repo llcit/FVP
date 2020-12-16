@@ -24,34 +24,28 @@
     else if ($method == 'POST') {
         handleCorsRequest();
         if (isset($_REQUEST["success"])) {
-		$tmpLink = verifyFileInS3(shouldIncludeThumbnail());
-
+		
+        $linkPromise = new Promise();
 		$audioPromise = new Promise();
 		$transcriptPromise = new Promise();
 
-		$audioPromise
-			->then(function ($tmpLink) use ($transcriptPromise) {
+		$linkPromise
+			->then(function ($includeThumb) use ($audioPromise) {
 				echo "\n\nFIRST :  $tmpLink\n\n";
-				$foo = ripAudiox();
-				return $foo;
+				$tmpLink = verifyFileInS3(shouldIncludeThumbnail());
+				return $tmpLink;
 			})
+            ->then(function ($tmpLink) use ($transcriptPromise) {
+                echo "\n\nSECOND :  $tmpLink\n\n";
+                $audioFile = ripAudiox();
+                return $audioFile;
+            })
 			->then(function ($audioFile) {
-				echo "\n\nSECOND :  $audioFile\n\n";
+				echo "\n\nTHIRD :  $audioFile\n\n";
 			});
-
-		// Triggers the first callback and outputs "A"
-		$tmpLink = 'http://aws.com';
+        $linkPromise->resolve(shouldIncludeThumbnail());
 		$audioPromise->resolve($tmpLink);
-		// Triggers the second callback and outputs "B"
 		$transcriptPromise->resolve('caption');
-
-		function ripAudiox() {
-
-				sleep(5);
-				return 'foo';
-		}
-
-
             //$audioFile = ripAudio($tmpLink,$_REQUEST['key']);
             //echo("\n\nTAINT: \n\n$audioFile\n\n");
             //$transcript = trancscribe($audioFile);
@@ -59,6 +53,12 @@
         else {
             signRequest();
         }
+    }
+    
+    function ripAudiox() {
+
+        sleep(5);
+        return 'foo';
     }
     function transcribe($audioFile) {
         echo("\n\nAUDIO FILE: \n\n$audioFile\n\n");
