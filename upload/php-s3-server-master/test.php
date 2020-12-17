@@ -2,12 +2,45 @@
 
 require './vendor/autoload.php';
 
-$key = "6ee47445-8cd2-4aea-be03-b0da492e21a3.mov";
- preg_match("/\.(mov|mp3|m4a)/",$key,$matches);
- $video_extension = $matches[1];
- echo ("\n\nRIP video_extension: $video_extension\n\n");
- die();
- /*
+ripAudio("https://s3.amazonaws.com/flagship-video-project/f460f441-56ab-45d6-b6ad-e42c7a18c7b7.mov?AWSAccessKeyId=AKIA5GGQGDXJ7N57DNHH&Expires=1608301812&Signature=kf8aAQuQulWK%2BTwXKNJJCBzgB%2Bw%3D","f460f441-56ab-45d6-b6ad-e42c7a18c7b7.mov");
+function ripAudio($tmpLink,$key) {
+
+
+        //start here
+
+        $audio_extension = 'flac';
+        preg_match("/\.(mov|mp3|m4a)/",$key,$matches);
+        $video_extension = $matches[1];
+        echo ("\n\nRIP video_extension: $video_extension\n\n");
+        $output_dir = './tmpAudio/';
+        $in_file = '';
+        $ffmpeg = FFMpeg\FFMpeg::create([
+            'ffmpeg.binaries'  => '/usr/bin/ffmpeg', // the path to the FFMpeg binary
+            'ffprobe.binaries' => '/usr/bin/ffprobe', // the path to the FFProbe binary
+            'timeout' => 3600, // the timeout for the underlying process
+            'ffmpeg.threads'   => 1   // the number of threads that FFMpeg should use
+        ]);
+        $ffmpeg->getFFMpegDriver()->listen(new \Alchemy\BinaryDriver\Listeners\DebugListener());
+         $ffmpeg->getFFMpegDriver()->on('debug', function ($message) {       
+            echo "MSG: " . $message."\n";
+        }); 
+        $video = $ffmpeg->open($tmpLink);
+        if ($audio_extension == 'mp3') {
+            $output_format = new FFMpeg\Format\Audio\Mp3(); 
+            $output_format->setAudioCodec("libmp3lame");
+        }
+        if ($audio_extension == 'flac') {
+            $output_format = new FFMpeg\Format\Audio\Flac();  
+            $output_format->setAudioChannels(2);
+            $output_format->setAudioKiloBitrate(256);
+        }
+        $output_format->on('progress', function ($video, $format, $percentage) use($key) {
+            file_put_contents('./progress/'. $key . '.txt', $percentage);
+        }); 
+        $saveFile = addslashes($output_dir . $key . "." . $audio_extension);
+        $video->save($output_format, $saveFile)
+        ->then( function() {return $key . "." . $audio_extension;}); 
+    } 
 $client = new \GuzzleHttp\Client();
 
 $req = $client->createRequest('GET', 'http://www.google.com', array(
