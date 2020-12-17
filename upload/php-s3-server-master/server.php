@@ -47,12 +47,12 @@
             })
             ->then(function ($audioFile) use ($confirmPromise) {
                 echo "\n\ntranscriptPromise, expecting audioFile :  $audioFile\n\n";
-                transcribe_Watson($audioFile);
+                transcribe($audioFile);
                 return true;
             })
             ->then(function ($captionData) use ($writeCaptionPromise) {
-                echo "\n\ntranscriptPromise, expecting captionData :  'file' : ".$captionData['response']."\n\n";
-                echo "\n\ntranscriptPromise, expecting captionData :  'file' : ".$captionData['response']."\n\n";
+                echo "\n\nwriteFilePromise, expecting captionData :  'file' : ".$captionData['response']."\n\n";
+                echo "\n\nwriteFilePromise, expecting captionData :  'file' : ".$captionData['response']."\n\n";
                 writeVTTFile($captionData['file'],$captionData['response']);
                 return true;
             })
@@ -63,7 +63,7 @@
             $audioPromise->wait();
             $transcribePromise->wait();
             $writeCaptionPromise->wait();
-            $confirmPromise->wait();
+            $confirmPromise;
         }
         else {
             signRequest();
@@ -104,7 +104,7 @@
         curl_setopt($ch, CURLOPT_POST,1);
         curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_POSTFIELDS,file_get_contents("tmpAudio/" . $audioFile));
+        curl_setopt($ch, CURLOPT_POSTFIELDS,file_get_contents("./tmpAudio/" . $audioFile));
         $response = curl_exec($ch);
         $status_code = curl_getinfo($ch,CURLINFO_HTTP_CODE);
         if (!in_array($status_code, [200,201])) {
