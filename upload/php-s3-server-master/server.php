@@ -101,7 +101,7 @@
         }); 
         $saveFile = addslashes($output_dir . $key . "." . $audio_extension);
         $video->save($output_format, $saveFile); 
-        //return $key . "." . $audio_extension;
+        return $key . "." . $audio_extension;
     } 
     function getRequestMethod() {
         global $HTTP_RAW_POST_DATA;
