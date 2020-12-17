@@ -66,6 +66,8 @@
         echo("\n\nAUDIO FILE: \n\n$audioFile\n\n");
     }
     function ripAudio($tmpLink,$key) {
+        echo ("\n\nRIP tmpLink: $tmpLink\n\n");
+        echo ("\n\nRIP key: $key\n\n");
         $audio_extension = 'flac';
         $video_extension = 'mp4';
         $output_dir = './tmpAudio/';
