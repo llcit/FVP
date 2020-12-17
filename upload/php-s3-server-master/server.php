@@ -28,8 +28,13 @@
             $linkPromise = new Promise();
             $audioPromise = new Promise();
             $transcribePromise = new Promise();
-            $confirmPromise = new Promise();
             $writeCaptionPromise = new Promise();
+            $confirmPromise = new Promise();
+            $linkPromise->resolve(1);
+            $audioPromise->wait();
+            $transcribePromise->wait();
+            $writeCaptionPromise->wait();
+            $confirmPromise->wait();
             $linkPromise
             ->then(function ($init) use ($audioPromise) {
                 global $tmpLink_global;
@@ -63,14 +68,9 @@
                 return $captionFile;
             })
             ->then(function ($confirm) {
-                $confirm = confirmUpload($tmpLink_global,shouldIncludeThumbnail());
-                return $confirm;
+                $confirmation = confirmUpload($tmpLink_global,shouldIncludeThumbnail());
+                return $confirmation;
             });
-            $linkPromise->resolve(1);
-            $audioPromise->wait();
-            $transcribePromise->wait();
-            $writeCaptionPromise->wait();
-            $confirmPromise->wait();
         }
         else {
             signRequest();
