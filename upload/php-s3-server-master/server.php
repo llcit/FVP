@@ -52,7 +52,7 @@
             })
             ->then(function ($captionData) use ($writeCaptionPromise) {
                 echo "\n\ntranscriptPromise, expecting audioFile :  $audioFile\n\n";
-                writeVTTFile($captionData['file'],$captionData'response']);
+                writeVTTFile($captionData['file'],$captionData['response']);
                 return true;
             })
             ->then(function ($confirm) {
