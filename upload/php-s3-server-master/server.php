@@ -29,7 +29,7 @@
             $transcriptPromise = new Promise();
             $confirmPromise = new Promise();
             $linkPromise
-            ->then(function ($vrai) use ($audioPromise) {
+            ->then(function ($init) use ($audioPromise) {
                 $tmpLink = verifyFileInS3();
                 echo "\n\nout - tmpLink :  $tmpLink\n\n";
                 return $tmpLink;
@@ -42,13 +42,13 @@
             ->then(function ($audioFile) use ($confirmPromise) {
                 echo "\n\ntranscriptPromise, expecting audioFile :  $audioFile\n\n";
             })
-            ->then(function () {
+            ->then(function ($confirm) {
                 confirmUpload($tmpLink,shouldIncludeThumbnail());
             })
             $linkPromise->resolve(1);
             $audioPromise->resolve($tmpLink);
             $transcriptPromise->resolve('caption');
-            $confirmPromise->resolve();
+            $confirmPromise->resolve(1);
             //$audioFile = ripAudio($tmpLink,$_REQUEST['key']);
             //echo("\n\nTAINT: \n\n$audioFile\n\n");
             //$transcript = trancscribe($audioFile);
