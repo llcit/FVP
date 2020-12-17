@@ -108,15 +108,15 @@
         if ($response) {
             echo ("done!" . "<br>");
             $captionFile = preg_replace("/\.$audio_extension/",".vtt", $audioFile);
-            writeVTTFile($response,$captionFile);
+            $captionFileConfirm = writeVTTFile($response,$captionFile);
+            return $captionFileConfirm;
         } 
         else {
             return true;
         }
     }  
-    function writeVTTFile($data,$audioFile) {
-        $captionFile = preg_replace("/\.$extension/",".vtt", $file);
-        $handle = fopen("./raw_captions/".$captionFile, 'w') or die('Cannot open file: '.$captionFile);
+    function writeVTTFile($data,$captionFile) {
+        $handle = fopen("./tmpVTT/".$captionFile, 'w') or die('Cannot open file: '.$captionFile);
         $count = 0;
         $line = "";
         $raw_transcript = json_decode($data);
@@ -137,11 +137,10 @@
         }
         fwrite($handle, $line);
         return $captionFile;
-        //var_dump($rawData);
     } 
 
     function transcribe_Google($audioFile,$language) {
-
+        return true;
     }
 
 
