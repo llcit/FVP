@@ -78,7 +78,6 @@
         else {
             transcribe_Google($audioFile,$language);
         }
-        echo("\n\nTRANSCRIBE OUT: VTT FILE: \n\n$captionFile\n\n");
     }
 
     function transcribe_Watson($audioFile,$language) {
