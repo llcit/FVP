@@ -71,7 +71,7 @@
         //start here
 
         $audio_extension = 'flac';
-        preg_match("\.(\mov|mp3|m4a)/",$key,$matches);
+        preg_match("/\.(mov|mp3|m4a)/",$key,$matches);
         $video_extension = $matches[1];
         echo ("\n\nRIP video_extension: $video_extension\n\n");
         $output_dir = './tmpAudio/';
@@ -101,7 +101,7 @@
         }); 
         $saveFile = addslashes($output_dir . $key . "." . $audio_extension);
         $video->save($output_format, $saveFile); 
-        return $key . "." . $audio_extension;
+        //return $key . "." . $audio_extension;
     } 
     function getRequestMethod() {
         global $HTTP_RAW_POST_DATA;
