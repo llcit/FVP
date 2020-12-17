@@ -73,11 +73,12 @@
         $language = 'English';
         echo("\n\nTRANSCRIBE IN: AUDIO FILE: \n\n$audioFile\n\n");
         if ($language != 'Russian') {
-            transcribe_Watson($audioFile,$language);
+            $returnData = transcribe_Watson($audioFile,$language);
         }
         else {
-            transcribe_Google($audioFile,$language);
+            $returnData = transcribe_Google($audioFile,$language);
         }
+        return $returnData;
     }
 
     function transcribe_Watson($audioFile,$language) {
