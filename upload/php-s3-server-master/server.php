@@ -46,6 +46,7 @@
             })
             ->then(function ($audioFile) use ($confirmPromise) {
                 echo "\n\ntranscriptPromise, expecting audioFile :  $audioFile\n\n";
+                transcribe($audioFile);
             })
             ->then(function ($confirm) {
                 confirmUpload($tmpLink_global,shouldIncludeThumbnail());
@@ -63,11 +64,90 @@
         }
     }
     function transcribe($audioFile) {
-        echo("\n\nAUDIO FILE: \n\n$audioFile\n\n");
+        $language = 'English';
+        echo("\n\nTRANSCRIBE IN: AUDIO FILE: \n\n$audioFile\n\n");
+        if ($language != 'Russian') {
+            transcribe_Watson($audioFile,$language);
+        }
+        else {
+            transcribe_Google($audioFile,$language)
+        }
+        echo("\n\nTRANSCRIBE OUT: VTT FILE: \n\n$captionFile\n\n");
     }
+
+    function transcribe_Watson($audioFile,$language) {
+        global $SETTINGS;
+        $audio_extension = $SETTINGS['tmp_audio_extension'];
+        $models = [
+            'Arabic' => 'ar-AR_BroadbandModel',
+            'Chinese' => 'zh-CN_BroadbandModel',
+            'English' => 'en-US_BroadbandModel',
+            'Korean' => 'ko-KR_BroadbandModel',
+            'Portuguese' => 'pt-BR_BroadbandModel'
+        ];
+        $url = $SETTINGS['WATSON_BASE_URL']."/".$models[$language].
+               "/recognize?timestamps=true";
+        echo("\n\nWatson URL: $url\n\n");
+        $username = $SETTINGS['WATSON_USER'];
+        $password = $SETTINGS['WATSON_PWD'];
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        $headers = ["Content-Type: audio/$audio_extension"];
+        curl_setopt($ch, CURLOPT_POST,1);
+        curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_POSTFIELDS,file_get_contents($dir . $file));
+        $response = curl_exec($ch);
+        $status_code = curl_getinfo($ch,CURLINFO_HTTP_CODE);
+        if (!in_array($status_code, [200,201])) {
+            throw new Exception("GOT $status_code FROM $url:\n$response");
+        }
+        if ($response) {
+            echo ("done!" . "<br>");
+            $captionFile = preg_replace("/\.$audio_extension/",".vtt", $audioFile);
+            writeVTTFile($response,$captionFile);
+        } 
+        else {
+            return true;
+        }
+    }  
+    function writeVTTFile($data,$audioFile) {
+        $captionFile = preg_replace("/\.$extension/",".vtt", $file);
+        $handle = fopen("./raw_captions/".$captionFile, 'w') or die('Cannot open file: '.$captionFile);
+        $count = 0;
+        $line = "";
+        $raw_transcript = json_decode($data);
+        foreach($raw_transcript->results as $result) {
+            $count++;
+            $start = time_format($result->alternatives[0]->timestamps[0][1]);
+            $end = time_format($result->alternatives[0]->timestamps[count($result->alternatives[0]->timestamps)-1][2]);
+            if ($textType == 'captions') {
+                $line .= "$count\r\n";
+                $line .=  $start . " --> " . $end ."\r\n";
+                $line .= $result->alternatives[0]->transcript  ."\r\n\r\n";
+                print "--->" . $result->alternatives[0]->transcript ."\n";
+            }
+            else if ($textType == 'paragraph') {
+                $line .= $result->alternatives[0]->transcript ." ";
+            }
+            
+        }
+        fwrite($handle, $line);
+
+        var_dump($rawData);
+    } 
+
+    function transcribe_Google($audioFile,$language) {
+
+    }
+
+
     function ripAudio($tmpLink,$key) {
-        $audio_extension = 'flac';
-        preg_match("/(.*)\.(mov|mp3|m4a)/",$key,$matches);
+        global $SETTINGS;
+        $audio_extension = $SETTINGS['tmp_audio_extension'];
+        preg_match("/(.*)\.(mov|mp4|m4a)/",$key,$matches);
         $file_name = $matches[1];
         $video_extension = $matches[2];
         echo ("\n\nRIP file_name: $file_name\n\n");
@@ -96,9 +176,9 @@
         $output_format->on('progress', function ($video, $format, $percentage) use($key) {
             file_put_contents('./progress/'. $key . '.txt', $percentage);
         }); 
-        $saveFile = addslashes($output_dir . $key . "." . $audio_extension);
+        $saveFile = addslashes($output_dir . $file_name . "." . $audio_extension);
         $video->save($output_format, $saveFile); 
-        return $key . "." . $audio_extension;
+        return $file_name . "." . $audio_extension;
     } 
     function getRequestMethod() {
         global $HTTP_RAW_POST_DATA;
