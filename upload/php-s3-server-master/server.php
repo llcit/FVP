@@ -66,16 +66,13 @@
         echo("\n\nAUDIO FILE: \n\n$audioFile\n\n");
     }
     function ripAudio($tmpLink,$key) {
-
-
-        //start here
-
         $audio_extension = 'flac';
-        preg_match("/\.(mov|mp3|m4a)/",$key,$matches);
-        $video_extension = $matches[1];
+        preg_match("/(.*)\.(mov|mp3|m4a)/",$key,$matches);
+        $file_name = $matches[1];
+        $video_extension = $matches[2];
+        echo ("\n\nRIP file_name: $file_name\n\n");
         echo ("\n\nRIP video_extension: $video_extension\n\n");
         $output_dir = './tmpAudio/';
-        $in_file = '';
         $ffmpeg = FFMpeg\FFMpeg::create([
             'ffmpeg.binaries'  => '/usr/bin/ffmpeg', // the path to the FFMpeg binary
             'ffprobe.binaries' => '/usr/bin/ffprobe', // the path to the FFProbe binary
