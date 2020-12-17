@@ -30,11 +30,12 @@
             $transcribePromise = new Promise();
             $writeCaptionPromise = new Promise();
             $confirmPromise = new Promise();
-            $linkPromise->resolve(1);
+            $linkPromise->wait();
             $audioPromise->wait();
             $transcribePromise->wait();
             $writeCaptionPromise->wait();
-            //$confirmPromise->wait();
+            $confirmPromise->wait();
+            $linkPromise->resolve(1);
             $linkPromise
             ->then(function ($init) use ($audioPromise) {
                 global $tmpLink_global;
@@ -61,16 +62,16 @@
                 }
                 return $response;
             })
-            ->then(function ($captionData)  {
+            ->then(function ($captionData) use ($confirmPromise) {
                 echo "\n\nwriteFilePromise, expecting captionData :  'file' : -> ".$captionData['file']."\n\n";
                 echo "\n\nwriteFilePromise, expecting captionData :  'response' : -> ".$captionData['response']."\n\n";
                 $captionFile = writeVTTFile($captionData['file'],$captionData['response']);
                 return $captionFile;
-            });/*
+            })
             ->then(function ($confirm) {
                 $confirmation = confirmUpload($tmpLink_global,shouldIncludeThumbnail());
                 return $confirmation;
-            });*/
+            });
         }
         else {
             signRequest();
