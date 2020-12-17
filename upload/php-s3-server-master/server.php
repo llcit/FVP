@@ -68,8 +68,11 @@
     function ripAudio($tmpLink,$key) {
         echo ("\n\nRIP tmpLink: $tmpLink\n\n");
         echo ("\n\nRIP key: $key\n\n");
+
+        //start here
+
         $audio_extension = 'flac';
-        $video_extension = 'mp4';
+        $video_extension = 'mov';
         $output_dir = './tmpAudio/';
         $in_file = '';
         $ffmpeg = FFMpeg\FFMpeg::create([
