@@ -25,33 +25,33 @@
         handleCorsRequest();
         if (isset($_REQUEST["success"])) {
             $linkPromise = new Promise();
-    		$audioPromise = new Promise();
-    		$transcriptPromise = new Promise();
+            $audioPromise = new Promise();
+            $transcriptPromise = new Promise();
             $confirmPromise = new Promise();
-    		$linkPromise
-    			->then(function () use ($audioPromise) {
-    				$tmpLink = verifyFileInS3();
-                    echo "\n\nout - tmpLink :  $tmpLink\n\n";
-    				return $tmpLink;
-    			})
-                ->then(function ($tmpLink) use ($transcriptPromise) {
-                    echo "\n\audioPromise, expecting tmpLink :  $tmpLink\n\n";
-                    $audioFile = $audioFile = ripAudio($tmpLink,$_REQUEST['key']);
-                    return $audioFile;
-                })
-    			->then(function ($audioFile use ($confirmPromise)) {
-    				echo "\n\ntranscriptPromise, expecting audioFile :  $audioFile\n\n";
-    			})
-                ->then(function () {
-                    confirmUpload($tmpLink,shouldIncludeThumbnail());
-                })
+            $linkPromise
+            ->then(function () use ($audioPromise) {
+                $tmpLink = verifyFileInS3();
+                echo "\n\nout - tmpLink :  $tmpLink\n\n";
+                return $tmpLink;
+            })
+            ->then(function ($tmpLink) use ($transcriptPromise) {
+                echo "\n\audioPromise, expecting tmpLink :  $tmpLink\n\n";
+                $audioFile = ripAudio($tmpLink,$_REQUEST['key']);
+                return $audioFile;
+            })
+            ->then(function ($audioFile) use ($confirmPromise) {
+                echo "\n\ntranscriptPromise, expecting audioFile :  $audioFile\n\n";
+            })
+            ->then(function () {
+                confirmUpload($tmpLink,shouldIncludeThumbnail());
+            })
             $linkPromise->resolve();
-    		$audioPromise->resolve($tmpLink);
-    		$transcriptPromise->resolve('caption');
+            $audioPromise->resolve($tmpLink);
+            $transcriptPromise->resolve('caption');
             $confirmPromise->resolve();
-                //$audioFile = ripAudio($tmpLink,$_REQUEST['key']);
-                //echo("\n\nTAINT: \n\n$audioFile\n\n");
-                //$transcript = trancscribe($audioFile);
+            //$audioFile = ripAudio($tmpLink,$_REQUEST['key']);
+            //echo("\n\nTAINT: \n\n$audioFile\n\n");
+            //$transcript = trancscribe($audioFile);
         }
         else {
             signRequest();
