@@ -12,6 +12,7 @@
     $expectedHostName = $SETTINGS['S3_HOST_NAME']; // v4-only
     $expectedMaxSize = (isset($SETTINGS['S3_MAX_FILE_SIZE']) ? $SETTINGS['S3_MAX_FILE_SIZE'] : null);
     $method = getRequestMethod();
+    $tmpLink_global = '';
 
     if ($method == 'OPTIONS') {
         handlePreflight();
@@ -30,7 +31,9 @@
             $confirmPromise = new Promise();
             $linkPromise
             ->then(function ($init) use ($audioPromise) {
+                global $tmpLink_global;
                 $tmpLink = verifyFileInS3();
+                $tmpLink_global = $tmpLink;
                 echo "\n\nout - tmpLink :  $tmpLink\n\n";
                 return $tmpLink;
             })
@@ -45,7 +48,7 @@
                 echo "\n\ntranscriptPromise, expecting audioFile :  $audioFile\n\n";
             })
             ->then(function ($confirm) {
-                confirmUpload($tmpLink,shouldIncludeThumbnail());
+                confirmUpload($tmpLink_global,shouldIncludeThumbnail());
             });
             $linkPromise->resolve(1);
             $audioPromise->resolve($tmpLink);
