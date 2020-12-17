@@ -46,15 +46,21 @@
                 return $audioFile;
             })
             ->then(function ($audioFile) use ($confirmPromise) {
-                echo "\n\ntranscriptPromise, expecting audioFile :  $audioFile\n\n";
-                transcribe($audioFile);
-                return true;
+                $language = 'English';
+                echo("\n\nTRANSCRIBE IN: AUDIO FILE: \n\n$audioFile\n\n");
+                if ($language != 'Russian') {
+                    $response = transcribe_Watson($audioFile,$language);
+                }
+                else {
+                    $response = transcribe_Google($audioFile,$language);
+                }
+                return $response;
             })
             ->then(function ($captionData) use ($writeCaptionPromise) {
                 echo "\n\nwriteFilePromise, expecting captionData :  'file' : ".$captionData['response']."\n\n";
                 echo "\n\nwriteFilePromise, expecting captionData :  'file' : ".$captionData['response']."\n\n";
-                writeVTTFile($captionData['file'],$captionData['response']);
-                return true;
+                $captionFile = writeVTTFile($captionData['file'],$captionData['response']);
+                return $captionFile;
             })
             ->then(function ($confirm) {
                 confirmUpload($tmpLink_global,shouldIncludeThumbnail());
@@ -69,18 +75,6 @@
             signRequest();
         }
     }
-    function transcribe($audioFile) {
-        $language = 'English';
-        echo("\n\nTRANSCRIBE IN: AUDIO FILE: \n\n$audioFile\n\n");
-        if ($language != 'Russian') {
-            $returnData = transcribe_Watson($audioFile,$language);
-        }
-        else {
-            $returnData = transcribe_Google($audioFile,$language);
-        }
-        return $returnData;
-    }
-
     function transcribe_Watson($audioFile,$language) {
         global $SETTINGS;
         $audio_extension = $SETTINGS['tmp_audio_extension'];
