@@ -37,6 +37,7 @@
             ->then(function ($tmpLink) use ($transcriptPromise) {
                 echo "\n\audioPromise, expecting tmpLink :  $tmpLink\n\n";
                 $audioFile = ripAudio($tmpLink,$_REQUEST['key']);
+                echo "\n\nout - audioFile :  $audioFile\n\n";
                 return $audioFile;
             })
             ->then(function ($audioFile) use ($confirmPromise) {
