@@ -45,7 +45,7 @@
                 echo "\n\nout - audioFile :  $audioFile\n\n";
                 return $audioFile;
             })
-            ->then(function ($audioFile) use ($confirmPromise) {
+            ->then(function ($audioFile) use ($writeCaptionPromise) {
                 $language = 'English';
                 echo("\n\nTRANSCRIBE IN: AUDIO FILE: \n\n$audioFile\n\n");
                 if ($language != 'Russian') {
@@ -56,7 +56,7 @@
                 }
                 return $response;
             })
-            ->then(function ($captionData) use ($writeCaptionPromise) {
+            ->then(function ($captionData) use ($confirmPromise) {
                 echo "\n\nwriteFilePromise, expecting captionData :  'file' : ".$captionData['response']."\n\n";
                 echo "\n\nwriteFilePromise, expecting captionData :  'file' : ".$captionData['response']."\n\n";
                 $captionFile = writeVTTFile($captionData['file'],$captionData['response']);
