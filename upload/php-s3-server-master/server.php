@@ -74,9 +74,9 @@
             'ffmpeg.threads'   => 1   // the number of threads that FFMpeg should use
         ]);
         $ffmpeg->getFFMpegDriver()->listen(new \Alchemy\BinaryDriver\Listeners\DebugListener());
-        /* $ffmpeg->getFFMpegDriver()->on('debug', function ($message) {       
+         $ffmpeg->getFFMpegDriver()->on('debug', function ($message) {       
             echo "MSG: " . $message."\n";
-        }); */
+        }); 
         $video = $ffmpeg->open($tmpLink);
         if ($audio_extension == 'mp3') {
         	$output_format = new FFMpeg\Format\Audio\Mp3(); 
