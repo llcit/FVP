@@ -27,8 +27,9 @@
         if (isset($_REQUEST["success"])) {
             $linkPromise = new Promise();
             $audioPromise = new Promise();
-            $transcriptPromise = new Promise();
+            $transcribePromise = new Promise();
             $confirmPromise = new Promise();
+            $writeCaptionPromise = new Promise();
             $linkPromise
             ->then(function ($init) use ($audioPromise) {
                 global $tmpLink_global;
@@ -37,7 +38,7 @@
                 echo "\n\nout - tmpLink :  $tmpLink\n\n";
                 return $tmpLink;
             })
-            ->then(function ($tmpLink) use ($transcriptPromise) {
+            ->then(function ($tmpLink) use ($transcribePromise) {
                 echo "\n\naudioPromise, expecting tmpLink :  $tmpLink\n\n";
                 echo "\n\n\$_REQUEST['key']: " . $_REQUEST['key'] . "\n\n";
                 $audioFile = ripAudio($tmpLink,$_REQUEST['key']);
@@ -46,7 +47,12 @@
             })
             ->then(function ($audioFile) use ($confirmPromise) {
                 echo "\n\ntranscriptPromise, expecting audioFile :  $audioFile\n\n";
-                transcribe($audioFile);
+                transcribe_Watson($audioFile);
+                return true;
+            })
+            ->then(function ($captionData) use ($writeCaptionPromise) {
+                echo "\n\ntranscriptPromise, expecting audioFile :  $audioFile\n\n";
+                writeVTTFile($captionData['file'],$captionData'response']);
                 return true;
             })
             ->then(function ($confirm) {
@@ -54,7 +60,8 @@
             });
             $linkPromise->resolve(1);
             $audioPromise->wait();
-            $transcriptPromise->wait();
+            $transcribePromise->wait();
+            $writeCaptionPromise->wait();
             $confirmPromise->wait();
         }
         else {
@@ -105,14 +112,13 @@
         if ($response) {
             echo ("done!" . "<br>");
             $captionFile = preg_replace("/\.$audio_extension/",".vtt", $audioFile);
-            $captionFileConfirm = writeVTTFile($response,$captionFile);
-            return $captionFileConfirm;
+            return ['file'=> $captionFile, 'response'=>$response];
         } 
         else {
-            return true;
+            return false;
         }
     }  
-    function writeVTTFile($data,$captionFile) {
+    function writeVTTFile($captionFile,$data) {
         $handle = fopen("./tmpVtt/".$captionFile, 'w') or die('Cannot open file: '.$captionFile);
         $count = 0;
         $line = "";
