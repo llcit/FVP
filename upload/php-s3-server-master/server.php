@@ -57,19 +57,20 @@
                 return $response;
             })
             ->then(function ($captionData) use ($confirmPromise) {
-                echo "\n\nwriteFilePromise, expecting captionData :  'file' : ".$captionData['response']."\n\n";
-                echo "\n\nwriteFilePromise, expecting captionData :  'file' : ".$captionData['response']."\n\n";
+                echo "\n\nwriteFilePromise, expecting captionData :  'file' : -> ".$captionData['file']."\n\n";
+                echo "\n\nwriteFilePromise, expecting captionData :  'response' : -> ".$captionData['response']."\n\n";
                 $captionFile = writeVTTFile($captionData['file'],$captionData['response']);
                 return $captionFile;
             })
             ->then(function ($confirm) {
-                confirmUpload($tmpLink_global,shouldIncludeThumbnail());
+                $confirm = confirmUpload($tmpLink_global,shouldIncludeThumbnail());
+                return $confirm;
             });
             $linkPromise->resolve(1);
             $audioPromise->wait();
             $transcribePromise->wait();
             $writeCaptionPromise->wait();
-            $confirmPromise;
+            $confirmPromise->wait();
         }
         else {
             signRequest();
@@ -350,7 +351,7 @@
             $response["thumbnailUrl"] = $link;
         }
         echo json_encode($response);
-        return true;
+        return $response;
     }
 
     // Provide a time-bombed public link to the file.
