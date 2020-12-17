@@ -51,7 +51,8 @@
                 return true;
             })
             ->then(function ($captionData) use ($writeCaptionPromise) {
-                echo "\n\ntranscriptPromise, expecting audioFile :  $audioFile\n\n";
+                echo "\n\ntranscriptPromise, expecting captionData :  'file' : ".$captionData['response']."\n\n";
+                echo "\n\ntranscriptPromise, expecting captionData :  'file' : ".$captionData['response']."\n\n";
                 writeVTTFile($captionData['file'],$captionData['response']);
                 return true;
             })
