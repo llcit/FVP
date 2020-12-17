@@ -56,9 +56,6 @@
             $audioPromise->wait();
             $transcriptPromise->wait();
             $confirmPromise->wait();
-            //$audioFile = ripAudio($tmpLink,$_REQUEST['key']);
-            //echo("\n\nTAINT: \n\n$audioFile\n\n");
-            //$transcript = trancscribe($audioFile);
         }
         else {
             signRequest();
@@ -119,6 +116,7 @@
         $handle = fopen("./tmpVtt/".$captionFile, 'w') or die('Cannot open file: '.$captionFile);
         $count = 0;
         $line = "";
+        $textType = 'captions';
         $raw_transcript = json_decode($data);
         foreach($raw_transcript->results as $result) {
             $count++;
@@ -128,7 +126,7 @@
                 $line .= "$count\r\n";
                 $line .=  $start . " --> " . $end ."\r\n";
                 $line .= $result->alternatives[0]->transcript  ."\r\n\r\n";
-                print "--->" . $result->alternatives[0]->transcript ."\n";
+                echo "--->" . $result->alternatives[0]->transcript ."\n";
             }
             else if ($textType == 'paragraph') {
                 $line .= $result->alternatives[0]->transcript ." ";
@@ -351,6 +349,7 @@
             $response["thumbnailUrl"] = $link;
         }
         echo json_encode($response);
+        return true;
     }
 
     // Provide a time-bombed public link to the file.
