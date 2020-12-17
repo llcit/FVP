@@ -116,7 +116,7 @@
         }
     }  
     function writeVTTFile($data,$captionFile) {
-        $handle = fopen("./tmpVTT/".$captionFile, 'w') or die('Cannot open file: '.$captionFile);
+        $handle = fopen("./tmpVtt/".$captionFile, 'w') or die('Cannot open file: '.$captionFile);
         $count = 0;
         $line = "";
         $raw_transcript = json_decode($data);
