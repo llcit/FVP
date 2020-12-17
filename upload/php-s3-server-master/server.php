@@ -47,6 +47,7 @@
             ->then(function ($audioFile) use ($confirmPromise) {
                 echo "\n\ntranscriptPromise, expecting audioFile :  $audioFile\n\n";
                 transcribe($audioFile);
+                return true;
             })
             ->then(function ($confirm) {
                 confirmUpload($tmpLink_global,shouldIncludeThumbnail());
@@ -135,8 +136,8 @@
             
         }
         fwrite($handle, $line);
-
-        var_dump($rawData);
+        return $captionFile;
+        //var_dump($rawData);
     } 
 
     function transcribe_Google($audioFile,$language) {
