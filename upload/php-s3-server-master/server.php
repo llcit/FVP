@@ -27,8 +27,8 @@
         if (isset($_REQUEST["success"])) {
             $linkPromise = new Promise();
             $audioPromise = new Promise();
-            //$transcriptPromise = new Promise();
-            //$confirmPromise = new Promise();
+            $transcriptPromise = new Promise();
+            $confirmPromise = new Promise();
             $linkPromise
             ->then(function ($init) use ($audioPromise) {
                 global $tmpLink_global;
@@ -43,17 +43,17 @@
                 $audioFile = ripAudio($tmpLink,$_REQUEST['key']);
                 echo "\n\nout - audioFile :  $audioFile\n\n";
                 return $audioFile;
-            }); /*
+            }); 
             ->then(function ($audioFile) use ($confirmPromise) {
                 echo "\n\ntranscriptPromise, expecting audioFile :  $audioFile\n\n";
             })
             ->then(function ($confirm) {
                 confirmUpload($tmpLink_global,shouldIncludeThumbnail());
-            });*/
+            });
             $linkPromise->resolve(1);
-            $audioPromise->resolve(1);
-            //$transcriptPromise->resolve(1);
-            //$confirmPromise->resolve(1);
+            $audioPromise->wait();
+            $transcriptPromise->wait();
+            $confirmPromise->wait();
             //$audioFile = ripAudio($tmpLink,$_REQUEST['key']);
             //echo("\n\nTAINT: \n\n$audioFile\n\n");
             //$transcript = trancscribe($audioFile);
