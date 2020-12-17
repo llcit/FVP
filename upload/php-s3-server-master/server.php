@@ -29,7 +29,7 @@
             $transcriptPromise = new Promise();
             $confirmPromise = new Promise();
             $linkPromise
-            ->then(function () use ($audioPromise) {
+            ->then(function ($vrai) use ($audioPromise) {
                 $tmpLink = verifyFileInS3();
                 echo "\n\nout - tmpLink :  $tmpLink\n\n";
                 return $tmpLink;
@@ -45,7 +45,7 @@
             ->then(function () {
                 confirmUpload($tmpLink,shouldIncludeThumbnail());
             })
-            $linkPromise->resolve();
+            $linkPromise->resolve(1);
             $audioPromise->resolve($tmpLink);
             $transcriptPromise->resolve('caption');
             $confirmPromise->resolve();
