@@ -99,7 +99,7 @@
         curl_setopt($ch, CURLOPT_POST,1);
         curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_POSTFIELDS,file_get_contents($dir . $file));
+        curl_setopt($ch, CURLOPT_POSTFIELDS,file_get_contents("tmpAudio/" . $audioFile));
         $response = curl_exec($ch);
         $status_code = curl_getinfo($ch,CURLINFO_HTTP_CODE);
         if (!in_array($status_code, [200,201])) {
