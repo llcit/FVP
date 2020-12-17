@@ -51,8 +51,8 @@
                 confirmUpload($tmpLink_global,shouldIncludeThumbnail());
             });
             $linkPromise->resolve(1);
-            $audioPromise->resolve($tmpLink);
-            $transcriptPromise->resolve('caption');
+            $audioPromise->resolve(1);
+            $transcriptPromise->resolve(1);
             $confirmPromise->resolve(1);
             //$audioFile = ripAudio($tmpLink,$_REQUEST['key']);
             //echo("\n\nTAINT: \n\n$audioFile\n\n");
