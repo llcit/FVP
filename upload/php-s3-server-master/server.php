@@ -95,6 +95,7 @@
         }
     }  
     function writeVTTFile($captionFile,$data,$language) {
+        global $expectedBucketName;
         $languages = [
             'Arabic' => 'ar',
             'Chinese' => 'zh',
@@ -126,7 +127,7 @@
         $client = getS3Client();
         $pid = '123456789';
         $result = $client->putObject(array(
-            'Bucket' => $bucket,
+            'Bucket' => $expectedBucketName,
             'Key'    => "transcripts/$pid.vtt",
             'Body'   => '$fileContent'
         ));
