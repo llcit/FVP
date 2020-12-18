@@ -25,16 +25,19 @@
     else if ($method == 'POST') {
         handleCorsRequest();
         if (isset($_REQUEST["success"])) {
-            $linkPromise = new Promise();
+            $tmpLink = verifyFileInS3();
+            $audioFile = ripAudio($tmpLink,$_REQUEST['key']);
+
+            /*$linkPromise = new Promise();
             $linkPromise->resolve(true);
             $audioPromise = new Promise();
             $audioPromise->resolve(true);
-            /*$transcribePromise = new Promise();
+            $transcribePromise = new Promise();
             $transcribePromise->wait(true);
             $writeCaptionPromise = new Promise();
             $writeCaptionPromise->resolve(true);
             $confirmPromise = new Promise();
-            $confirmPromise->resolve(true);*/
+            $confirmPromise->resolve(true);
             $linkPromise
             ->then(function ($init) use ($audioPromise) {
                 global $tmpLink_global;
@@ -43,13 +46,13 @@
                 echo "\n\nout - tmpLink :  $tmpLink\n\n";
                 return $tmpLink;
             })
-            ->then(function ($tmpLink) { //use ($transcribePromise)
+            ->then(function ($tmpLink) use ($transcribePromise){ 
                 echo "\n\naudioPromise, expecting tmpLink :  $tmpLink\n\n";
                 echo "\n\n\$_REQUEST['key']: " . $_REQUEST['key'] . "\n\n";
                 $audioFile = ripAudio($tmpLink,$_REQUEST['key']);
                 echo "\n\nout - audioFile :  $audioFile\n\n";
                 return $audioFile;
-            });/*
+            })
             ->then(function ($audioFile) use ($writeCaptionPromise) {
                 $language = 'English';
                 echo("\n\nTRANSCRIBE IN: AUDIO FILE: \n\n$audioFile\n\n");
