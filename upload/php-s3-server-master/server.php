@@ -30,11 +30,7 @@
             $transcribePromise = new Promise();
             $writeCaptionPromise = new Promise();
             $confirmPromise = new Promise();
-            $linkPromise->wait();
-            $audioPromise->wait();
-            $transcribePromise->wait();
-            $writeCaptionPromise->wait();
-            $confirmPromise->wait(); 
+ 
             $linkPromise
             ->then(function ($init) use ($audioPromise) {
                 global $tmpLink_global;
