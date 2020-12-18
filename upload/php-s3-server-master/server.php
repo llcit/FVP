@@ -12,7 +12,7 @@
     $expectedHostName = $SETTINGS['S3_HOST_NAME']; // v4-only
     $expectedMaxSize = (isset($SETTINGS['S3_MAX_FILE_SIZE']) ? $SETTINGS['S3_MAX_FILE_SIZE'] : null);
     $method = getRequestMethod();
-    $tmpLink_global = '';
+    $language = 'English';
 
     if ($method == 'OPTIONS') {
         handlePreflight();
@@ -25,7 +25,10 @@
     else if ($method == 'POST') {
         handleCorsRequest();
         if (isset($_REQUEST["success"])) {
-            $linkPromise = new Promise();
+            $tmpLink = verifyFileInS3();
+            $audioFile = generateTranscript($tmpLink,$_REQUEST['key']);
+            $confirmation = confirmUpload($tmpLink,shouldIncludeThumbnail());
+            /*$linkPromise = new Promise();
             $linkPromise->resolve(true);
             $audioPromise = new Promise();
             $audioPromise->resolve(true);
@@ -46,7 +49,7 @@
             ->then(function ($tmpLink) use ($transcribePromise){ 
                 echo "\n\naudioPromise, expecting tmpLink :  $tmpLink\n\n";
                 echo "\n\n\$_REQUEST['key']: " . $_REQUEST['key'] . "\n\n";
-                $audioFile = ripAudio($tmpLink,$_REQUEST['key']);
+                $audioFile = generateTranscript($tmpLink,$_REQUEST['key']);
                 echo "\n\nout - audioFile :  $audioFile\n\n";
                 return $audioFile;
             })
@@ -70,11 +73,34 @@
             ->then(function ($confirm) {
                 $confirmation = confirmUpload($tmpLink_global,shouldIncludeThumbnail());
                 return $confirmation;
-            });
+            });*/
         }
         else {
             signRequest();
         }
+    }
+
+    function verifyFileInS3() {
+        global $expectedMaxSize;
+        $bucket = $_REQUEST["bucket"];
+        $key = $_REQUEST["key"];
+        if (isset($expectedMaxSize) && getObjectSize($bucket, $key) > $expectedMaxSize) {
+            header("HTTP/1.0 500 Internal Server Error");
+            deleteObject();
+            echo json_encode(array("error" => "File is too big!", "preventRetry" => true));
+        }
+        else {
+            $link = getTempLink($bucket, $key);
+            return $link;
+        }
+    }
+    function confirmUpload($link,$includeThumbnail) {
+        $response = array("tempLink" => $link);
+        if ($includeThumbnail) {
+            $response["thumbnailUrl"] = $link;
+        }
+        echo json_encode($response);
+        return $response;
     }
     function transcribe_Watson($audioFile,$language) {
         global $SETTINGS;
@@ -114,10 +140,18 @@
             return false;
         }
     }  
-    function writeVTTFile($captionFile,$data) {
+    function writeVTTFile($captionFile,$data,$language) {
+        $languages = [
+            'Arabic' => 'ar',
+            'Chinese' => 'zh',
+            'English' => 'en',
+            'Korean' => 'ko',
+            'Portuguese' => 'pt',
+            'Russian' => 'ru'
+        ];
         $handle = fopen("./tmpVtt/".$captionFile, 'w') or die('Cannot open file: '.$captionFile);
         $count = 0;
-        $line = "";
+        $line = "WEBVTT\r\nKind: captions\r\nLanguage: en\r\n\r\n";
         $textType = 'captions';
         $raw_transcript = json_decode($data);
         foreach($raw_transcript->results as $result) {
@@ -125,7 +159,6 @@
             $start = time_format($result->alternatives[0]->timestamps[0][1]);
             $end = time_format($result->alternatives[0]->timestamps[count($result->alternatives[0]->timestamps)-1][2]);
             if ($textType == 'captions') {
-                $line .= "$count\r\n";
                 $line .=  $start . " --> " . $end ."\r\n";
                 $line .= $result->alternatives[0]->transcript  ."\r\n\r\n";
                 echo "--->" . $result->alternatives[0]->transcript ."\n";
@@ -144,18 +177,16 @@
     }
 
     function time_format($rawTime) {
-        list($seconds, $microseconds) = preg_split("/\./",$rawTime);
-        if (!$microseconds) {
-            $microseconds = '00';
+        if ($rawTime) {
+            list($seconds, $ms) = preg_split("/\./",$rawTime);
+            // always 0 microseconds
+            $microseconds = '000';
+            return gmdate("H:i:s", $seconds) . '' . $microseconds;
         }
-        else if (strlen($microseconds) == 1) {
-            $microseconds = '0' . $microseconds;
-        }
-        return gmdate("H:i:s", $seconds) . ',' . $microseconds;
     }
 
-    function ripAudio($tmpLink,$key) {
-        global $SETTINGS;
+    function generateTranscript($tmpLink,$key) {
+        global $SETTINGS,$language;
         $audio_extension = $SETTINGS['tmp_audio_extension'];
         preg_match("/(.*)\.(mov|mp4|m4a)/",$key,$matches);
         $file_name = $matches[1];
@@ -188,7 +219,14 @@
         }); 
         $saveFile = addslashes($output_dir . $file_name . "." . $audio_extension);
         $video->save($output_format, $saveFile); 
-        return $file_name . "." . $audio_extension;
+        $audioFile = $file_name . "." . $audio_extension;
+        if ($language != 'Russian') {
+            $response = transcribe_Watson($audioFile,$language);
+        }
+        else {
+            $response = transcribe_Google($audioFile,$language);
+        }
+        $captionFile = writeVTTFile($response['file'],$response['response']);
     } 
     function getRequestMethod() {
         global $HTTP_RAW_POST_DATA;
@@ -341,28 +379,6 @@
         return hash_hmac('sha256', $stringToSign, $signingKey);
     }
 
-    function verifyFileInS3() {
-        global $expectedMaxSize;
-        $bucket = $_REQUEST["bucket"];
-        $key = $_REQUEST["key"];
-        if (isset($expectedMaxSize) && getObjectSize($bucket, $key) > $expectedMaxSize) {
-            header("HTTP/1.0 500 Internal Server Error");
-            deleteObject();
-            echo json_encode(array("error" => "File is too big!", "preventRetry" => true));
-        }
-        else {
-            $link = getTempLink($bucket, $key);
-            return $link;
-        }
-    }
-    function confirmUpload($link,$includeThumbnail) {
-        $response = array("tempLink" => $link);
-        if ($includeThumbnail) {
-            $response["thumbnailUrl"] = $link;
-        }
-        echo json_encode($response);
-        return $response;
-    }
 
     // Provide a time-bombed public link to the file.
     function getTempLink($bucket, $key) {
