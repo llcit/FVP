@@ -36,7 +36,7 @@ function getTmpLink() {
 }
 function ripAudio($tmpLink) {
 	echo("\n--RIPAUDIO got tmpLink: $tmpLink\n");
-	sleep(3);
+	sleep(15);
 	return 'file.flac';
 }
 

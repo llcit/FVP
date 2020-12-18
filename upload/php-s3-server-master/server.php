@@ -43,7 +43,7 @@
                 echo "\n\nout - tmpLink :  $tmpLink\n\n";
                 return $tmpLink;
             })
-            ->then(function ($tmpLink){
+            ->then(function ($tmpLink) use ($transcribePromise){
                 echo "\n\naudioPromise, expecting tmpLink :  $tmpLink\n\n";
                 echo "\n\n\$_REQUEST['key']: " . $_REQUEST['key'] . "\n\n";
                 $audioFile = ripAudio($tmpLink,$_REQUEST['key']);
