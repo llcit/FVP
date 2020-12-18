@@ -28,7 +28,7 @@
             $linkPromise = new Promise();
             $linkPromise->resolve(true);
             $audioPromise = new Promise();
-            $audioPromise->resolve(true);
+            
             $transcribePromise = new Promise();
             $transcribePromise->resolve(true);
             $writeCaptionPromise = new Promise();
@@ -48,7 +48,8 @@
                 echo "\n\n\$_REQUEST['key']: " . $_REQUEST['key'] . "\n\n";
                 $audioFile = ripAudio($tmpLink,$_REQUEST['key']);
                 echo "\n\nout - audioFile :  $audioFile\n\n";
-                return $audioFile;
+                $audioPromise->resolve($audioFile);
+                //return $audioFile;
             })
             ->then(function ($audioFile) use ($writeCaptionPromise) {
                 $language = 'English';
