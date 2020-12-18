@@ -187,10 +187,12 @@
         }
         $output_format->on('progress', function ($video, $format, $percentage) use($key) {
             file_put_contents('./progress/'. $key . '.txt', $percentage);
+            if ($percentage == 100) {
+                return $file_name . "." . $audio_extension;
+            }
         }); 
         $saveFile = addslashes($output_dir . $file_name . "." . $audio_extension);
         $video->save($output_format, $saveFile); 
-        return $file_name . "." . $audio_extension;
     } 
     function getRequestMethod() {
         global $HTTP_RAW_POST_DATA;
