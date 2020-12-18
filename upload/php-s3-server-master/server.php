@@ -27,6 +27,14 @@
         if (isset($_REQUEST["success"])) {
             $tmpLink = verifyFileInS3();
             $audioFile = ripAudio($tmpLink,$_REQUEST['key']);
+            $language = 'English';
+            echo("\n\nTRANSCRIBE IN: AUDIO FILE: \n\n$audioFile\n\n");
+            if ($language != 'Russian') {
+                $response = transcribe_Watson($audioFile,$language);
+            }
+            else {
+                $response = transcribe_Google($audioFile,$language);
+            }
 
             /*$linkPromise = new Promise();
             $linkPromise->resolve(true);
