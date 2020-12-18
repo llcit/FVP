@@ -26,30 +26,30 @@
         handleCorsRequest();
         if (isset($_REQUEST["success"])) {
             $linkPromise = new Promise();
-            $linkPromise->wait();
+            $linkPromise->resolve(true);
             $audioPromise = new Promise();
-            $audioPromise->wait();
-            /*$transcribePromise = new Promise();
-            $transcribePromise->wait();
+            $audioPromise->resolve(true);
+            $transcribePromise = new Promise();
+            $transcribePromise->resolve(true);
             $writeCaptionPromise = new Promise();
-            $writeCaptionPromise->wait();
+            $writeCaptionPromise->resolve(true);
             $confirmPromise = new Promise();
-            $confirmPromise->wait(); */
+            $confirmPromise->resolve(true);
             $linkPromise
             ->then(function ($init) use ($audioPromise) {
                 global $tmpLink_global;
                 $tmpLink = verifyFileInS3();
                 $tmpLink_global = $tmpLink;
                 echo "\n\nout - tmpLink :  $tmpLink\n\n";
-                $linkPromise->resolve($tmpLink);
+                return $tmpLink;
             })
             ->then(function ($tmpLink){
                 echo "\n\naudioPromise, expecting tmpLink :  $tmpLink\n\n";
                 echo "\n\n\$_REQUEST['key']: " . $_REQUEST['key'] . "\n\n";
                 $audioFile = ripAudio($tmpLink,$_REQUEST['key']);
                 echo "\n\nout - audioFile :  $audioFile\n\n";
-                $audioPromise->resolve($audioFile);
-            }); /*
+                return $audioFile;
+            })
             ->then(function ($audioFile) use ($writeCaptionPromise) {
                 $language = 'English';
                 echo("\n\nTRANSCRIBE IN: AUDIO FILE: \n\n$audioFile\n\n");
@@ -59,18 +59,18 @@
                 else {
                     $response = transcribe_Google($audioFile,$language);
                 }
-                $transcribePromise->resolve($response);
+                return $response;
             })
             ->then(function ($captionData) use ($confirmPromise) {
                 echo "\n\nwriteFilePromise, expecting captionData :  'file' : -> ".$captionData['file']."\n\n";
                 echo "\n\nwriteFilePromise, expecting captionData :  'response' : -> ".$captionData['response']."\n\n";
                 $captionFile = writeVTTFile($captionData['file'],$captionData['response']);
-                $writeCaptionPromise->resolve($captionFile);
+                return $captionFile;
             })
             ->then(function ($confirm) {
                 $confirmation = confirmUpload($tmpLink_global,shouldIncludeThumbnail());
-                $confirmPromise->resolve($confirmation);
-            });*/
+                return $confirmation;
+            });
         }
         else {
             signRequest();
