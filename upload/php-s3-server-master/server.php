@@ -35,7 +35,8 @@
             else {
                 $response = transcribe_Google($audioFile,$language);
             }
-
+            $captionFile = writeVTTFile($captionData['file'],$captionData['response'])
+            $confirmation = confirmUpload($tmpLink_global,shouldIncludeThumbnail());
             /*$linkPromise = new Promise();
             $linkPromise->resolve(true);
             $audioPromise = new Promise();
@@ -89,7 +90,6 @@
     }
     function transcribe_Watson($audioFile,$language) {
         global $SETTINGS;
-        sleep(10);
         $audio_extension = $SETTINGS['tmp_audio_extension'];
         $models = [
             'Arabic' => 'ar-AR_BroadbandModel',
