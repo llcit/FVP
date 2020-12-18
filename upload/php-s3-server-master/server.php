@@ -226,7 +226,7 @@
         else {
             $response = transcribe_Google($audioFile,$language);
         }
-        $captionFile = writeVTTFile($response['file'],$response['response']);
+        $captionFile = writeVTTFile($response['file'],$response['response'],$language);
     } 
     function getRequestMethod() {
         global $HTTP_RAW_POST_DATA;
