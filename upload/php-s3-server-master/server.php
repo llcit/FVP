@@ -35,7 +35,7 @@
             else {
                 $response = transcribe_Google($audioFile,$language);
             }
-            $captionFile = writeVTTFile($captionData['file'],$captionData['response'])
+            $captionFile = writeVTTFile($captionData['file'],$captionData['response']);
             $confirmation = confirmUpload($tmpLink_global,shouldIncludeThumbnail());
             /*$linkPromise = new Promise();
             $linkPromise->resolve(true);
