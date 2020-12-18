@@ -35,21 +35,20 @@
             $transcribePromise->wait();
             $writeCaptionPromise->wait();
             $confirmPromise->wait();
-            $linkPromise->resolve(1);
             $linkPromise
             ->then(function ($init) use ($audioPromise) {
                 global $tmpLink_global;
                 $tmpLink = verifyFileInS3();
                 $tmpLink_global = $tmpLink;
                 echo "\n\nout - tmpLink :  $tmpLink\n\n";
-                return $tmpLink;
+                $linkPromise->resolve($tmpLink);
             })
             ->then(function ($tmpLink) use ($transcribePromise) {
                 echo "\n\naudioPromise, expecting tmpLink :  $tmpLink\n\n";
                 echo "\n\n\$_REQUEST['key']: " . $_REQUEST['key'] . "\n\n";
                 $audioFile = ripAudio($tmpLink,$_REQUEST['key']);
                 echo "\n\nout - audioFile :  $audioFile\n\n";
-                return $audioFile;
+                $audioPromise->resolve($audioFile);
             })
             ->then(function ($audioFile) use ($writeCaptionPromise) {
                 $language = 'English';
@@ -60,17 +59,17 @@
                 else {
                     $response = transcribe_Google($audioFile,$language);
                 }
-                return $response;
+                $transcribePromise->resolve($response);
             })
             ->then(function ($captionData) use ($confirmPromise) {
                 echo "\n\nwriteFilePromise, expecting captionData :  'file' : -> ".$captionData['file']."\n\n";
                 echo "\n\nwriteFilePromise, expecting captionData :  'response' : -> ".$captionData['response']."\n\n";
                 $captionFile = writeVTTFile($captionData['file'],$captionData['response']);
-                return $captionFile;
+                $writeCaptionPromise->resolve($captionFile);
             })
             ->then(function ($confirm) {
                 $confirmation = confirmUpload($tmpLink_global,shouldIncludeThumbnail());
-                return $confirmation;
+                $confirmPromise->resolve($confirmation);
             });
         }
         else {
