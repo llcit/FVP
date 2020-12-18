@@ -129,7 +129,7 @@
         $result = $client->putObject(array(
             'Bucket' => $expectedBucketName,
             'Key'    => "transcripts/$pid.vtt",
-            'Body'   => '$fileContent'
+            'Body'   => "$fileContent"
         ));
         return $result;
     } 
