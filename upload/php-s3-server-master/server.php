@@ -30,7 +30,7 @@
             $audioPromise = new Promise();
             $audioPromise->resolve(true);
             $transcribePromise = new Promise();
-            $transcribePromise->wait(true);
+            $transcribePromise->resolve(true);
             $writeCaptionPromise = new Promise();
             $writeCaptionPromise->resolve(true);
             $confirmPromise = new Promise();
