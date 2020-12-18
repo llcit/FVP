@@ -28,6 +28,7 @@
             $linkPromise = new Promise();
             $linkPromise->resolve(true);
             $audioPromise = new Promise();
+            $audioPromise->wait()you;
             $audioPromise->resolve(true);
             $transcribePromise = new Promise();
             $transcribePromise->resolve(true);
