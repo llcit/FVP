@@ -26,11 +26,15 @@
         handleCorsRequest();
         if (isset($_REQUEST["success"])) {
             $linkPromise = new Promise();
+            $linkPromise->wait();
             $audioPromise = new Promise();
-            $transcribePromise = new Promise();
+            $audioPromise->wait();
+            /*$transcribePromise = new Promise();
+            $transcribePromise->wait();
             $writeCaptionPromise = new Promise();
+            $writeCaptionPromise->wait();
             $confirmPromise = new Promise();
- 
+            $confirmPromise->wait(); */
             $linkPromise
             ->then(function ($init) use ($audioPromise) {
                 global $tmpLink_global;
@@ -45,7 +49,7 @@
                 $audioFile = ripAudio($tmpLink,$_REQUEST['key']);
                 echo "\n\nout - audioFile :  $audioFile\n\n";
                 $audioPromise->resolve($audioFile);
-            })
+            }); /*
             ->then(function ($audioFile) use ($writeCaptionPromise) {
                 $language = 'English';
                 echo("\n\nTRANSCRIBE IN: AUDIO FILE: \n\n$audioFile\n\n");
@@ -66,7 +70,7 @@
             ->then(function ($confirm) {
                 $confirmation = confirmUpload($tmpLink_global,shouldIncludeThumbnail());
                 $confirmPromise->resolve($confirmation);
-            });
+            });*/
         }
         else {
             signRequest();
