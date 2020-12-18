@@ -89,6 +89,7 @@
     }
     function transcribe_Watson($audioFile,$language) {
         global $SETTINGS;
+        sleep(10);
         $audio_extension = $SETTINGS['tmp_audio_extension'];
         $models = [
             'Arabic' => 'ar-AR_BroadbandModel',
