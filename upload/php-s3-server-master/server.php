@@ -28,52 +28,6 @@
             $tmpLink = verifyFileInS3();
             $audioFile = generateTranscript($tmpLink,$_REQUEST['key']);
             $confirmation = confirmUpload($tmpLink,shouldIncludeThumbnail());
-            /*$linkPromise = new Promise();
-            $linkPromise->resolve(true);
-            $audioPromise = new Promise();
-            $audioPromise->resolve(true);
-            $transcribePromise = new Promise();
-            $transcribePromise->resolve(true);
-            $writeCaptionPromise = new Promise();
-            $writeCaptionPromise->resolve(true);
-            $confirmPromise = new Promise();
-            $confirmPromise->resolve(true);
-            $linkPromise
-            ->then(function ($init) use ($audioPromise) {
-                global $tmpLink_global;
-                $tmpLink = verifyFileInS3();
-                $tmpLink_global = $tmpLink;
-                echo "\n\nout - tmpLink :  $tmpLink\n\n";
-                return $tmpLink;
-            })
-            ->then(function ($tmpLink) use ($transcribePromise){ 
-                echo "\n\naudioPromise, expecting tmpLink :  $tmpLink\n\n";
-                echo "\n\n\$_REQUEST['key']: " . $_REQUEST['key'] . "\n\n";
-                $audioFile = generateTranscript($tmpLink,$_REQUEST['key']);
-                echo "\n\nout - audioFile :  $audioFile\n\n";
-                return $audioFile;
-            })
-            ->then(function ($audioFile) use ($writeCaptionPromise) {
-                $language = 'English';
-                echo("\n\nTRANSCRIBE IN: AUDIO FILE: \n\n$audioFile\n\n");
-                if ($language != 'Russian') {
-                    $response = transcribe_Watson($audioFile,$language);
-                }
-                else {
-                    $response = transcribe_Google($audioFile,$language);
-                }
-                return $response;
-            })
-            ->then(function ($captionData) use ($confirmPromise) {
-                echo "\n\nwriteFilePromise, expecting captionData :  'file' : -> ".$captionData['file']."\n\n";
-                echo "\n\nwriteFilePromise, expecting captionData :  'response' : -> ".$captionData['response']."\n\n";
-                $captionFile = writeVTTFile($captionData['file'],$captionData['response']);
-                return $captionFile;
-            })
-            ->then(function ($confirm) {
-                $confirmation = confirmUpload($tmpLink_global,shouldIncludeThumbnail());
-                return $confirmation;
-            });*/
         }
         else {
             signRequest();
@@ -151,7 +105,7 @@
         ];
         $handle = fopen("./tmpVtt/".$captionFile, 'w') or die('Cannot open file: '.$captionFile);
         $count = 0;
-        $line = "WEBVTT\r\nKind: captions\r\nLanguage: en\r\n\r\n";
+        $fileContent = "WEBVTT\r\nKind: captions\r\nLanguage: en\r\n\r\n";
         $textType = 'captions';
         $raw_transcript = json_decode($data);
         foreach($raw_transcript->results as $result) {
@@ -159,17 +113,24 @@
             $start = time_format($result->alternatives[0]->timestamps[0][1]);
             $end = time_format($result->alternatives[0]->timestamps[count($result->alternatives[0]->timestamps)-1][2]);
             if ($textType == 'captions') {
-                $line .=  $start . " --> " . $end ."\r\n";
-                $line .= $result->alternatives[0]->transcript  ."\r\n\r\n";
+                $fileContent .=  $start . " --> " . $end ."\r\n";
+                $fileContent .= $result->alternatives[0]->transcript  ."\r\n\r\n";
                 echo "--->" . $result->alternatives[0]->transcript ."\n";
             }
             else if ($textType == 'paragraph') {
-                $line .= $result->alternatives[0]->transcript ." ";
+                $fileContent .= $result->alternatives[0]->transcript ." ";
             }
             
         }
-        fwrite($handle, $line);
-        return $captionFile;
+        //fwrite($handle, $fileContent);
+        $client = getS3Client();
+        $pid = '123456789';
+        $result = $client->putObject(array(
+            'Bucket' => $bucket,
+            'Key'    => "transcripts/$pid.vtt",
+            'Body'   => '$fileContent'
+        ));
+        return $result;
     } 
 
     function transcribe_Google($audioFile,$language) {
