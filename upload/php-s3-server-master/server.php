@@ -25,19 +25,7 @@
     else if ($method == 'POST') {
         handleCorsRequest();
         if (isset($_REQUEST["success"])) {
-            $tmpLink = verifyFileInS3();
-            $audioFile = ripAudio($tmpLink,$_REQUEST['key']);
-            $language = 'English';
-            echo("\n\nTRANSCRIBE IN: AUDIO FILE: \n\n$audioFile\n\n");
-            if ($language != 'Russian') {
-                $response = transcribe_Watson($audioFile,$language);
-            }
-            else {
-                $response = transcribe_Google($audioFile,$language);
-            }
-            $captionFile = writeVTTFile($captionData['file'],$captionData['response']);
-            $confirmation = confirmUpload($tmpLink_global,shouldIncludeThumbnail());
-            /*$linkPromise = new Promise();
+            $linkPromise = new Promise();
             $linkPromise->resolve(true);
             $audioPromise = new Promise();
             $audioPromise->resolve(true);
@@ -82,7 +70,7 @@
             ->then(function ($confirm) {
                 $confirmation = confirmUpload($tmpLink_global,shouldIncludeThumbnail());
                 return $confirmation;
-            });*/
+            });
         }
         else {
             signRequest();
@@ -155,6 +143,16 @@
         return true;
     }
 
+    function time_format($rawTime) {
+        list($seconds, $microseconds) = preg_split("/\./",$rawTime);
+        if (!$microseconds) {
+            $microseconds = '00';
+        }
+        else if (strlen($microseconds) == 1) {
+            $microseconds = '0' . $microseconds;
+        }
+        return gmdate("H:i:s", $seconds) . ',' . $microseconds;
+    }
 
     function ripAudio($tmpLink,$key) {
         global $SETTINGS;
@@ -187,12 +185,10 @@
         }
         $output_format->on('progress', function ($video, $format, $percentage) use($key) {
             file_put_contents('./progress/'. $key . '.txt', $percentage);
-            if ($percentage == 100) {
-                return $file_name . "." . $audio_extension;
-            }
         }); 
         $saveFile = addslashes($output_dir . $file_name . "." . $audio_extension);
         $video->save($output_format, $saveFile); 
+        return $file_name . "." . $audio_extension;
     } 
     function getRequestMethod() {
         global $HTTP_RAW_POST_DATA;
