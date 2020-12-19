@@ -2,7 +2,6 @@ AWS FVP Build notes:
 
 EC2
 
-	
 	Lamp Stack 
 		sudo apt-get install apache2
 		sudo apt-get install mysql-server
@@ -17,25 +16,24 @@ EC2
 		- Access Key: AKIA5GGQGDXJ7N57DNHH
 		- Secret Access Key: 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
 
+	FFMPEG
 
-FFMPEG
+		sudo apt-get install ffmpeg
+			composer require php-ffmpeg/php-ffmpeg
 
-	sudo apt-get install ffmpeg
-	./upload/php-s3-server-master
-		composer require php-ffmpeg/php-ffmpeg
+	GOOGLE SPEECH TO TEXT FOR RUSSIAN
 
-ASYNC FUNCTIONALITY FOR PHP
-
-	./upload/php-s3-server-master
-		composer require spatie/async
+		composer require google/cloud-speech
 
 SES
+
 	SMTP Credentials: 
 		 ses-smtp-user.20201207-124002
 			SMTP Username: AKIA5GGQGDXJV552RJSH
 			SMTP Password: BARWyTT6oToqa0t9SI+M93uZ2LTLZS+TBFHsXHtxAx40
 
 S3
+
 	arn:aws:s3:::flagship-video-project
 
 Add CORS configuration	

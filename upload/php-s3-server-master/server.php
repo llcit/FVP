@@ -1,4 +1,11 @@
 <?php
+/* TO DO 12/18
+
+1. Google Transcribe or Russian
+2. DB stuff and get $pid
+3. Write progress vals to cookie
+4. Generate and upload thumb in ffmpeg
+*/
     // blow open memory limit
     ini_set('memory_limit', '-1');
     require './vendor/autoload.php';
@@ -104,13 +111,10 @@
             'Portuguese' => 'pt',
             'Russian' => 'ru'
         ];
-        $handle = fopen("./tmpVtt/".$captionFile, 'w') or die('Cannot open file: '.$captionFile);
-        $count = 0;
         $fileContent = "WEBVTT\r\nKind: captions\r\nLanguage: en\r\n\r\n";
         $textType = 'captions';
         $raw_transcript = json_decode($data);
         foreach($raw_transcript->results as $result) {
-            $count++;
             $start = time_format($result->alternatives[0]->timestamps[0][1]);
             $end = time_format($result->alternatives[0]->timestamps[count($result->alternatives[0]->timestamps)-1][2]);
             if ($textType == 'captions') {
@@ -123,7 +127,6 @@
             }
             
         }
-        //fwrite($handle, $fileContent);
         $client = getS3Client();
         $pid = '123456789';
         $result = $client->putObject(array(

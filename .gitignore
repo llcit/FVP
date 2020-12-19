@@ -19,6 +19,7 @@ trimit/
 upload.bak/
 vendor/
 inc/settings.ini
+inc/client_secret.json
 upload/s3.fine-uploader/
 upload/package.json
 upload/package-lock.json
