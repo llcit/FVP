@@ -9,8 +9,14 @@
     // blow open memory limit
     ini_set('memory_limit', '-1');
     require './vendor/autoload.php';
+    $language = 'Russian';
     use Aws\S3\S3Client;
-	use GuzzleHttp\Promise\Promise;
+    if ($language == 'Russian') }
+        use Google\Cloud\Speech\V1\SpeechClient;
+        use Google\Cloud\Speech\V1\RecognitionAudio;
+        use Google\Cloud\Speech\V1\RecognitionConfig;
+        use Google\Cloud\Speech\V1\RecognitionConfig\AudioEncoding;
+    }
     $SETTINGS = parse_ini_file(__DIR__."/../../inc/settings.ini");
     $clientPrivateKey = $SETTINGS['AWS_CLIENT_SECRET_KEY'];
     $serverPublicKey = $SETTINGS['AWS_SERVER_PUBLIC_KEY'];
@@ -108,8 +114,7 @@
             'Chinese' => 'zh',
             'English' => 'en',
             'Korean' => 'ko',
-            'Portuguese' => 'pt',
-            'Russian' => 'ru'
+            'Portuguese' => 'pt'
         ];
         $fileContent = "WEBVTT\r\nKind: captions\r\nLanguage: en\r\n\r\n";
         $textType = 'captions';
@@ -138,6 +143,13 @@
     } 
 
     function transcribe_Google($audioFile,$language) {
+
+        $languages = [
+            'Russian' => 'ru'
+        ];
+
+       
+
         return true;
     }
 
@@ -176,7 +188,7 @@
         }
         if ($audio_extension == 'flac') {
         	$output_format = new FFMpeg\Format\Audio\Flac();  
-        	$output_format->setAudioChannels(2);
+        	$output_format->setAudioChannels(1);
         	$output_format->setAudioKiloBitrate(256);
         }
         $output_format->on('progress', function ($video, $format, $percentage) use($key) {
