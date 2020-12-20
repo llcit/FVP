@@ -59,8 +59,8 @@
             $pid = $result->id;
         } else {  
             // new presentation
-            $sql = "INSERT INTO presentations (id,user_id,event_id) VALUES (?,?)";
-            $stmt= $pdo->prepare($sql)->execute([$pid,$uid,$eid]);
+            $sql = "INSERT INTO presentations (id,user_id,event_id) VALUES (?,?,?)";
+            $stmt= $pdo->prepare($sql)->execute(['',$uid,$eid]);
             if($stmt->rowCount() == 0) {
                 $pid = $pdo->lastInsertId();
             }
@@ -84,8 +84,8 @@
     function confirmUpload($pid,$duration,$transcript_success,$link) {
         global $pdo;
         $response = array("tempLink" => $link);
-        $sql = "UPDATE presentations (duration,transcript_success) VALUES (?,?)";
-        $stmt= $pdo->prepare($sql)->execute([$duration,$transcript_success]);
+        $sql = "UPDATE presentations SET duration=?, transcript_raw=? WHERE id=?";
+        $stmt= $pdo->prepare($sql)->execute([$duration,$transcript_success,$pid]);
         echo json_encode($response);
         return $response;
     }
@@ -153,13 +153,14 @@
             
         }
         $client = getS3Client();
-        $result = $client->putObject(array(
+	$command = $client->getCommand('PutObject', array(
             'Bucket' => $expectedBucketName,
             'Key'    => "transcripts/$pid.vtt",
             'Body'   => "$fileContent"
         ));
-        //$code = $result['@metadata']['statusCode'];
-        $code=200;
+        $result = $command->getResult();
+	$response = $command->getResponse();
+	$code = $response->getStatusCode();
         $success = ($code === 200) ? true : false ;
         return $success;
     } 
@@ -226,12 +227,11 @@
         }
         $transcribeSuccess = writeVTTFile($response['file'],$response['response'],$language);
         $ffprobe = FFMpeg\FFProbe::create();
-        $duration = $ffprobe
-                            ->streams($saveFile) // extracts streams informations
-                            ->videos()                      // filters video streams
-                            ->first()                       // returns the first video stream
-                            ->get('duration');              // returns the duration property
-        return ['duration' => $duration, 'transcript_raw' => $transcribeSuccess];
+        $ffprobe = FFMpeg\FFProbe::create();
+        $duration =$ffprobe
+            ->format($output_dir . $file_name . "." . $audio_extension) // extracts file informations
+            ->get('duration'); 
+        return ['duration' => $duration, 'success' => $transcribeSuccess];
     } 
     function getRequestMethod() {
         global $HTTP_RAW_POST_DATA;
@@ -254,7 +254,6 @@
     }
     function getS3Client() {
         global $clientPrivateKey, $serverPrivateKey;
-
         return S3Client::factory(array(
             'key' => $serverPrivateKey,
             'secret' => $clientPrivateKey
