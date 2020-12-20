@@ -228,7 +228,7 @@
             $response = transcribe_Google($audioFile,$language);
         }
         $transcribeSuccess = writeVTTFile($response['file'],$response['response'],$language);
-        return ['duration' => $duration, 'transcript_raw' = > $transcribeSuccess];
+        return ['duration' => $duration, 'transcript_raw' => $transcribeSuccess];
     } 
     function getRequestMethod() {
         global $HTTP_RAW_POST_DATA;
