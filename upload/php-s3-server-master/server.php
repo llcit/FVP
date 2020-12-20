@@ -161,7 +161,7 @@
             'Key'    => "transcripts/$pid.vtt",
             'Body'   => "$fileContent"
         ));
-        $code = $result['@metadata']['statusCode'] {
+        $code = $result['@metadata']['statusCode'];
         $success = ($code === 200) ? true : false ;
         return $success;
     } 
