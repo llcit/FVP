@@ -53,7 +53,7 @@
         $sql = "INSERT INTO presentations (user_id,event_id) VALUES (?,?)";
         $stmt= $pdo->prepare($sql);
         $stmt->execute([$uid,$eid]);
-        return $pdo->lastInsertId()
+        return $pdo->lastInsertId();
     }
     function verifyFileInS3() {
         global $expectedMaxSize;
