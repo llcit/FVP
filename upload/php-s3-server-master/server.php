@@ -51,7 +51,7 @@
     function registerVideo($uid,$eid) {
         global $pdo;
         $sql ="SELECT id FROM presentations WHERE (user_id=? AND event_id=?)";
-        $stmt = $pdo->prepare();
+        $stmt = $pdo->prepare($sql);
         $stmt->execute([$uid,$eid]); 
         if($stmt->rowCount() > 0) {
             // presentation exists-- overwrite
