@@ -224,7 +224,13 @@
             $response = transcribe_Google($audioFile,$language);
         }
         $transcribeSuccess = writeVTTFile($response['file'],$response['response'],$language);
-        $duration = $video->getFFProbe()->get('duration');
+
+        $ffprobe = FFMpeg\FFProbe::create();
+        $duration = $ffprobe
+                            ->streams($saveFile) // extracts streams informations
+                            ->videos()                      // filters video streams
+                            ->first()                       // returns the first video stream
+                            ->get('duration');              // returns the duration property
         return ['duration' => $duration, 'transcript_raw' => $transcribeSuccess];
     } 
     function getRequestMethod() {
