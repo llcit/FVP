@@ -202,7 +202,7 @@
             echo "MSG: " . $message."\n";
         }); 
         $video = $ffmpeg->open($tmpLink);
-        $duration = $ffmpeg->getFFProbe()->get('duration');
+        $duration = $video->getFFProbe()->get('duration');
         if ($audio_extension == 'mp3') {
         	$output_format = new FFMpeg\Format\Audio\Mp3(); 
         	$output_format->setAudioCodec("libmp3lame");
