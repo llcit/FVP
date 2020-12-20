@@ -42,7 +42,7 @@
             include_once("../../inc/db_pdo.php");
             $pid = registerVideo('4','2');
             $transcribeResult = generateTranscript($tmpLink,$_REQUEST['key']);
-            $confirmation = confirmUpload($pid,$transcribeResult['duration'],$transcribeResult['success'],$tmpLink,shouldIncludeThumbnail());
+            $confirmation = confirmUpload($pid,$transcribeResult['duration'],$transcribeResult['success'],$tmpLink);
         }
         else {
             signRequest();
@@ -62,7 +62,8 @@
             $sql = "INSERT INTO presentations (id,user_id,event_id) VALUES (?,?)";
             $stmt= $pdo->prepare($sql)->execute([$pid,$uid,$eid]);
             if($stmt->rowCount() = 0) {
-            $pid = $pdo->lastInsertId();
+                $pid = $pdo->lastInsertId();
+            }
         } 
         return $pid;
     }
@@ -80,13 +81,9 @@
             return $link;
         }
     }
-    function confirmUpload($pid,$duration,$transcript_success,$link,$includeThumbnail) {
-        $response = array("tempLink" => $link);
-        if ($includeThumbnail) {
-            $response["thumbnailUrl"] = $link;
-        }
-
+    function confirmUpload($pid,$duration,$transcript_success,$link) {
         global $pdo;
+        $response = array("tempLink" => $link);
         $sql = "UPDATE presentations (duration,transcript_success) VALUES (?,?)";
         $stmt= $pdo->prepare($sql)->execute([$duration,$transcript_success]);
         echo json_encode($response);
@@ -405,11 +402,5 @@
         $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
         $viewableExtensions = array("jpeg", "jpg", "gif", "png");
         return in_array($ext, $viewableExtensions);
-    }
-    function shouldIncludeThumbnail() {
-        $filename = $_REQUEST["name"];
-        $isPreviewCapable = $_REQUEST["isBrowserPreviewCapable"] == "true";
-        $isFileViewableImage = isFileViewableImage($filename);
-        return !$isPreviewCapable && $isFileViewableImage;
     }
 ?>
