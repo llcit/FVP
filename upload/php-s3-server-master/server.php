@@ -40,7 +40,7 @@
         if (isset($_REQUEST["success"])) {
             $tmpLink = verifyFileInS3();
             include_once("../../inc/db_pdo.php");
-            registerVideo();
+            $pid = registerVideo('4','2');
             $audioFile = generateTranscript($tmpLink,$_REQUEST['key']);
             $confirmation = confirmUpload($tmpLink,shouldIncludeThumbnail());
         }
@@ -53,6 +53,7 @@
         $sql = "INSERT INTO presentations (user_id,event_id) VALUES (?,?)";
         $stmt= $pdo->prepare($sql);
         $stmt->execute([$uid,$eid]);
+        return $pdo->lastInsertId()
     }
     function verifyFileInS3() {
         global $expectedMaxSize;
@@ -115,7 +116,7 @@
         }
     }  
     function writeVTTFile($captionFile,$data,$language) {
-        global $expectedBucketName;
+        global $expectedBucketName,$pid;
         $languages = [
             'Arabic' => 'ar',
             'Chinese' => 'zh',
@@ -140,7 +141,6 @@
             
         }
         $client = getS3Client();
-        $pid = '123456789';
         $result = $client->putObject(array(
             'Bucket' => $expectedBucketName,
             'Key'    => "transcripts/$pid.vtt",
