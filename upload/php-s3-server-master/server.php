@@ -41,8 +41,8 @@
             $tmpLink = verifyFileInS3();
             include_once("../../inc/db_pdo.php");
             $pid = registerVideo('4','2');
-            $audioFile = generateTranscript($tmpLink,$_REQUEST['key']);
-            $confirmation = confirmUpload($tmpLink,shouldIncludeThumbnail());
+            $transcribeResult = generateTranscript($tmpLink,$_REQUEST['key']);
+            $confirmation = confirmUpload($pid,$transcribeResult['duration'],$transcribeResult['success'],$tmpLink);
         }
         else {
             signRequest();
@@ -50,10 +50,22 @@
     }
     function registerVideo($uid,$eid) {
         global $pdo;
-        $sql = "INSERT INTO presentations (user_id,event_id) VALUES (?,?)";
-        $stmt= $pdo->prepare($sql);
-        $stmt->execute([$uid,$eid]);
-        return $pdo->lastInsertId();
+        $sql ="SELECT id FROM presentations WHERE (user_id=? AND event_id=?)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$uid,$eid]); 
+        if($stmt->rowCount() > 0) {
+            // presentation exists-- overwrite
+            $result = $stmt->fetch(PDO::FETCH_OBJ);
+            $pid = $result->id;
+        } else {  
+            // new presentation
+            $sql = "INSERT INTO presentations (id,user_id,event_id) VALUES (?,?)";
+            $stmt= $pdo->prepare($sql)->execute([$pid,$uid,$eid]);
+            if($stmt->rowCount() == 0) {
+                $pid = $pdo->lastInsertId();
+            }
+        } 
+        return $pid;
     }
     function verifyFileInS3() {
         global $expectedMaxSize;
@@ -69,11 +81,11 @@
             return $link;
         }
     }
-    function confirmUpload($link,$includeThumbnail) {
+    function confirmUpload($pid,$duration,$transcript_success,$link) {
+        global $pdo;
         $response = array("tempLink" => $link);
-        if ($includeThumbnail) {
-            $response["thumbnailUrl"] = $link;
-        }
+        $sql = "UPDATE presentations (duration,transcript_success) VALUES (?,?)";
+        $stmt= $pdo->prepare($sql)->execute([$duration,$transcript_success]);
         echo json_encode($response);
         return $response;
     }
@@ -146,7 +158,10 @@
             'Key'    => "transcripts/$pid.vtt",
             'Body'   => "$fileContent"
         ));
-        return $result;
+        //$code = $result['@metadata']['statusCode'];
+        $code=200;
+        $success = ($code === 200) ? true : false ;
+        return $success;
     } 
 
     function transcribe_Google($audioFile,$language) {
@@ -189,13 +204,13 @@
         }); 
         $video = $ffmpeg->open($tmpLink);
         if ($audio_extension == 'mp3') {
-        	$output_format = new FFMpeg\Format\Audio\Mp3(); 
-        	$output_format->setAudioCodec("libmp3lame");
+            $output_format = new FFMpeg\Format\Audio\Mp3(); 
+            $output_format->setAudioCodec("libmp3lame");
         }
         if ($audio_extension == 'flac') {
-        	$output_format = new FFMpeg\Format\Audio\Flac();  
-        	$output_format->setAudioChannels(1);
-        	$output_format->setAudioKiloBitrate(256);
+            $output_format = new FFMpeg\Format\Audio\Flac();  
+            $output_format->setAudioChannels(1);
+            $output_format->setAudioKiloBitrate(256);
         }
         $output_format->on('progress', function ($video, $format, $percentage) use($key) {
             file_put_contents('./progress/'. $key . '.txt', $percentage);
@@ -209,12 +224,21 @@
         else {
             $response = transcribe_Google($audioFile,$language);
         }
-        $captionFile = writeVTTFile($response['file'],$response['response'],$language);
+        $transcribeSuccess = writeVTTFile($response['file'],$response['response'],$language);
+        $duration = 1;
+        /*$ffprobe = FFMpeg\FFProbe::create();
+        $duration = $ffprobe
+                            ->streams($saveFile) // extracts streams informations
+                            ->videos()                      // filters video streams
+                            ->first()                       // returns the first video stream
+                            ->get('duration');              // returns the duration property
+                            */
+        return ['duration' => $duration, 'transcript_raw' => $transcribeSuccess];
     } 
     function getRequestMethod() {
         global $HTTP_RAW_POST_DATA;
         if(isset($HTTP_RAW_POST_DATA)) {
-        	parse_str($HTTP_RAW_POST_DATA, $_POST);
+            parse_str($HTTP_RAW_POST_DATA, $_POST);
         }
         if (isset($_REQUEST['_method'])) {
             return $_REQUEST['_method'];
@@ -373,7 +397,7 @@
 
     function getObjectSize($bucket, $key) {
         try {    
-        	$objInfo = getS3Client()->headObject(array(
+            $objInfo = getS3Client()->headObject(array(
                     'Bucket' => $bucket,
                     'Key' => $key
                 ));
@@ -386,11 +410,5 @@
         $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
         $viewableExtensions = array("jpeg", "jpg", "gif", "png");
         return in_array($ext, $viewableExtensions);
-    }
-    function shouldIncludeThumbnail() {
-        $filename = $_REQUEST["name"];
-        $isPreviewCapable = $_REQUEST["isBrowserPreviewCapable"] == "true";
-        $isFileViewableImage = isFileViewableImage($filename);
-        return !$isPreviewCapable && $isFileViewableImage;
     }
 ?>
