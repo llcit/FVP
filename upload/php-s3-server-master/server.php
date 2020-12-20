@@ -50,9 +50,9 @@
     }
     function registerVideo($uid,$eid) {
         global $pdo;
-        
         $sql = "INSERT INTO presentations (user_id,event_id) VALUES (?,?)";
-        $stmt= $pdo->prepare($sql)->execute([$uid,$eid]);
+        $stmt= $pdo->prepare($sql);
+        $stmt->execute([$uid,$eid]);
         return $pdo->lastInsertId();
     }
     function verifyFileInS3() {
@@ -74,12 +74,6 @@
         if ($includeThumbnail) {
             $response["thumbnailUrl"] = $link;
         }
-
-        global $pdo;
-        $sql = "UPDATE presentations (user_id,event_id) VALUES (?,?)";
-        $stmt= $pdo->prepare($sql)->execute([$uid,$eid]);
-        return $pdo->lastInsertId();
-
         echo json_encode($response);
         return $response;
     }
