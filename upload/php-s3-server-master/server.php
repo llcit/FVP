@@ -202,7 +202,6 @@
             echo "MSG: " . $message."\n";
         }); 
         $video = $ffmpeg->open($tmpLink);
-        $duration = $video->getFFProbe()->get('duration');
         if ($audio_extension == 'mp3') {
         	$output_format = new FFMpeg\Format\Audio\Mp3(); 
         	$output_format->setAudioCodec("libmp3lame");
@@ -225,6 +224,7 @@
             $response = transcribe_Google($audioFile,$language);
         }
         $transcribeSuccess = writeVTTFile($response['file'],$response['response'],$language);
+        $duration = $video->getFFProbe()->get('duration');
         return ['duration' => $duration, 'transcript_raw' => $transcribeSuccess];
     } 
     function getRequestMethod() {
