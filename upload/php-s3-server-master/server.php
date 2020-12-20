@@ -41,8 +41,8 @@
             $tmpLink = verifyFileInS3();
             include_once("../../inc/db_pdo.php");
             $pid = registerVideo('4','2');
-            $transcribeResult = generateTranscript($tmpLink,$_REQUEST['key']);
-            $confirmation = confirmUpload($pid,$transcribeResult['duration'],$transcribeResult['success'],$tmpLink);
+            $audioFile = generateTranscript($tmpLink,$_REQUEST['key']);
+            $confirmation = confirmUpload($tmpLink,shouldIncludeThumbnail());
         }
         else {
             signRequest();
@@ -50,22 +50,10 @@
     }
     function registerVideo($uid,$eid) {
         global $pdo;
-        $sql ="SELECT id FROM presentations WHERE (user_id=? AND event_id=?)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$uid,$eid]); 
-        if($stmt->rowCount() > 0) {
-            // presentation exists-- overwrite
-            $result = $stmt->fetch(PDO::FETCH_OBJ);
-            $pid = $result->id;
-        } else {  
-            // new presentation
-            $sql = "INSERT INTO presentations (id,user_id,event_id) VALUES (?,?)";
-            $stmt= $pdo->prepare($sql)->execute([$pid,$uid,$eid]);
-            if($stmt->rowCount() == 0) {
-                $pid = $pdo->lastInsertId();
-            }
-        } 
-        return $pid;
+        
+        $sql = "INSERT INTO presentations (user_id,event_id) VALUES (?,?)";
+        $stmt= $pdo->prepare($sql)->execute([$uid,$eid]);
+        return $pdo->lastInsertId();
     }
     function verifyFileInS3() {
         global $expectedMaxSize;
@@ -81,11 +69,17 @@
             return $link;
         }
     }
-    function confirmUpload($pid,$duration,$transcript_success,$link) {
-        global $pdo;
+    function confirmUpload($link,$includeThumbnail) {
         $response = array("tempLink" => $link);
-        $sql = "UPDATE presentations (duration,transcript_success) VALUES (?,?)";
-        $stmt= $pdo->prepare($sql)->execute([$duration,$transcript_success]);
+        if ($includeThumbnail) {
+            $response["thumbnailUrl"] = $link;
+        }
+
+        global $pdo;
+        $sql = "UPDATE presentations (user_id,event_id) VALUES (?,?)";
+        $stmt= $pdo->prepare($sql)->execute([$uid,$eid]);
+        return $pdo->lastInsertId();
+
         echo json_encode($response);
         return $response;
     }
@@ -158,9 +152,7 @@
             'Key'    => "transcripts/$pid.vtt",
             'Body'   => "$fileContent"
         ));
-        $code = $result['@metadata']['statusCode'];
-        $success = ($code === 200) ? true : false ;
-        return $success;
+        return $result;
     } 
 
     function transcribe_Google($audioFile,$language) {
@@ -223,16 +215,7 @@
         else {
             $response = transcribe_Google($audioFile,$language);
         }
-        $transcribeSuccess = writeVTTFile($response['file'],$response['response'],$language);
-        $duration = 1;
-        /*$ffprobe = FFMpeg\FFProbe::create();
-        $duration = $ffprobe
-                            ->streams($saveFile) // extracts streams informations
-                            ->videos()                      // filters video streams
-                            ->first()                       // returns the first video stream
-                            ->get('duration');              // returns the duration property
-                            */
-        return ['duration' => $duration, 'transcript_raw' => $transcribeSuccess];
+        $captionFile = writeVTTFile($response['file'],$response['response'],$language);
     } 
     function getRequestMethod() {
         global $HTTP_RAW_POST_DATA;
@@ -409,5 +392,11 @@
         $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
         $viewableExtensions = array("jpeg", "jpg", "gif", "png");
         return in_array($ext, $viewableExtensions);
+    }
+    function shouldIncludeThumbnail() {
+        $filename = $_REQUEST["name"];
+        $isPreviewCapable = $_REQUEST["isBrowserPreviewCapable"] == "true";
+        $isFileViewableImage = isFileViewableImage($filename);
+        return !$isPreviewCapable && $isFileViewableImage;
     }
 ?>
