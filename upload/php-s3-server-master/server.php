@@ -9,15 +9,15 @@
     // blow open memory limit
     ini_set('memory_limit', '-1');
     require './vendor/autoload.php';
-    $language = 'Russian';
+    $language = 'English';
     use Aws\S3\S3Client;
-    if ($language == 'Russian') }
-        use Google\Cloud\Speech\V1\SpeechClient;
-        use Google\Cloud\Speech\V1\RecognitionAudio;
-        use Google\Cloud\Speech\V1\RecognitionConfig;
-        use Google\Cloud\Speech\V1\RecognitionConfig\AudioEncoding;
-    }
+    use Google\Cloud\Speech\V1\SpeechClient;
+    use Google\Cloud\Speech\V1\RecognitionAudio;
+    use Google\Cloud\Speech\V1\RecognitionConfig;
+    use Google\Cloud\Speech\V1\RecognitionConfig\AudioEncoding;
+
     $SETTINGS = parse_ini_file(__DIR__."/../../inc/settings.ini");
+
     $clientPrivateKey = $SETTINGS['AWS_CLIENT_SECRET_KEY'];
     $serverPublicKey = $SETTINGS['AWS_SERVER_PUBLIC_KEY'];
     $serverPrivateKey = $SETTINGS['AWS_SERVER_PRIVATE_KEY'];
@@ -39,6 +39,8 @@
         handleCorsRequest();
         if (isset($_REQUEST["success"])) {
             $tmpLink = verifyFileInS3();
+            include_once("../../inc/db_pdo.php");
+            registerVideo();
             $audioFile = generateTranscript($tmpLink,$_REQUEST['key']);
             $confirmation = confirmUpload($tmpLink,shouldIncludeThumbnail());
         }
@@ -46,7 +48,12 @@
             signRequest();
         }
     }
-
+    function registerVideo($uid,$eid) {
+        global $pdo;
+        $sql = "INSERT INTO presentations (user_id,event_id) VALUES (?,?)";
+        $stmt= $pdo->prepare($sql);
+        $stmt->execute([$uid,$eid]);
+    }
     function verifyFileInS3() {
         global $expectedMaxSize;
         $bucket = $_REQUEST["bucket"];
@@ -147,8 +154,7 @@
         $languages = [
             'Russian' => 'ru'
         ];
-
-       
+      
 
         return true;
     }
