@@ -4,6 +4,7 @@
       <?php
         include "../inc/db_pdo.php";
         include "../inc/dump.php";
+        include "../inc/sqlFunctions.php";
 				$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
 				$pageTitle = "Flagship Video Upload";
 				$subTitle = "Upload Video";
@@ -22,7 +23,6 @@
 				";
 				$user_id = $_GET['user_id']; // FVP TO DO: switch to $_POST after testing
 				$event_id = $_GET['event_id'];
-				// START HERE:  Pass uid & eid and possibly pid in query string
 				$pid = getPresentationId($user_id,$event_id);
 				if ($pid) {
 					$videoExists = "<p> You already have a video uploaded for this event! [LINK TO VID IN NEW WINDOW]";
