@@ -1,10 +1,7 @@
 <?php
-/* TO DO 12/18
-
-1. Google Transcribe or Russian
-2. DB stuff and get $pid
-3. Write progress vals to cookie
-4. Generate and upload thumb in ffmpeg
+/* TO DO 12/20
+1. Write progress vals to cookie
+2. Generate and upload thumb in ffmpeg
 */
     // blow open memory limit
     ini_set('memory_limit', '-1');
@@ -163,14 +160,14 @@
             
         }
         $client = getS3Client();
-	$command = $client->getCommand('PutObject', array(
-            'Bucket' => $expectedBucketName,
-            'Key'    => "transcripts/$pid.vtt",
-            'Body'   => "$fileContent"
+    	$command = $client->getCommand('PutObject', array(
+                'Bucket' => $expectedBucketName,
+                'Key'    => "transcripts/$pid.vtt",
+                'Body'   => "$fileContent"
         ));
         $result = $command->getResult();
-	$response = $command->getResponse();
-	$code = $response->getStatusCode();
+    	$response = $command->getResponse();
+    	$code = $response->getStatusCode();
         $success = ($code === 200) ? true : false ;
         return $success;
     } 

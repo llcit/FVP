@@ -113,4 +113,4 @@
 		-z-index: -10;
 		height:100%;
 		width:100%;
-		background: repeating-linear-gradient(#000, #000 1px, #fff 1px, #fff 30px);
+		-background: repeating-linear-gradient(#000, #000 1px, #fff 1px, #fff 30px);
