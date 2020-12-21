@@ -43,7 +43,7 @@
             if (!params('pid')) { // FVP TO DO : This will break
               $pid = registerVideo('4','2'); // FVP TO DO: Handle pid coming in from params  
             }*/
-            echo("\nPID: " .$_REQUEST["pid"]."\n");
+            var_dump($_REQUEST);
             $transcribeResult = generateTranscript($tmpLink,$_REQUEST['key']);
             renameFile($_REQUEST['key'],$pid);
             $confirmation = confirmUpload($pid,$transcribeResult['duration'],$transcribeResult['success'],$tmpLink);

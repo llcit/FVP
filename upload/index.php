@@ -29,7 +29,7 @@
 					global $pdo;
 					$sql ="SELECT id FROM presentations WHERE (user_id=? AND event_id=?)";
 	        $stmt = $pdo->prepare($sql);
-	        $stmt->execute([$uid,$eid]); 
+	        $stmt->execute([$user_id,$event_id]); 
 	        if($stmt->rowCount() > 0) {
 	            // presentation exists-- overwrite
 	            $result = $stmt->fetch(PDO::FETCH_OBJ);
