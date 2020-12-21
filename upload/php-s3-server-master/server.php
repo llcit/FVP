@@ -41,8 +41,8 @@
             $tmpLink = verifyFileInS3();
             include_once("../../inc/db_pdo.php");
             $pid = registerVideo('4','2');
-            renameFile($_REQUEST['key'],$pid);
             $transcribeResult = generateTranscript($tmpLink,$_REQUEST['key']);
+            renameFile($_REQUEST['key'],$pid);
             $confirmation = confirmUpload($pid,$transcribeResult['duration'],$transcribeResult['success'],$tmpLink);
 
         }
