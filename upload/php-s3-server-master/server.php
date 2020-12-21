@@ -39,16 +39,11 @@
         if (isset($_REQUEST["success"])) {
             $tmpLink = verifyFileInS3();
             include_once("../../inc/db_pdo.php");
-            /*
-            if (!params('pid')) { // FVP TO DO : This will break
-              $pid = registerVideo('4','2'); // FVP TO DO: Handle pid coming in from params  
-            }*/
-            var_dump($_REQUEST);
-            /*
+            $pid = ($_REQUEST['pid'] > 0) ? $_REQUEST['pid'] : registerVideo($_REQUEST['user_id'],$_REQUEST['event_id']); 
             $transcribeResult = generateTranscript($tmpLink,$_REQUEST['key']);
             renameFile($_REQUEST['key'],$pid);
             $confirmation = confirmUpload($pid,$transcribeResult['duration'],$transcribeResult['success'],$tmpLink);
-            */
+            
         }
         else {
             signRequest();
@@ -71,24 +66,15 @@
     }
     function registerVideo($uid,$eid,$pid=null) {
         global $pdo;
-        $sql ="SELECT id FROM presentations WHERE (id=?)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$pid]); 
-        if($stmt->rowCount() > 0) {
-            // presentation exists-- overwrite
-            $result = $stmt->fetch(PDO::FETCH_OBJ);
-            $pid = $result->id;
-        } else {  
-            // new presentation
-            $sql = "INSERT INTO presentations (user_id,event_id) VALUES (:user_id,:event_id)";
-            $stmt= $pdo->prepare($sql);
-            $stmt->bindValue(':user_id', $uid);
-            $stmt->bindValue(':event_id', $eid);
-            $stmt->execute([$uid,$eid]);
-            if($stmt->rowCount() == 0) {
-                $pid = $pdo->lastInsertId();
-            }
-        } 
+        // new presentation
+        $sql = "INSERT INTO presentations (user_id,event_id) VALUES (:user_id,:event_id)";
+        $stmt= $pdo->prepare($sql);
+        $stmt->bindValue(':user_id', $uid);
+        $stmt->bindValue(':event_id', $eid);
+        $stmt->execute([$uid,$eid]);
+        if($stmt->rowCount() == 0) {
+            $pid = $pdo->lastInsertId();
+        }
         return $pid;
     }
     function verifyFileInS3() {
