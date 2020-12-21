@@ -30,21 +30,23 @@
     if ($method == 'OPTIONS') {
         handlePreflight();
     }
-    else if ($method == "DELETE") {
+    else if ($method == 'DELETE') {
         handleCorsRequest(); // only needed in a CORS environment
         deleteObject();
     }
-
     else if ($method == 'POST') {
         handleCorsRequest();
         if (isset($_REQUEST["success"])) {
             $tmpLink = verifyFileInS3();
             include_once("../../inc/db_pdo.php");
-            $pid = registerVideo('4','2');
+            /*
+            if (!params('pid')) { // FVP TO DO : This will break
+              $pid = registerVideo('4','2'); // FVP TO DO: Handle pid coming in from params  
+            }*/
+            echo("\nPID: " .$_REQUEST["pid"]."\n");
             $transcribeResult = generateTranscript($tmpLink,$_REQUEST['key']);
             renameFile($_REQUEST['key'],$pid);
             $confirmation = confirmUpload($pid,$transcribeResult['duration'],$transcribeResult['success'],$tmpLink);
-
         }
         else {
             signRequest();
@@ -54,6 +56,7 @@
         global $expectedBucketName;
         $client=getS3Client();
         // Ugh!  Only way to rename is to copy and delete-- gross!
+        // FVP TO DO: kill once filenameParam is working
         $client->copyObject([
             'Bucket'     => $expectedBucketName,
             'Key'        => "videos/$pid.mov",
@@ -64,11 +67,11 @@
             'Key' => $key
         ]);
     }
-    function registerVideo($uid,$eid) {
+    function registerVideo($uid,$eid,$pid=null) {
         global $pdo;
-        $sql ="SELECT id FROM presentations WHERE (user_id=? AND event_id=?)";
+        $sql ="SELECT id FROM presentations WHERE (id=?)";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$uid,$eid]); 
+        $stmt->execute([$pid]); 
         if($stmt->rowCount() > 0) {
             // presentation exists-- overwrite
             $result = $stmt->fetch(PDO::FETCH_OBJ);

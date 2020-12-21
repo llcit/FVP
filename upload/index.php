@@ -4,7 +4,6 @@
       <?php
         include "../inc/db_pdo.php";
         include "../inc/dump.php";
-				include "../inc/sqlFunctions.php";
 				$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
 				$pageTitle = "Flagship Video Upload";
 				$subTitle = "Upload Video";
@@ -21,6 +20,25 @@
 			  $pageContent = "
 			            <div id='fine-uploader-s3'></div>
 				";
+				$user_id = $_GET['user_id']; // FVP TO DO: switch to $_POST after testing
+				$event_id = $_GET['event_id'];
+				// START HERE:  Pass uid & eid and possibly pid in query string
+				$pid = getPresentationId($user_id,$event_id);
+				$fileName = "videos/$pid" . ".extension"; // FVP TO DO: get extension from validation? kill copyObject
+				function getPresentationId($user_id,$event_id) {
+					global $pdo;
+					$sql ="SELECT id FROM presentations WHERE (user_id=? AND event_id=?)";
+	        $stmt = $pdo->prepare($sql);
+	        $stmt->execute([$uid,$eid]); 
+	        if($stmt->rowCount() > 0) {
+	            // presentation exists-- overwrite
+	            $result = $stmt->fetch(PDO::FETCH_OBJ);
+	            $pid = $result->id;
+	        } else {  
+	            $pid = null;
+	        }
+	        return $pid;
+				}
       ?>
 			<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
 			<link rel="stylesheet" href="../css/main.css" type="text/css"/>
@@ -122,7 +140,11 @@
 					template: 'qq-template-s3',
 					request: {
 						endpoint: 'https://<?php echo($SETTINGS['S3_BUCKET_NAME']); ?>.s3.amazonaws.com',
-						accessKey: '<?php echo($SETTINGS['AWS_SERVER_PRIVATE_KEY']); ?>'  
+						accessKey: '<?php echo($SETTINGS['AWS_SERVER_PRIVATE_KEY']); ?>',  
+						filenameParam: 'video/<?php echo($fileName); ?>', // FVP TO DO: test here
+						params: ['pid':'<?php echo($pid); ?>',
+										 'user_id':'<?php echo($user_id); ?>', 
+										 'exent_id': '<?php echo($event_id); ?>']
 					},
 					signature: {
 						endpoint: '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']."/".$SETTINGS['FINEUPLOADER_BACKEND_SCRIPT']); ?>'
@@ -153,6 +175,7 @@
 					validation: {
 						itemLimit: 5,
 						sizeLimit: '<?php echo($SETTINGS['S3_MAX_FILE_SIZE']); ?>'
+						// FVP TO DO : Ad extesions (mp4, mov, m4a ,etc)
 					},
 					thumbnails: {
 						placeholders: {
@@ -163,7 +186,8 @@
 					callbacks: {
 						onProgress: function(id, name, uploadedBytes, totalBytes){
 						var value = Math.round((uploadedBytes/totalBytes) * 100);
-						  $('#progress-bar').css('width', + value + '%').attr('aria-valuenow', value);    
+						  $('#progress-bar').css('width', + value + '%').attr('aria-valuenow', value);
+						  // FVP TO DO get progress type from cookie (video, rip audio, generate transcript, generate thumb)    
 						},
 						onComplete: function(id, name, response) {
 							if (response.success && !noFile) {
