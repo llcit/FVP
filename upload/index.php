@@ -24,7 +24,7 @@
 				$event_id = $_GET['event_id'];
 				// START HERE:  Pass uid & eid and possibly pid in query string
 				$pid = getPresentationId($user_id,$event_id);
-				$fileName = "$pid" . ".extension"; // FVP TO DO: get extension from validation? kill copyObject
+				$fileName = "$pid" . ".mov"; // FVP TO DO: get extension from validation? kill copyObject
 				function getPresentationId($user_id,$event_id) {
 					global $pdo;
 					$sql ="SELECT id FROM presentations WHERE (user_id=? AND event_id=?)";
