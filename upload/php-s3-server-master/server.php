@@ -75,8 +75,11 @@
             $pid = $result->id;
         } else {  
             // new presentation
-            $sql = "INSERT INTO presentations (user_id,event_id) VALUES (?,?)";
-            $stmt= $pdo->prepare($sql)->execute([$uid,$eid]);
+            $sql = "INSERT INTO presentations (user_id,event_id) VALUES (:user_id,:event_id)";
+            $stmt= $pdo->prepare($sql)
+            $stmt->bindValue(':user_id', $uid);
+            $stmt->bindValue(':event_id', $eid);
+            $stmt->execute([$uid,$eid]);
             if($stmt->rowCount() == 0) {
                 $pid = $pdo->lastInsertId();
             }
