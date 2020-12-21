@@ -53,11 +53,15 @@
     function renameFile($key,$pid) {
         global $expectedBucketName;
         $client=getS3Client();
-        // Register the stream wrapper from an S3Client object
+        // Ugh!  Only way to rename is to copy and delete-- gross!
         $client->copyObject([
             'Bucket'     => $expectedBucketName,
             'Key'        => "videos/$pid.mov",
             'CopySource' => "$expectedBucketName/$key",
+        ]);
+        $client->deleteObject([
+            'Bucket' =>  $expectedBucketName,
+            'Key' => $key
         ]);
     }
     function registerVideo($uid,$eid) {
