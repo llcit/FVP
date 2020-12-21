@@ -25,6 +25,7 @@
 <script src="../ableplayer/build/ableplayer.js"></script>
 
 	<?php
+		$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
 		$videoId = ($_GET['v']) ? $_GET['v'] : 86;
 		$allTracks = 'linguistic,professional,cutural';
 		$includeTracks = ($_GET['t']) ? $_GET['t'] : $allTracks;
@@ -72,7 +73,7 @@
 	<main role="main">
 	  <div id="player">
 		  <video id="video1" preload="auto" width="480" height="360" poster="../ableplayer/media/wwa.jpg" data-able-player data-transcript-div="transcript" playsinline <?php echo("$editCaptions"); ?> >
-				<source type="video/mp4" src="../assets/videos/<?php echo($videoId); ?>.mp4">
+				<source type="video/mp4" src="<?php echo($SETTINGS['S3_PLAYBACK_PATH'].'/video/'.$videoId); ?>.mp4">
 		    <track kind="captions" src="../assets/transcripts/<?php echo($videoId); ?>.vtt" srclang="<?php echo($la); ?>" label="<?php echo($language); ?>"/>
 			  <track kind="captions" src="../assets/translations/<?php echo($videoId); ?>.vtt" srclang="en" label="English"/>
 			  	<?php echo($descriptionTracks); ?>
