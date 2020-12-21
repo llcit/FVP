@@ -41,12 +41,24 @@
             $tmpLink = verifyFileInS3();
             include_once("../../inc/db_pdo.php");
             $pid = registerVideo('4','2');
+            renameFile($_REQUEST['key'],$pid);
             $transcribeResult = generateTranscript($tmpLink,$_REQUEST['key']);
             $confirmation = confirmUpload($pid,$transcribeResult['duration'],$transcribeResult['success'],$tmpLink);
+
         }
         else {
             signRequest();
         }
+    }
+    function renameFile($key,$pid) {
+        global $expectedBucketName;
+        $client=getS3Client();
+        // Register the stream wrapper from an S3Client object
+        $client->copyObject([
+            'Bucket'     => $expectedBucketName,
+            'Key'        => "videos/$pid.mov",
+            'CopySource' => "$expectedBucketName/$key",
+        ]);
     }
     function registerVideo($uid,$eid) {
         global $pdo;
