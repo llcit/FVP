@@ -23,7 +23,10 @@
 <link rel="stylesheet" href="../css/main.css" type="text/css"/>
 <!-- Able Player JavaScript -->
 <script src="../ableplayer/build/ableplayer.js"></script>
-
+<script src='../js/S3FileGen.js'></script>
+<script>
+	generateFile('<?php echo($_GET['v']); ?>','<?php echo('mp4'); ?>');
+</script>
 	<?php
 		$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
 		$videoId = ($_GET['v']) ? $_GET['v'] : 86;
@@ -43,8 +46,6 @@
 			";
 			$transcriptHeight = '400';
 		}
-		include './S3LinkGen.php';
-		$S3VideoLink = getLink($_GET['v'],'mp4');
 	?>
 	<!-- Style for this example only -->
 	<style>
@@ -74,10 +75,10 @@
 	<main role="main">
 	  <div id="player">
 		  <video id="video1" preload="auto" width="480" height="360" poster="../ableplayer/media/wwa.jpg" data-able-player data-transcript-div="transcript" playsinline <?php echo("$editCaptions"); ?> >
-				<source type="video/mp4" src="<?php echo($S3VideoLink); ?>">
-		    <track kind="captions" src="../assets/transcripts/<?php echo($videoId); ?>.vtt" srclang="<?php echo($la); ?>" label="<?php echo($language); ?>"/>
-			  <track kind="captions" src="../assets/translations/<?php echo($videoId); ?>.vtt" srclang="en" label="English"/>
-			  	<?php echo($descriptionTracks); ?>
+				<source type="video/mp4" id="videoMain">
+		    <!--<track kind="captions" src="../assets/transcripts/<?php echo($videoId); ?>.vtt" srclang="<?php echo($la); ?>" label="<?php echo($language); ?>"/>
+			  <track kind="captions" src="../assets/translations/<?php echo($videoId); ?>.vtt" srclang="en" label="English"/> -->
+			  	<?php //echo($descriptionTracks); ?> 
 		  </video>
 		</div>
 		<div id="transcript"></div>
