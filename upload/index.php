@@ -24,7 +24,7 @@
 				$event_id = $_GET['event_id'];
 				// START HERE:  Pass uid & eid and possibly pid in query string
 				$pid = getPresentationId($user_id,$event_id);
-				$fileName = "$pid" . ".mov"; // FVP TO DO: get extension from validation? kill copyObject
+				$fileName = "videos/$pid" . ".mov"; // FVP TO DO: get extension from validation? kill copyObject
 				function getPresentationId($user_id,$event_id) {
 					global $pdo;
 					$sql ="SELECT id FROM presentations WHERE (user_id=? AND event_id=?)";
@@ -141,7 +141,7 @@
 					request: {
 						endpoint: 'https://<?php echo($SETTINGS['S3_BUCKET_NAME']); ?>.s3.amazonaws.com',
 						accessKey: '<?php echo($SETTINGS['AWS_SERVER_PRIVATE_KEY']); ?>',  
-						filenameParam: 'videos\/<?php echo($fileName); ?>', // FVP TO DO: test here
+						filenameParam: '<?php echo(urlencode($fileName)); ?>', // FVP TO DO: test here
 						params: {
 											pid:'<?php echo($pid); ?>',
 										 	user_id:'<?php echo($user_id); ?>', 
