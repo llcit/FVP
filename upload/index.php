@@ -141,7 +141,12 @@
 					request: {
 						endpoint: 'https://<?php echo($SETTINGS['S3_BUCKET_NAME']); ?>.s3.amazonaws.com',
 						accessKey: '<?php echo($SETTINGS['AWS_SERVER_PRIVATE_KEY']); ?>',  
-						filenameParam: 'videos/<?php echo($fileName); ?>'
+						filenameParam: 'videos\/<?php echo($fileName); ?>', // FVP TO DO: test here
+						params: {
+											pid:'<?php echo($pid); ?>',
+										 	user_id:'<?php echo($user_id); ?>', 
+										 	exent_id: '<?php echo($event_id); ?>'
+										 }
 					},
 					signature: {
 						endpoint: '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']."/".$SETTINGS['FINEUPLOADER_BACKEND_SCRIPT']); ?>'
