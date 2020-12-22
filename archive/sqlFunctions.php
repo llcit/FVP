@@ -1,6 +1,6 @@
 <?php
 
-function getVideos($filters=null) {
+function getVideos($pid=null,$filters=null) {
     $matchVals = [
         'programs' => ['table_handle'=>'prog','field'=>'name'],
         'years' => ['table_handle'=>'prog','field'=>'progYrs'],
@@ -11,16 +11,21 @@ function getVideos($filters=null) {
     ];
     $where = '';
     $and = '';
-    foreach($filters as $key=>$value) {
-        $filterList = '';
-        if ($filters[$key]) {
-            $comma ="";
-            foreach($filters[$key] as $selectedVal) {
-                $filterList .= $comma . "'$selectedVal'";
-                $comma =",";
+    if ($pid) {
+        $where = "`id`='$pid'";
+    }
+    else {
+        foreach($filters as $key=>$value) {
+            $filterList = '';
+            if ($filters[$key]) {
+                $comma ="";
+                foreach($filters[$key] as $selectedVal) {
+                    $filterList .= $comma . "'$selectedVal'";
+                    $comma =",";
+                }
+                $where .= " $and ".$matchVals[$key]['table_handle'].".`".$matchVals[$key]['field']."` in($filterList)";
+                $and = 'and';
             }
-            $where .= " $and ".$matchVals[$key]['table_handle'].".`".$matchVals[$key]['field']."` in($filterList)";
-            $and = 'and';
         }
     }
     if ($where == '') $where = '1';

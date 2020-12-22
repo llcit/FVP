@@ -16,7 +16,7 @@
     }
     function getShowcaseVideos(){
         $queryStatement = "
-            SELECT pres.`id`,pres.`description`,u.`first_name`,u.`last_name`,i.`name` as `institution`,
+            SELECT pres.`id`,pres.`extension`,pres.`description`,u.`first_name`,u.`last_name`,i.`name` as `institution`,
                    prog.`name` as `program`,prog.`language`,prog.`progYrs`,e.`date`, pres.`phase`, pres.`type`,e.`city`,e.`country`
             FROM `presentations` pres 
             JOIN `users` u on u.`id` = pres.`user_id` 
@@ -31,7 +31,8 @@
         return $sqlData;
     }
 
-    function getVideos($filters=null) {
+   function getVideos($pid=null,$filters=null) {
+    global $pdo;
     $matchVals = [
         'programs' => ['table_handle'=>'prog','field'=>'name'],
         'years' => ['table_handle'=>'prog','field'=>'progYrs'],
@@ -42,22 +43,29 @@
     ];
     $where = '';
     $and = '';
-    foreach($filters as $key=>$value) {
-        $filterList = '';
-        if ($filters[$key]) {
-            $comma ="";
-            foreach($filters[$key] as $selectedVal) {
-                $filterList .= $comma . "'$selectedVal'";
-                $comma =",";
+    if ($pid) {
+        $where = "pres.`id`='$pid'";
+    }
+    else {
+        foreach($filters as $key=>$value) {
+            $filterList = '';
+            if ($filters[$key]) {
+                $comma ="";
+                foreach($filters[$key] as $selectedVal) {
+                    $filterList .= $comma . "'$selectedVal'";
+                    $comma =",";
+                }
+                $where .= " $and ".$matchVals[$key]['table_handle'].".`".$matchVals[$key]['field']."` in($filterList)";
+                $and = 'and';
             }
-            $where .= " $and ".$matchVals[$key]['table_handle'].".`".$matchVals[$key]['field']."` in($filterList)";
-            $and = 'and';
         }
     }
     if ($where == '') $where = '1';
-    $queryStatement = "
-        SELECT pres.`id`,pres.`duration`,u.`first_name`,u.`last_name`,i.`name` as `institution`,
-               prog.`name` as `program`,prog.`progYrs`,e.`date`, pres.`phase`, pres.`type`,e.`city`,e.`country`
+    $sql = "
+        SELECT pres.`id`,pres.`extension`,pres.`duration`,pres.`transcript_raw`,pres.`transcript_final`,
+               pres.`translation_raw`,pres.`translation_final`,pres.`annotations`,u.`first_name`,u.`last_name`,
+               i.`name` as `institution`,prog.`name` as `program`,prog.`progYrs`,e.`date`, 
+               pres.`phase`, pres.`type`,e.`city`,e.`country`
         FROM `presentations` pres 
         JOIN `users` u on u.`id` = pres.`user_id` 
         JOIN `events` e on e.`id`= pres.`event_id` 
@@ -65,9 +73,11 @@
         JOIN `affiliations` a on (a.`user_id` = u.`id` and a.`program_id`=prog.`id`) 
         JOIN `institutions` i on i.`id`=a.`domestic_institution_id` 
         WHERE $where 
+        GROUP BY pres.`id`
         ";
-    $sqlData = doSQLQuery($queryStatement,3); 
-    return $sqlData;
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchObject();
 }
 function getUniqueVals($table,$field) {
         $queryStatement = "

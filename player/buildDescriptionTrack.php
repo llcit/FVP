@@ -8,45 +8,76 @@ rip from xls
 4. Remove initial space		\r 0				-->		\r0
 5.         (\d*)\:(\d*)\-(\d*)\:(\d*)   --->  \r00:\1:\2.000 --> 00:\3:\4.999\r
 */
+require '../upload/php-s3-server-master/vendor/autoload.php';
+use Aws\S3\S3Client;
+
+$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
+$clientPrivateKey = $SETTINGS['AWS_CLIENT_SECRET_KEY'];
+$serverPublicKey = $SETTINGS['AWS_SERVER_PUBLIC_KEY'];
+$serverPrivateKey = $SETTINGS['AWS_SERVER_PRIVATE_KEY'];
+$expectedBucketName = $SETTINGS['S3_BUCKET_NAME']; 
+
+function getS3Client() {
+    global $clientPrivateKey, $serverPrivateKey;
+    return S3Client::factory(array(
+        'key' => $serverPrivateKey,
+        'secret' => $clientPrivateKey
+    ));
+}
+	$client = getS3Client();
+	$client->registerStreamWrapper();
+	$id = $_GET['v'];
+	$type = 'annotation';
+	$ext = 'vtt';
+
+	$annotationFilesOnS3 = explode(',',$_GET['a']);
 	// list of requested tracks from post 
 	$tracks = explode(',',$_GET['t']);
-	$videoId = $_GET['v'];
+	
 	// all lines from all files
 	$parsedLines = [];
 	
 	// merge all lines from specified tracks into one big array
-	foreach ($tracks as $track) {
-		$track = strtolower($track);
-		$filename = "../assets/annotations/".$track."/".$videoId.".vtt";
-		$handle = fopen($filename, "r");
-		$contents = fread($handle, filesize($filename));
-		fclose($handle);
-		$lines = preg_split("/\\n/", $contents);
-		foreach ($lines as $line) {
-			if ($line == "" || $line == 'WEBVTT') {
-				$parsedLine = [];
+	foreach ($annotationFilesOnS3 as $annotationFile) {
+		$annotationType = strtolower($annotationFile);
+		if (in_array($annotationType,$tracks)) {
+			$key =  $type . "s/".$annotationType."/".$id."." . $ext;
+			if ($stream = fopen("s3://$expectedBucketName/$key", 'r')) {
+			    // While the stream is still open
+			    while (!feof($stream)) {
+			        // Read 1024 bytes from the stream
+			        $contents = fread($stream, 1024);
+			    }
+			    // Be sure to close the stream resource when you're done with it
+			    fclose($stream);
 			}
-			else {
-				// time codes
-				if ($line[0] == '0') {
-					// get the start time
-					preg_match("/(\d{2}\:\d{2}\:\d{2}).*/",$line, $matches);
-					// reduce time signatures to integers for sorting
-					$start = preg_replace("/\:/", "",$matches[1]);
-					// add start for sorting
-					$parsedLine['start'] = $start;
-					// add time reference
-					$parsedLine['timeCodes'] = $line;
-					// we need this to theme categories in the player descriptions
-					$parsedLine['category'] = $track;
+			$lines = preg_split("/\\n/", $contents);
+			foreach ($lines as $line) {
+				if ($line == "" || $line == 'WEBVTT' || preg_match("/^(Kind|Language):/",$line)) {
+					$parsedLine = [];
 				}
-				// transcriptions
 				else {
-					// add the trancsribed utterance
-					$parsedLine['text'] = $line;
-					// we need this to theme categories in the player descriptions
-					$parsedLine['category'] = $track;
-					array_push($parsedLines,$parsedLine);
+					// time codes
+					if ($line[0] == '0') {
+						// get the start time
+						preg_match("/(\d{2}\:\d{2}\:\d{2}).*/",$line, $matches);
+						// reduce time signatures to integers for sorting
+						$start = preg_replace("/\:/", "",$matches[1]);
+						// add start for sorting
+						$parsedLine['start'] = $start;
+						// add time reference
+						$parsedLine['timeCodes'] = $line;
+						// we need this to theme categories in the player descriptions
+						$parsedLine['category'] = $annotationType;
+					}
+					// transcriptions
+					else {
+						// add the trancsribed utterance
+						$parsedLine['text'] = $line;
+						// we need this to theme categories in the player descriptions
+						$parsedLine['category'] = $annotationType;
+						array_push($parsedLines,$parsedLine);
+					}
 				}
 			}
 		}
@@ -68,4 +99,5 @@ rip from xls
 	function sortByStart($a, $b) {
 	    return $a['start'] - $b['start'];
 	}
+	
 ?>

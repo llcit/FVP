@@ -14,29 +14,23 @@
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
-
-	<!-- Able Player CSS -->
-	<link rel="stylesheet" href="../ableplayer/build/ableplayer.css" type="text/css"/>
-	<link rel="stylesheet" href="../css/main.css" type="text/css"/>
 	<!-- Able Player JavaScript -->
 	<script src="../ableplayer/build/ableplayer.js"></script>
 	<script src='../js/S3FileGen.js'></script>
-	<script>
-		var filesFromS3 = generateFiles([
-				{'type':'video','id': '<?php echo($_GET['v']); ?>','ext': '<?php echo("mp4"); ?>'},
-				{'type':'transcript','id': '<?php echo($_GET['v']); ?>','ext': 'vtt'},
-				{'type':'translation','id': '<?php echo($_GET['v']); ?>','ext': 'vtt'}
-			]
-		);
-		console.log('files found:',filesFromS3);
-	</script>
+	<!-- Able Player CSS -->
+	<link rel="stylesheet" href="../ableplayer/build/ableplayer.css" type="text/css"/>
+	<link rel="stylesheet" href="../css/main.css" type="text/css"/>
+
 	<?php
+	  include "../inc/db_pdo.php";
+    include "../inc/dump.php";
+    include "../inc/sqlFunctions.php";
 		$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
 		$videoId = ($_GET['v']) ? $_GET['v'] : 86;
+		$presentationData = getVideos($videoId);
 		$allTracks = 'linguistic,professional,cutural';
 		$includeTracks = ($_GET['t']) ? $_GET['t'] : $allTracks;
 		$language = $_GET['l'];
-		$la = strtolower(substr($language,0,2));
 		if ($_GET['cm'] == 'edit') {
 			$editCaptions = 'editCaptions';
 			echo("<script src='../js/captionEditor.js'></script>");
@@ -45,7 +39,7 @@
 		}
 		else {
 			$descriptionTracks = "
-		    <track kind='descriptions' src='./buildDescriptionTrack.php?t=$includeTracks&v=$videoId' srclang='en'/> 
+		    <track kind='descriptions' src='./buildDescriptionTrack.php?a=".$presentationData->annotations."&t=$includeTracks&v=$videoId' srclang='en'/> 
 			";
 			$transcriptHeight = '400';
 		}
@@ -78,15 +72,41 @@
 	<main role="main">
 	  <div id="player">
 		  <video id="video1" preload="auto" width="480" height="360" poster="../ableplayer/media/wwa.jpg" data-able-player data-transcript-div="transcript" playsinline <?php echo("$editCaptions"); ?> >
-				<source type="video/mp4" id="video">
-		    <track kind="captions" src="../assets/transcripts/<?php echo($videoId); ?>.vtt" srclang="<?php echo($la); ?>" label="<?php echo($language); ?>"/>
-			  <track kind="captions" src="../assets/translations/<?php echo($videoId); ?>.vtt" srclang="en" label="English"/> -->
-			  	<?php //echo($descriptionTracks); ?> 
+			  <script>
+			  	var hasTranscript = '<?php echo($presentationData->transcript_raw); ?>';
+			  	var hasTranslation = '<?php echo($presentationData->translation_raw); ?>';
+			  	var annotations = '<?php echo($presentationData->annotations); ?>';
+					var videoFile = generateFile('video','<?php echo($_GET['v']); ?>','<?php echo($presentationData->extension); ?>','');
+					var showTranscriptArea = false;
+					if (hasTranscript) {
+						var transcriptFile = generateFile('transcript','<?php echo($_GET['v']); ?>','vtt','<?php echo("$language"); ?>');
+						showTranscriptArea = true;
+					}
+					if (hasTranslation) {
+						var translationFile = generateFile('translation','<?php echo($_GET['v']); ?>','vtt','<?php echo("$language"); ?>');
+						showTranscriptArea = true;
+					}
+					// center the player
+					if (!showTranscriptArea) {
+						$('#player').css('float','none');
+						$('#player').css('margin','auto');
+					}
+					
+				</script>
+				<?php
+					// put empty placeholder in for ableplayer onready function
+					if ($presentationData->transcript_raw || $presentationData->translation_raw) {
+						echo("<track kind='captions' src='' srclang='' label=''/>");
+					}
+					if ($presentationData->annotations != '') {
+						echo("$descriptionTracks");
+					}
+
+				?>
+			}
 		  </video>
 		</div>
 		<div id="transcript"></div>
 	</main>
-<!-- to write transcript to an external div, pass id of an empty div via data-transcript-div -->
-
 </body>
 </html>

@@ -8,11 +8,12 @@ $serverPublicKey = $SETTINGS['AWS_SERVER_PUBLIC_KEY'];
 $serverPrivateKey = $SETTINGS['AWS_SERVER_PRIVATE_KEY'];
 $expectedBucketName = $SETTINGS['S3_BUCKET_NAME'];
 
+$type = $_GET['type'];
 $id = $_GET['id'];
 $ext = $_GET['ext'];
-$key =  "videos/".$id."." . $ext;
+$key =  $type . "s/".$id."." . $ext;
 $link = getTempLink($expectedBucketName, $key);
-echo($link);
+echo($link);  
 
 function getS3Client() {
     global $clientPrivateKey, $serverPrivateKey;
@@ -29,7 +30,7 @@ function getTempLink($bucket, $key) {
         $request = $client->get($url);
         $tmpLink = $client->createPresignedUrl($request, '+60 minutes');
     } catch (S3Exception $e) {
-        $tmpLink =  new Exception($e->getMessage());
+        $tmpLink = new Exception($e->getMessage());
     }
     return $tmpLink;
 }

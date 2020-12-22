@@ -33,6 +33,7 @@
 /*jslint node: true, browser: true, white: true, indent: 2, unparam: true, plusplus: true */
 /*global $, jQuery */
 "use strict";
+
 (function ($) {
   $(document).ready(function () {
     $('video, audio').each(function (index, element) {
@@ -2332,7 +2333,7 @@
       column: 1
     };
   //console.log('parseWebVTT: parserState  -> ');
-	//console.log(parserState);
+  //console.log(parserState);
     try {
       act(parserState, parseFileBody);
     }
@@ -2523,9 +2524,9 @@
     var errString;
 
     if(nextLine.indexOf('-->') === -1) {
-    	cueId = cutLine(state);
-    	nextLine = peekLine(state);
-    	if(nextLine.indexOf('-->') === -1) {
+      cueId = cutLine(state);
+      nextLine = peekLine(state);
+      if(nextLine.indexOf('-->') === -1) {
         errString = 'Invalid WebVTT file: ' + state.src + '\n';
         errString += 'Line: ' + state.line + ', ';
         errString += 'Column: ' + state.column + '\n';
@@ -2537,7 +2538,7 @@
           console.log(errString);
         }
         return; // Return leaving line for parseCuesAndComments to handle
-    	}
+      }
     }
 
     var cueTimings = actList(state, [getTiming,
@@ -3256,14 +3257,10 @@
       'aria-live': 'assertive',
       'aria-atomic': 'true'
     });
-    this.$descLabel = $('<div>',{
-      'class': 'descriptionLabel'
-    });
     // Start off with description hidden.
     // It will be exposed conditionally within description.js > initDescription()
-    //this.$descLabel.append('Annotations:');
-    //this.$descDiv.append(this.$descLabel);
-    //this.$ableDiv.append(this.$descDiv);
+    //this.$descDiv.hide();
+    this.$ableDiv.append(this.$descDiv);
     $('body').append(this.$descDiv);
     //console.log ('injectTextDescriptionArea:  ableDiv ->');
     //console.log(this.$ableDiv);
@@ -8436,7 +8433,7 @@ AblePlayer.prototype.showDescription = function(now) {
     }
     else {
       $('.able-descriptions').appendTo($('body '));
-      $('.able-descriptions').css('padding-top','1%');
+      $('.able-descriptions').css('padding-top','3%');
       // player resized
       if (this.restoringAfterFullScreen) {
         // User has just exited fullscreen mode. Restore to previous settings
@@ -9451,6 +9448,7 @@ AblePlayer.prototype.showDescription = function(now) {
   AblePlayer.prototype.injectTranscriptArea = function() {
 
     var thisObj = this;
+
     this.$transcriptArea = $('<div>', {
       'class': 'able-transcript-area',
       'tabindex': '-1'
@@ -9459,6 +9457,7 @@ AblePlayer.prototype.showDescription = function(now) {
     this.$transcriptToolbar = $('<div>', {
       'class': 'able-window-toolbar able-' + this.toolbarIconColor + '-controls'
     });
+
     this.$transcriptDiv = $('<div>', {
       'class' : 'able-transcript'
     });
@@ -9475,7 +9474,7 @@ AblePlayer.prototype.showDescription = function(now) {
     this.$unknownTranscriptOption = $('<option val="unknown">' + this.tt.unknown + '</option>');
     this.$transcriptLanguageSelect.append(this.$unknownTranscriptOption);
     this.$transcriptLanguageSelect.prop('disabled', true);
-	  this.$transcriptLanguageSelect.css('color', '#000');
+  this.$transcriptLanguageSelect.css('color', '#000');
 
     var languageSelectWrapper = $('<div class="transcript-language-select-wrapper">');
     this.$transcriptLanguageSelectContainer = languageSelectWrapper;
@@ -9967,7 +9966,7 @@ AblePlayer.prototype.showDescription = function(now) {
       div.append($capSpan);
       div.append(' \n');
     };
-    
+
     // keep looping as long as any one of the three arrays has content
     while ((nextChapter < chapters.length) || (nextDesc < descriptions.length) || (nextCap < captions.length)) {
 
@@ -9990,7 +9989,6 @@ AblePlayer.prototype.showDescription = function(now) {
       else {
         var firstStart = null;
       }
-
       if (firstStart !== null) {
         if (typeof chapters[nextChapter] !== 'undefined' && chapters[nextChapter].start === firstStart) {
           addChapter($main, chapters[nextChapter]);
@@ -10060,6 +10058,7 @@ AblePlayer.prototype.showDescription = function(now) {
     });
     return $main;
   };
+
 })(jQuery);
 
 (function ($) {
@@ -11488,32 +11487,32 @@ AblePlayer.prototype.showDescription = function(now) {
     keySpeed = 10; // pixels per keypress event
 
     switch (key) {
-		  case 37:	// left
+      case 37:  // left
       case 63234:
-			  this.dragKeyX -= keySpeed;
+        this.dragKeyX -= keySpeed;
         break;
-      case 38:	// up
+      case 38:  // up
       case 63232:
-				this.dragKeyY -= keySpeed;
+        this.dragKeyY -= keySpeed;
         break;
-      case 39:	// right
+      case 39:  // right
       case 63235:
-				this.dragKeyX += keySpeed;
+        this.dragKeyX += keySpeed;
         break;
-      case 40:	// down
+      case 40:  // down
       case 63233:
-				this.dragKeyY += keySpeed;
+        this.dragKeyY += keySpeed;
         break;
-      case 13: 	// enter
-      case 27: 	// escape
-				this.endDrag(which);
+      case 13:  // enter
+      case 27:  // escape
+        this.endDrag(which);
         return false;
       default:
-				return false;
-		}
+        return false;
+    }
     this.resetDraggedObject(this.dragKeyX,this.dragKeyY);
     if (e.preventDefault) {
-  		e.preventDefault();
+      e.preventDefault();
     }
     return false;
   };
@@ -12515,15 +12514,15 @@ AblePlayer.prototype.showDescription = function(now) {
   }
 
   AblePlayer.prototype.getLanguageName = function (key) {
-		key = key.slice(0,2);
-		var lang = isoLangs[key];
-		return lang ? lang.name : undefined;
-	};
+    key = key.slice(0,2);
+    var lang = isoLangs[key];
+    return lang ? lang.name : undefined;
+  };
   AblePlayer.prototype.getLanguageNativeName = function (key) {
-		key = key.slice(0,2);
-		var lang = isoLangs[key];
-		return lang ? lang.nativeName : undefined;
-	}
+    key = key.slice(0,2);
+    var lang = isoLangs[key];
+    return lang ? lang.nativeName : undefined;
+  }
 
 })(jQuery);
 (function ($) {

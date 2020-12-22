@@ -1,24 +1,37 @@
-function generateFiles(files) {
-  var confirm = [];
-  $.each(files, function() {
-    file = $(this)[0];
-      $.ajax({
-        url: "./S3LinkGen.php?id=" + file.id + "&ext=" + file.ext,
-        context: document.body,
-        error: function(xhr, error) {
-                 console.debug(xhr); 
-                 console.debug(error);
-               }
-      }).done(function(signedUrl) {
-        if (signedUrl.match(/https\:\/\/s3\.amazonaws\.com\//)) {
-          $('#' + file.type).src=signedUrl;
-          confirm[file.type] = 1;
-        }
-        else {
-          confirm[file.type] = 0;
-        }
-      })
+function generateFile(type,id,ext,language) {
+  var signed;
+  var url = "./S3LinkGen.php?type=" + type + "&id=" + id + "&ext=" + ext;
+  console.log(url);
+  var response = $.ajax({
+    url: url,
+    context: document.body,
+    error: function(xhr, error) {
+             console.debug('xhr',xhr); 
+             console.debug('error',error);
+           }
+  }).done(function(signedUrl) {
+    if (signedUrl.match(/https\:\/\/s3\.amazonaws\.com\//)) {
+      writeHTML(type,signedUrl,ext,language);
     }
-  );
-  return confirm;
+    else {
+      return null;
+    }
+  })
+  function writeHTML(type,signedUrl,ext,language) {
+    if (type == 'video') {
+      $("#video1").append("<source type='video/"+ext+"' id='video' src='"+signedUrl+"'>");
+    }
+    else {
+      var label;
+      if (type == 'translation') {
+        label = 'English';
+      }
+      else {
+        label = language;
+      }
+      var la = label.substr(0,2).toLowerCase();
+      $("#video1").append("<track kind='captions' src='"+signedUrl+"' srclang='"+la+"' label='"+label+"'/>");
+
+    }
+  }
 }

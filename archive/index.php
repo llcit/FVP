@@ -22,7 +22,7 @@
 	//vdump($filters);
 	/*  ------------ /READ IN POST VALS ------------- */
 	/* ---------- MAIN ---------- */
-	$videoData = getVideos($filters);
+	$videoData = getVideos(null,$filters);
 	$videoList =buildVideoList($videoData);
 	$filterPulldowns = buildPullDowns($filters);
 	/* ---------- /MAIN ---------- */
