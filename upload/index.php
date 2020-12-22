@@ -151,7 +151,7 @@
 										 }
 					},
 					objectProperties: {
-						key: 'myAwesomeKey.rm'
+						key: 'myAwesomeKey'
 					},
 					signature: {
 						endpoint: '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']."/".$SETTINGS['FINEUPLOADER_BACKEND_SCRIPT']); ?>'
