@@ -99,7 +99,7 @@
     function transcribe_Watson($audioFile,$language) {
         global $SETTINGS;
         $progressVals = json_encode(['action'=>'generateTranscript','percent'=>'0']);
-        setcookie( "uploadProgress", $value, strtotime('+60 min'));
+        setcookie( "uploadProgress", $progressVals, strtotime('+60 min'));
         $audio_extension = $SETTINGS['tmp_audio_extension'];
         $models = [
             'Arabic' => 'ar-AR_BroadbandModel',
@@ -196,7 +196,7 @@
     function generateTranscript($tmpLink,$key) {
         global $SETTINGS,$language;
         $progressVals = json_encode(['action'=>'processAudio','percent'=>'0']);
-        setcookie( "uploadProgress", $value, strtotime('+60 min'));
+        setcookie( "uploadProgress", $progressVals, strtotime('+60 min'));
         $audio_extension = $SETTINGS['tmp_audio_extension'];
         preg_match("/(.*)\.(mov|mp4|m4a)/",$key,$matches);
         $file_name = $matches[1];
