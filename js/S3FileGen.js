@@ -2,7 +2,6 @@ function generateFiles(files) {
   var confirm = {};
   $.each(files, function() {
     file = $(this)[0];
-      console.log('FILE: ', file.id);
       $.ajax({
         url: "./S3LinkGen.php?id=" + file.id + "&ext=" + file.ext,
         context: document.body,
@@ -21,4 +20,5 @@ function generateFiles(files) {
       })
     }
   );
+  return confirm;
 }
