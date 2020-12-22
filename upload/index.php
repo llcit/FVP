@@ -150,6 +150,9 @@
 										 	exent_id: '<?php echo($event_id); ?>'
 										 }
 					},
+					objectProperties: {
+						key: 'myAwesomeKey.rm'
+					},
 					signature: {
 						endpoint: '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']."/".$SETTINGS['FINEUPLOADER_BACKEND_SCRIPT']); ?>'
 					},
