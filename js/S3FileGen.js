@@ -1,5 +1,5 @@
 function generateFiles(files) {
-  var confirm = {};
+  var confirm = [];
   $.each(files, function() {
     file = $(this)[0];
       $.ajax({
