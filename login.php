@@ -18,7 +18,7 @@
                     $result = $query->fetch(PDO::FETCH_OBJ);
                     if (password_verify($_POST["password"], $result->password)) {
                         $_SESSION["username"] = $_POST["username"];
-                        exit(header("location:archive/index.php"));
+                        exit(header("location:./index.php"));
                     } else {
                         echo "'Invalid Details'";
                     } 

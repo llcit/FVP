@@ -1,32 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-		  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+	<meta charset="UTF-8">
+	<title>Flagship Video Demo</title>
+	<!-- Dependencies -->
 
-<meta charset="UTF-8">
-<title>Flagship Video Demo</title>
+	<script src="../ableplayer/thirdparty/modernizr.custom.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="../ableplayer/thirdparty/js.cookie.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
 
-
-<!-- Dependencies -->
-
-<script src="../ableplayer/thirdparty/modernizr.custom.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="../ableplayer/thirdparty/js.cookie.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
-
-<!-- Able Player CSS -->
-<link rel="stylesheet" href="../ableplayer/build/ableplayer.css" type="text/css"/>
-<link rel="stylesheet" href="../css/main.css" type="text/css"/>
-<!-- Able Player JavaScript -->
-<script src="../ableplayer/build/ableplayer.js"></script>
-<script src='../js/S3FileGen.js'></script>
-<script>
-	generateFile('<?php echo($_GET['v']); ?>','<?php echo('mp4'); ?>');
-</script>
+	<!-- Able Player CSS -->
+	<link rel="stylesheet" href="../ableplayer/build/ableplayer.css" type="text/css"/>
+	<link rel="stylesheet" href="../css/main.css" type="text/css"/>
+	<!-- Able Player JavaScript -->
+	<script src="../ableplayer/build/ableplayer.js"></script>
+	<script src='../js/S3FileGen.js'></script>
+	<script>
+		var filesFromS3 = generateFiles([
+				{'type':'video','id': '<?php echo($_GET['v']); ?>','ext': '<?php echo("mp4"); ?>'},
+				{'type':'transcript','id': '<?php echo($_GET['v']); ?>','ext': 'vtt'},
+				{'type':'translation','id': '<?php echo($_GET['v']); ?>','ext': 'vtt'}
+			]
+		);
+		console.log('files found:',filesFromS3);
+	</script>
 	<?php
 		$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
 		$videoId = ($_GET['v']) ? $_GET['v'] : 86;
@@ -75,8 +78,8 @@
 	<main role="main">
 	  <div id="player">
 		  <video id="video1" preload="auto" width="480" height="360" poster="../ableplayer/media/wwa.jpg" data-able-player data-transcript-div="transcript" playsinline <?php echo("$editCaptions"); ?> >
-				<source type="video/mp4" id="videoMain">
-		    <!--<track kind="captions" src="../assets/transcripts/<?php echo($videoId); ?>.vtt" srclang="<?php echo($la); ?>" label="<?php echo($language); ?>"/>
+				<source type="video/mp4" id="video">
+		    <track kind="captions" src="../assets/transcripts/<?php echo($videoId); ?>.vtt" srclang="<?php echo($la); ?>" label="<?php echo($language); ?>"/>
 			  <track kind="captions" src="../assets/translations/<?php echo($videoId); ?>.vtt" srclang="en" label="English"/> -->
 			  	<?php //echo($descriptionTracks); ?> 
 		  </video>
