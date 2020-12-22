@@ -2,6 +2,7 @@
 /* TO DO 12/20
 1. Write progress vals to cookie
 2. Generate and upload thumb in ffmpeg
+3. Fix language and extension
 */
     // blow open memory limit
     ini_set('memory_limit', '-1');
@@ -22,7 +23,6 @@
     $expectedHostName = $SETTINGS['S3_HOST_NAME']; // v4-only
     $expectedMaxSize = (isset($SETTINGS['S3_MAX_FILE_SIZE']) ? $SETTINGS['S3_MAX_FILE_SIZE'] : null);
     $method = getRequestMethod();
-    $language = 'English';
 
     if ($method == 'OPTIONS') {
         handlePreflight();
@@ -35,8 +35,8 @@
         handleCorsRequest();
         if (isset($_REQUEST["success"])) {
             $tmpLink = verifyFileInS3();
-            include_once("../../inc/db_pdo.php");
-            $pid = ($_REQUEST['pid'] > 0) ? $_REQUEST['pid'] : registerVideo($_REQUEST['user_id'],$_REQUEST['event_id']); 
+            include_once("../../inc/db_pdo.php"); 
+            $pid = ($_REQUEST['pid'] > 0) ? $_REQUEST['pid'] : registerVideo($_REQUEST['user_id'],$_REQUEST['event_id']);
             $transcribeResult = generateTranscript($tmpLink,$_REQUEST['key']);
             renameFile($_REQUEST['key'],$pid);
             $confirmation = confirmUpload($pid,$transcribeResult['duration'],$transcribeResult['success'],$tmpLink);
@@ -50,7 +50,7 @@
         global $expectedBucketName;
         $client=getS3Client();
         // Ugh!  Only way to rename is to copy and delete-- gross!
-        // FVP TO DO: kill once filenameParam is working
+        // FVP TO DO: kill once filenameParam in fineuploade client is working 
         $client->copyObject([
             'Bucket'     => $expectedBucketName,
             'Key'        => "videos/$pid.mov",
@@ -98,6 +98,8 @@
     }
     function transcribe_Watson($audioFile,$language) {
         global $SETTINGS;
+        $progressVals = json_encode(['action'=>'generateTranscript','percent'=>'0']);
+        setcookie( "uploadProgress", $value, strtotime('+60 min'));
         $audio_extension = $SETTINGS['tmp_audio_extension'];
         $models = [
             'Arabic' => 'ar-AR_BroadbandModel',
@@ -143,7 +145,7 @@
             'Korean' => 'ko',
             'Portuguese' => 'pt'
         ];
-        $fileContent = "WEBVTT\r\nKind: captions\r\nLanguage: en\r\n\r\n";
+        $fileContent = "WEBVTT\r\nKind: captions\r\nLanguage: ".$languages[$language]."\r\n\r\n";
         $textType = 'captions';
         $raw_transcript = json_decode($data);
         foreach($raw_transcript->results as $result) {
@@ -187,12 +189,14 @@
             list($seconds, $ms) = preg_split("/\./",$rawTime);
             // always 0 microseconds
             $microseconds = '000';
-            return gmdate("H:i:s", $seconds) . '' . $microseconds;
+            return gmdate("H:i:s", $seconds) . '.' . $microseconds;
         }
     }
 
     function generateTranscript($tmpLink,$key) {
         global $SETTINGS,$language;
+        $progressVals = json_encode(['action'=>'processAudio','percent'=>'0']);
+        setcookie( "uploadProgress", $value, strtotime('+60 min'));
         $audio_extension = $SETTINGS['tmp_audio_extension'];
         preg_match("/(.*)\.(mov|mp4|m4a)/",$key,$matches);
         $file_name = $matches[1];

@@ -73,7 +73,6 @@
         JOIN `affiliations` a on (a.`user_id` = u.`id` and a.`program_id`=prog.`id`) 
         JOIN `institutions` i on i.`id`=a.`domestic_institution_id` 
         WHERE $where 
-        GROUP BY pres.`id`
         ";
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
