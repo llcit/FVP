@@ -186,49 +186,6 @@
 							notAvailablePath: '<?php echo($SETTINGS['FINEUPLOADER_FRONTEND_PATH']); ?>/placeholders/not_available-generic.png',
 							waitingPath: '<?php echo($SETTINGS['FINEUPLOADER_FRONTEND_PATH']); ?>/placeholders/waiting-generic.png'
 						}
-					},
-					callbacks: {
-						onProgress: function(id, name, uploadedBytes, totalBytes){
-						var value = Math.round((uploadedBytes/totalBytes) * 100);
-						  $('#progress-bar').css('width', + value + '%').attr('aria-valuenow', value);
-						  // FVP TO DO get progress type from cookie (video, rip audio, generate transcript, generate thumb)    
-						},
-						onComplete: function(id, name, response) {
-							if (response.success && !noFile) {
-								setTimeout(function() { 
-									$('#rps_upload_prog_container').empty();
-									$('#rps_upload_prog_container').html('<i class=\"fas fa-check-circle icon_green\"></i><span class=\"rps_encoding_status\"> File uploaded successfully!</span>');
-									allowPlayback();
-								}, 1000);
-							}
-							else {
-								$('#closeProgress').show();
-							}
-						},
-						onStatusChange: function(id,oldStatus,newStatus) {
-							switch(newStatus) {
-								case 'submitting' : 
-									break;
-								case 'submitted' : 
-									if (!this.getSize(id) || this.getSize(id) < 1000) {
-										$('#rps_encoding_icon').removeClass('fa fa-cog fa-spin fa-fw').addClass('fas fa-exclamation-triangle icon_red');
-										$('#rps_encoding_status').empty();
-										$('#rps_encoding_status').html('There was a problem recording this file! Please contact tech support.');
-										noFile = true;
-									}
-									else {
-
-										$('#rps_encoding_icon').removeClass('fa fa-cog fa-spin fa-fw').addClass('fas fa-check-circle icon_green');
-										$('#rps_encoding_status').empty();
-										$('#rps_encoding_status').html('Encoding complete. (File size: ' + Math.round(this.getSize(id)/1000) + ' kbs)');
-										$('#rps_upload').show();
-										$('#rps_upload_prog_container').show();
-										$('#progress-bar').css('width', '0%').attr('aria-valuenow', 0);
-										console.log('submitted');
-									}
-									break;
-							}
-						}
 					}
 				});
 			});

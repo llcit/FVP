@@ -3,6 +3,7 @@
 1. Write progress vals to cookie
 2. Generate and upload thumb in ffmpeg
 3. Fix language and extension
+4. clean up tmp files
 */
     // blow open memory limit
     ini_set('memory_limit', '-1');
@@ -211,7 +212,7 @@
             'ffmpeg.threads'   => 1   // the number of threads that FFMpeg should use
         ]);
         $ffmpeg->getFFMpegDriver()->listen(new \Alchemy\BinaryDriver\Listeners\DebugListener());
-         $ffmpeg->getFFMpegDriver()->on('debug', function ($message) {       
+        $ffmpeg->getFFMpegDriver()->on('debug', function ($message) {       
             echo "MSG: " . $message."\n";
         }); 
         $video = $ffmpeg->open($tmpLink);
