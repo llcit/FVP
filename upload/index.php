@@ -151,6 +151,9 @@
 											 	event_id: '<?php echo($event_id); ?>'
 											 }
 						},
+						objectProperties: {
+							key:'<?php echo($pid); ?>'
+						},
 						signature: {
 							endpoint: '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']."/".$SETTINGS['FINEUPLOADER_BACKEND_SCRIPT']); ?>'
 						},

@@ -81,9 +81,10 @@
         }
         return $pid;
     }
-    function verifyFileInS3($key) {
+    function verifyFileInS3() {
         global $expectedMaxSize;
         $bucket = $_REQUEST["bucket"];
+        $key = $_REQUEST["key"];
         if (isset($expectedMaxSize) && getObjectSize($bucket, $key) > $expectedMaxSize) {
             header("HTTP/1.0 500 Internal Server Error");
             deleteObject();
@@ -91,14 +92,15 @@
         }
         else {
             $link = getTempLink($bucket, $key);
-            $response = array("tempLink" => $link);
-            echo json_encode($response);
+            return $link;
         }
     }
     function confirmUpload($pid,$duration,$transcript_success,$link) {
         global $pdo;
         $sql = "UPDATE presentations SET duration=?, transcript_raw=? WHERE id=?";
         $stmt= $pdo->prepare($sql)->execute([$duration,$transcript_success,$pid]);
+        $response = array("tempLink" => $link);
+        echo json_encode($response);
         return $response;
     }
     function transcribe_Watson($audioFile,$language) {
