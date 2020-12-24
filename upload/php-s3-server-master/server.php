@@ -36,15 +36,18 @@
     else if ($method == 'POST') {
         handleCorsRequest();
         if (isset($_REQUEST["success"])) {
-            $tmpLink = verifyFileInS3($_REQUEST['key']);
-            preg_match("/(.*)\.(mov|mp4|m4a)/",$_REQUEST['key'],$matches);
-            $file_name = $matches[1];
-            $video_extension = $matches[2];
             include_once("../../inc/db_pdo.php"); 
             $pid = ($_REQUEST['pid'] > 0) ? $_REQUEST['pid'] : registerVideo($_REQUEST['user_id'],$_REQUEST['event_id'],$video_extension);
-            $transcribeResult = generateTranscript($tmpLink,$pid);
-            $confirmation = confirmUpload($pid,$transcribeResult['duration'],$transcribeResult['success'],$tmpLink);
-            renameFile($_REQUEST['key'],$pid,$video_extension);
+            echo($pid);
+            if ($pid) {
+                $tmpLink = verifyFileInS3($_REQUEST['key']);
+                preg_match("/(.*)\.(mov|mp4|m4a)/",$_REQUEST['key'],$matches);
+                $file_name = $matches[1];
+                $video_extension = $matches[2];
+                $transcribeResult = generateTranscript($tmpLink,$pid);
+                $confirmation = confirmUpload($pid,$transcribeResult['duration'],$transcribeResult['success'],$tmpLink);
+                renameFile($_REQUEST['key'],$pid,$video_extension);
+            }
             
         }
         else {
