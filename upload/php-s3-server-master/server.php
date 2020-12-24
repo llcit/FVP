@@ -36,16 +36,15 @@
     else if ($method == 'POST') {
         handleCorsRequest();
         if (isset($_REQUEST["success"])) {
+            $tmpLink = verifyFileInS3($_REQUEST['key']);
             preg_match("/(.*)\.(mov|mp4|m4a)/",$key,$matches);
             $file_name = $matches[1];
             $video_extension = $matches[2];
-            $newKey = renameFile($_REQUEST['key'],$pid,$video_extension);
-            $tmpLink = verifyFileInS3($newKey);
             include_once("../../inc/db_pdo.php"); 
             $pid = ($_REQUEST['pid'] > 0) ? $_REQUEST['pid'] : registerVideo($_REQUEST['user_id'],$_REQUEST['event_id']);
-            renameFile($_REQUEST['key'],$pid,$video_extension);
-            $transcribeResult = generateTranscript($tmpLink,$_REQUEST['key']);
+            $transcribeResult = generateTranscript($tmpLink,$pid);
             $confirmation = confirmUpload($pid,$transcribeResult['duration'],$transcribeResult['success'],$tmpLink);
+            renameFile($_REQUEST['key'],$pid,$video_extension);
             
         }
         else {
@@ -91,16 +90,15 @@
             echo json_encode(array("error" => "File is too big!", "preventRetry" => true));
         }
         else {
+            $response = array("tempLink" => $link);
             $link = getTempLink($bucket, $key);
-            return $link;
+            echo json_encode($response);
         }
     }
     function confirmUpload($pid,$duration,$transcript_success,$link) {
         global $pdo;
-        $response = array("tempLink" => $link);
         $sql = "UPDATE presentations SET duration=?, transcript_raw=? WHERE id=?";
         $stmt= $pdo->prepare($sql)->execute([$duration,$transcript_success,$pid]);
-        echo json_encode($response);
         return $response;
     }
     function transcribe_Watson($audioFile,$language) {
@@ -198,10 +196,10 @@
         }
     }
 
-    function generateTranscript($tmpLink,$file_name,$video_extension) {
+    function generateTranscript($tmpLink,$pid) {
         global $SETTINGS,$language;
         $audio_extension = $SETTINGS['tmp_audio_extension'];
-        echo ("\n\nRIP file_name: $file_name\n\n");
+        echo ("\n\nRIP pid: $pid\n\n");
         echo ("\n\nRIP video_extension: $video_extension\n\n");
         $output_dir = './tmpAudio/';
         $ffmpeg = FFMpeg\FFMpeg::create([
@@ -227,7 +225,7 @@
         $output_format->on('progress', function ($video, $format, $percentage) use($key) {
             file_put_contents('./progress/'. $key . '.txt', $percentage);
         }); 
-        $saveFile = addslashes($output_dir . $file_name . "." . $audio_extension);
+        $saveFile = addslashes($output_dir . $pid . "." . $audio_extension);
         $video->save($output_format, $saveFile); 
         $audioFile = $file_name . "." . $audio_extension;
         if ($language != 'Russian') {
