@@ -110,6 +110,7 @@
             $setString .= "$key=:$key";
         }
         $sql = "UPDATE presentations SET $setString WHERE id=$id";
+        echo("\nSQL --> $sql\n\n");
         $stmt= $pdo->prepare($sql)->execute($data);    
     }
     function transcribe_Watson($audioFile,$language) {
