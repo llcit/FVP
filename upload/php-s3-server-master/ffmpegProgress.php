@@ -1,4 +1,4 @@
 <?php
-	$progress = file_get_contents('./progress/'.$_GET['key']);
+	$progress = file_get_contents('./progress/'.$_POST['pid']);
 	echo json_encode($progress);
 ?>
