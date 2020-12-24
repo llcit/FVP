@@ -203,17 +203,21 @@
 				function getFFMPEGProgress(pid) {
 					console.log("FFMPEG Progress for " + pid);
 					var url = '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']); ?>/ffmpegProgress.php';
-					$.post(url, {pid: pid}, 
-					  function(response) {
-					    console.log("FFMPEG Progress: " + response.progress);
-					    if (response.progress < 100) {
-					    	getFFMPEGProgress(pid);
-					    }
-					  }
-					).fail(function(error){
-						      console.log(error);
-						}
-					);
+					var request = $.ajax({
+					    url: url,
+					    type: 'GET',
+					    data: { pid: pid} ,
+					    contentType: 'application/json; charset=utf-8'
+					});
+					request.done(function(response) {
+				    console.log("FFMPEG Progress: " + response.progress);
+				    if (response.progress < 100) {
+				    	getFFMPEGProgress(pid);
+				    }
+					});
+					request.fail(function(jqXHR, textStatus) {
+					  console.log('Error in getting audio progress',textStatus);
+					});
 				}
 			</script>
     </head>
