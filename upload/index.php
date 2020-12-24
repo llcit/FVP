@@ -193,6 +193,7 @@
 								var percent = (uploadBytes/totalBytes)*100;
 								console.log('prog:', percent);
 								if (percent == 100) {
+									console.log('GO TO FFMPEG');
 									getFFMPEGProgress();
 								}
 							}
@@ -200,6 +201,7 @@
 					});
 				});
 				function getFFMPEGProgress() {
+					console.log("FFMPEG Progress!");
 					$.ajax({
 					  url: 'http:<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']); ?>/ffmpegProgress.php?key='+key,
 					  data: {
