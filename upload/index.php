@@ -190,7 +190,7 @@
 						},
 						callbacks: {
 							onProgress: function(id,name,uploadBytes,totalBytes) {
-								var percent = uploadBytes/totalBytes;
+								var percent = (uploadBytes/totalBytes)*100;
 								console.log('prog:', percent);
 								if (percent == 100) {
 									getFFMPEGProgress();
