@@ -107,12 +107,13 @@
         global $pdo;
         try { 
             $setString = '';
+            $whereString = '';
             $comma = '';
             foreach($data as $key=>$value) {
-                if ($key == 'id') {
+                if($key == 'id') {
                     $whereString = "$key=:$key";
                 }
-                else{
+                else {
                     $setString .= $comma . "$key=:$key";
                     $comma = '';
                 }
