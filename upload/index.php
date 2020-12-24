@@ -202,7 +202,7 @@
 				});
 				function getFFMPEGProgress(pid) {
 					console.log("FFMPEG Progress for " + pid);
-					var url = 'http:<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']); ?>/ffmpegProgress.php';
+					var url = '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']); ?>/ffmpegProgress.php';
 					$.post(url, {pid: pid}, 
 					  function(progress) {
 					    console.log("FFMPEG Progress: " . progress);
