@@ -238,7 +238,7 @@
         $ffprobe = FFMpeg\FFProbe::create();
         $ffprobe = FFMpeg\FFProbe::create();
         $duration =$ffprobe
-            ->format($output_dir . $file_name . "." . $audio_extension) // extracts file informations
+            ->format($output_dir . $pid . "." . $audio_extension) // extracts file informations
             ->get('duration'); 
         return ['duration' => $duration, 'success' => $transcribeSuccess];
     } 
