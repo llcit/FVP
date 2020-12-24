@@ -187,6 +187,11 @@
 								notAvailablePath: '<?php echo($SETTINGS['FINEUPLOADER_FRONTEND_PATH']); ?>/placeholders/not_available-generic.png',
 								waitingPath: '<?php echo($SETTINGS['FINEUPLOADER_FRONTEND_PATH']); ?>/placeholders/waiting-generic.png'
 							}
+						},
+						callbacks: {
+							onProgress: function(id,name,uploadBytes,totalBytes) {
+								console.log('prog:', uploadBytes);
+							}
 						}
 					});
 				});
