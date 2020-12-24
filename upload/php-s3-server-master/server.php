@@ -223,12 +223,12 @@
             $output_format->setAudioChannels(1);
             $output_format->setAudioKiloBitrate(256);
         }
-        $output_format->on('progress', function ($video, $format, $percentage) use($key) {
-            file_put_contents('./progress/'. $key . '.txt', $percentage);
+        $output_format->on('progress', function ($video, $format, $percentage) use($pid) {
+            file_put_contents('./progress/'. $pid . '.txt', $percentage);
         }); 
         $saveFile = addslashes($output_dir . $pid . "." . $audio_extension);
         $video->save($output_format, $saveFile); 
-        $audioFile = $file_name . "." . $audio_extension;
+        $audioFile = $pid . "." . $audio_extension;
         if ($language != 'Russian') {
             $response = transcribe_Watson($audioFile,$language);
         }
