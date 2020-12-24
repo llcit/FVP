@@ -97,13 +97,13 @@
         }
     }
     function confirmUpload($pid,$duration,$transcript_success,$link) {
-        $data = ['transcript_raw' => $transcript_success,'duration'=>$duration];
-        updateDB($pid,$data);
+        $data = ['id'=>$pid,'transcript_raw' => $transcript_success,'duration'=>$duration];
+        updateDB($data);
         $response = array("tempLink" => $link);
         echo json_encode($response);
         return $response;
     }
-    function updateDB($id,$data) {
+    function updateDB($data) {
         global $pdo; 
         try { 
             $setString = '';
@@ -115,7 +115,7 @@
                 }
                 else {
                     $setString .= $comma . "$key=:$key";
-                    $comma = '';
+                    $comma = ',';
                 }
             }
             $sql = "UPDATE presentations SET $setString WHERE $whereString";
