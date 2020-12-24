@@ -104,7 +104,7 @@
         return $response;
     }
     function updateDB($id,$data) {
-        global $pdo;
+        global $pdo; 
         try { 
             $setString = '';
             $whereString = '';
