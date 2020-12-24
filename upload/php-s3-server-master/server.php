@@ -41,7 +41,7 @@
             $file_name = $matches[1];
             $video_extension = $matches[2];
             include_once("../../inc/db_pdo.php"); 
-            $pid = ($_REQUEST['pid'] > 0) ? $_REQUEST['pid'] : registerVideo($_REQUEST['user_id'],$_REQUEST['event_id']);
+            $pid = ($_REQUEST['pid'] > 0) ? $_REQUEST['pid'] : registerVideo($_REQUEST['user_id'],$_REQUEST['event_id'],$video_extension);
             $transcribeResult = generateTranscript($tmpLink,$pid);
             $confirmation = confirmUpload($pid,$transcribeResult['duration'],$transcribeResult['success'],$tmpLink);
             renameFile($_REQUEST['key'],$pid,$video_extension);
@@ -68,13 +68,14 @@
         ]);
         return $newKey;
     }
-    function registerVideo($uid,$eid,$pid=null) {
+    function registerVideo($uid,$eid,$extension) {
         global $pdo;
         // new presentation
-        $sql = "INSERT INTO presentations (user_id,event_id) VALUES (:user_id,:event_id)";
+        $sql = "INSERT INTO presentations (user_id,event_id) VALUES (:user_id,:event_id,:extension)";
         $stmt= $pdo->prepare($sql);
         $stmt->bindValue(':user_id', $uid);
         $stmt->bindValue(':event_id', $eid);
+        $stmt->bindValue(':extension', $extension);
         $stmt->execute();
         if($stmt->rowCount() == 0) {
             $pid = $pdo->lastInsertId();
@@ -96,12 +97,20 @@
         }
     }
     function confirmUpload($pid,$duration,$transcript_success,$link) {
-        global $pdo;
-        $sql = "UPDATE presentations SET duration=?, transcript_raw=? WHERE id=?";
-        $stmt= $pdo->prepare($sql)->execute([$duration,$transcript_success,$pid]);
+        $data = ['transcript_raw' => $transcript_success,'duration'=>$duration];
+        updateDB($pid,$data);
         $response = array("tempLink" => $link);
         echo json_encode($response);
         return $response;
+    }
+    function updateDB($id,$data) {
+        global $pdo;
+        $setString = '';
+        foreach($data as $key=>$value) {
+            $setString .= "$key=:$key";
+        }
+        $sql = "UPDATE presentations SET $setString WHERE id=$id";
+        $stmt= $pdo->prepare($sql)->execute($data);    
     }
     function transcribe_Watson($audioFile,$language) {
         global $SETTINGS;
