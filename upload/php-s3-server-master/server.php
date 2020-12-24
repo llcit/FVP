@@ -77,9 +77,7 @@
         $stmt->bindValue(':event_id', $eid);
         $stmt->bindValue(':extension', $extension);
         $stmt->execute();
-        if($stmt->rowCount() == 0) {
-            $pid = $pdo->lastInsertId();
-        }
+        $pid = $pdo->lastInsertId();
         return $pid;
     }
     function verifyFileInS3() {
