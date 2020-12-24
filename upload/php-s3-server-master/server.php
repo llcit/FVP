@@ -71,7 +71,7 @@
     function registerVideo($uid,$eid,$extension) {
         global $pdo;
         // new presentation
-        $sql = "INSERT INTO presentations (user_id,event_id) VALUES (:user_id,:event_id,:extension)";
+        $sql = "INSERT INTO presentations (user_id,event_id,extension) VALUES (:user_id,:event_id,:extension)";
         $stmt= $pdo->prepare($sql);
         $stmt->bindValue(':user_id', $uid);
         $stmt->bindValue(':event_id', $eid);
