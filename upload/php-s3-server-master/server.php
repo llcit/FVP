@@ -39,8 +39,8 @@
             preg_match("/(.*)\.(mov|mp4|m4a)/",$key,$matches);
             $file_name = $matches[1];
             $video_extension = $matches[2];
-            $tmpLink = verifyFileInS3();
-
+            $newKey = renameFile($_REQUEST['key'],$pid,$video_extension);
+            $tmpLink = verifyFileInS3($newKey);
             include_once("../../inc/db_pdo.php"); 
             $pid = ($_REQUEST['pid'] > 0) ? $_REQUEST['pid'] : registerVideo($_REQUEST['user_id'],$_REQUEST['event_id']);
             renameFile($_REQUEST['key'],$pid,$video_extension);
@@ -57,15 +57,17 @@
         $client=getS3Client();
         // Ugh!  Only way to rename is to copy and delete-- gross!
         // FVP TO DO: kill once filenameParam in fineuploade client is working 
+        $newKey = "videos/$pid".".".$extension;
         $client->copyObject([
             'Bucket'     => $expectedBucketName,
-            'Key'        => "videos/$pid".".".$extension,
+            'Key'        => $newKey,
             'CopySource' => "$expectedBucketName/$key",
         ]);
         $client->deleteObject([
             'Bucket' =>  $expectedBucketName,
             'Key' => $key
         ]);
+        return $newKey;
     }
     function registerVideo($uid,$eid,$pid=null) {
         global $pdo;
@@ -80,10 +82,9 @@
         }
         return $pid;
     }
-    function verifyFileInS3() {
+    function verifyFileInS3($key) {
         global $expectedMaxSize;
         $bucket = $_REQUEST["bucket"];
-        $key = $_REQUEST["key"];
         if (isset($expectedMaxSize) && getObjectSize($bucket, $key) > $expectedMaxSize) {
             header("HTTP/1.0 500 Internal Server Error");
             deleteObject();

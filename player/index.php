@@ -81,7 +81,7 @@
 	
 	?>
 <meta charset="UTF-8">
-<title>Flagship Video Demo</title>
+<title>Flagship Video Project</title>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <?php 
 	$captionMode = $_GET['cm'];
