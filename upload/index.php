@@ -204,9 +204,9 @@
 					console.log("FFMPEG Progress for " + pid);
 					var url = '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']); ?>/ffmpegProgress.php';
 					$.post(url, {pid: pid}, 
-					  function(progress) {
-					    console.log("FFMPEG Progress: " . progress);
-					    if (progress < 100) {
+					  function(response) {
+					    console.log("FFMPEG Progress: " + response.progress);
+					    if (response.progress < 100) {
 					    	getFFMPEGProgress(pid);
 					    }
 					  }
