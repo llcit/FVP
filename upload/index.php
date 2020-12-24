@@ -209,9 +209,9 @@
 					    data: { pid: pid} ,
 					    contentType: 'application/json; charset=utf-8'
 					});
-					request.done(function(response) {
-				    console.log("FFMPEG Progress: " + response.progress);
-				    if (response.progress < 100) {
+					request.done(function(progress) {
+				    console.log("FFMPEG Progress: " + progress);
+				    if (progress < 100) {
 				    	getFFMPEGProgress(pid);
 				    }
 					});
