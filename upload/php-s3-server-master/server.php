@@ -105,15 +105,26 @@
     }
     function updateDB($id,$data) {
         global $pdo;
-        $setString = '';
-        $comma = '';
-        foreach($data as $key=>$value) {
-            $setString .= $comma . "$key=:$key";
-            $comma = ',';
+        try { 
+            $setString = '';
+            $comma = '';
+            foreach($data as $key=>$value) {
+                if ($key == 'id') {
+                    $whereString = "$key=:$key";
+                }
+                else{
+                    $setString .= $comma . "$key=:$key";
+                    $comma = '';
+                }
+            }
+            $sql = "UPDATE presentations SET $setString WHERE $whereString";
+            echo("\nSQL --> $sql\n\n");
+            $stmt= $pdo->prepare($sql)->execute($data);  
+        }catch (Exception $e) {
+          echo json_encode(array("error" => "$e"));
         }
-        $sql = "UPDATE presentations SET $setString WHERE id=$id";
-        echo("\nSQL --> $sql\n\n");
-        $stmt= $pdo->prepare($sql)->execute($data);    
+
+
     }
     function transcribe_Watson($audioFile,$language) {
         global $SETTINGS;
