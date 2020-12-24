@@ -214,6 +214,9 @@
 				    if (progress < 100) {
 				    	timerID = setTimeout(getFFMPEGProgress(pid),2000);
 				    }
+				    else {
+				    	console.log("DONE!");
+				    }
 					});
 					request.fail(function(jqXHR, textStatus) {
 					  console.log('Error in getting audio progress',textStatus);
