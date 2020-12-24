@@ -106,8 +106,10 @@
     function updateDB($id,$data) {
         global $pdo;
         $setString = '';
+        $comma = '';
         foreach($data as $key=>$value) {
-            $setString .= "$key=:$key";
+            $setString .= $comma . "$key=:$key";
+            $comma = ',';
         }
         $sql = "UPDATE presentations SET $setString WHERE id=$id";
         echo("\nSQL --> $sql\n\n");
