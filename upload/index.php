@@ -212,7 +212,7 @@
 					request.done(function(progress) {
 				    console.log("FFMPEG Progress: " + progress);
 				    if (progress < 100) {
-				    	getFFMPEGProgress(pid);
+				    	timerID = setTimeout(getFFMPEGProgress(pid),2000);
 				    }
 					});
 					request.fail(function(jqXHR, textStatus) {
