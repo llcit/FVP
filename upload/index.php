@@ -24,6 +24,7 @@
 				$user_id = $_GET['user_id']; // FVP TO DO: switch to $_POST after testing
 				$event_id = $_GET['event_id'];
 				$pid = getPresentationId($user_id,$event_id);
+				$videoExists = '';
 				if ($pid) {
 					$videoExists = "<p> You already have a video uploaded for this event! [LINK TO VID IN NEW WINDOW]";
 

@@ -200,7 +200,6 @@
         global $SETTINGS,$language;
         $audio_extension = $SETTINGS['tmp_audio_extension'];
         echo ("\n\nRIP pid: $pid\n\n");
-        echo ("\n\nRIP video_extension: $video_extension\n\n");
         $output_dir = './tmpAudio/';
         $ffmpeg = FFMpeg\FFMpeg::create([
             'ffmpeg.binaries'  => '/usr/bin/ffmpeg', // the path to the FFMpeg binary
