@@ -201,7 +201,6 @@
 					});
 				});
 				function getFFMPEGProgress(pid) {
-					console.log("FFMPEG Progress for " + pid);
 					var url = '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']); ?>/ffmpegProgress.php';
 					var request = $.ajax({
 					    url: url,
@@ -212,7 +211,9 @@
 					request.done(function(progress) {
 				    console.log("FFMPEG Progress: " + progress);
 				    if (progress < 100) {
-				    	timerID = setTimeout(getFFMPEGProgress(pid),2000);
+				    	setTimeout(function() {
+				    		getFFMPEGProgress(pid)
+				    	},5000);
 				    }
 				    else {
 				    	console.log("DONE!");
