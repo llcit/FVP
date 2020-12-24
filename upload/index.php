@@ -194,20 +194,20 @@
 								console.log('prog:', percent);
 								if (percent == 100) {
 									console.log('GO TO FFMPEG');
-									getFFMPEGProgress();
+									getFFMPEGProgress(<?php echo($pid);?>
 								}
 							}
 						}
 					});
 				});
-				function getFFMPEGProgress() {
+				function getFFMPEGProgress(pid) {
 					console.log("FFMPEG Progress for " + pid);
 					var url = 'http:<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']); ?>/ffmpegProgress.php';
 					$.post(url, {pid: pid}, 
 					  function(progress) {
 					    console.log("FFMPEG Progress: " . progress);
 					    if (progress < 100) {
-					    	getFFMPEGProgress();
+					    	getFFMPEGProgress(pid);
 					    }
 					  }
 					);
