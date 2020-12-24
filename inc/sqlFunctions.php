@@ -14,23 +14,6 @@
             return($result); 
         }  
     }
-    function getShowcaseVideos(){
-        $queryStatement = "
-            SELECT pres.`id`,pres.`extension`,pres.`description`,u.`first_name`,u.`last_name`,i.`name` as `institution`,
-                   prog.`name` as `program`,prog.`language`,prog.`progYrs`,e.`date`, pres.`phase`, pres.`type`,e.`city`,e.`country`
-            FROM `presentations` pres 
-            JOIN `users` u on u.`id` = pres.`user_id` 
-            JOIN `events` e on e.`id`= pres.`event_id` 
-            JOIN `programs` prog on prog.`id` = e.`program_id`
-            JOIN `affiliations` a on (a.`user_id` = u.`id` and a.`program_id`=prog.`id`) 
-            JOIN `institutions` i on i.`id`=a.`domestic_institution_id` 
-            WHERE `is_showcase` = 1  
-            order by prog.`language`
-            ";
-        $sqlData = doSQLQuery($queryStatement,3); 
-        return $sqlData;
-    }
-
    function getVideos($pid=null,$filters=null) {
     global $pdo;
     $matchVals = [
@@ -39,7 +22,8 @@
         'locations' => ['table_handle'=>'e','field'=>'city'],
         'institutions' => ['table_handle'=>'i','field'=>'name'],
         'types' => ['table_handle'=>'pres','field'=>'type'],
-        'periods' => ['table_handle'=>'pres','field'=>'phase']
+        'periods' => ['table_handle'=>'pres','field'=>'phase'],
+        'is_showcase'=> ['table_handle'=>'pres','field'=>'is_showcase']
     ];
     $where = '';
     $and = '';
@@ -64,29 +48,31 @@
     $sql = "
         SELECT pres.`id`,pres.`extension`,pres.`duration`,pres.`transcript_raw`,pres.`transcript_final`,
                pres.`translation_raw`,pres.`translation_final`,pres.`annotations`,u.`first_name`,u.`last_name`,
-               i.`name` as `institution`,prog.`name` as `program`,prog.`progYrs`,e.`date`, 
+               i.`name` as `institution`,prog.`name` as `program`,prog.`progYrs`,prog.`language`,e.`date`, 
                pres.`phase`, pres.`type`,e.`city`,e.`country`
         FROM `presentations` pres 
-        JOIN `users` u on u.`id` = pres.`user_id` 
-        JOIN `events` e on e.`id`= pres.`event_id` 
-        JOIN `programs` prog on prog.`id` = e.`program_id`
-        JOIN `affiliations` a on (a.`user_id` = u.`id` and a.`program_id`=prog.`id`) 
-        JOIN `institutions` i on i.`id`=a.`domestic_institution_id` 
+        LEFT JOIN `users` u on u.`id` = pres.`user_id` 
+        LEFT JOIN `events` e on e.`id`= pres.`event_id` 
+        LEFT JOIN `programs` prog on prog.`id` = e.`program_id`
+        LEFT JOIN `affiliations` a on (a.`user_id` = u.`id` and a.`program_id`=prog.`id`) 
+        LEFT JOIN `institutions` i on i.`id`=a.`domestic_institution_id` 
         WHERE $where 
         ";
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
-    return $stmt->fetchObject();
+    return $stmt->fetchAll();
 }
 function getUniqueVals($table,$field) {
-        $queryStatement = "
+    global $pdo;
+    $sql = "
         SELECT DISTINCT(`$field`)
         FROM `$table` 
         WHERE 1
         ORDER BY `$field`
         ";
-    $unique = doSQLQuery($queryStatement,1); 
-    return $unique;
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchObject();
 }
 
 /* ********************************** /SPECIFIC SQL QUERIES ********************************** */

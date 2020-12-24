@@ -4,7 +4,7 @@
 <?php
 
 	include_once("../inc/dump.php");
-	include_once("../inc/db.php");
+	include_once("../inc/db_pdo.php");
 	include_once("../inc/sqlFunctions.php");
 	session_start();
 	if (!isset($_SESSION['username'])) { 

@@ -3,37 +3,66 @@
 <head>
 <?php
 	include_once("../inc/dump.php");
-	include_once("../inc/db.php");
+	include_once("../inc/db_pdo.php");
 	include_once("../inc/sqlFunctions.php");
 	$videoId = ($_GET['v']) ? $_GET['v'] : 204;
-	$showcaseVideos = getShowcaseVideos();		  
-	$language = "";				  
-	$userSelect = buildUserSelect($showcaseVideos,$videoId);
-	$allTracks = ['linguistic','professional','cultural'];
-	$includeTracks = ($_GET['t']) ? $_GET['t'] : $allTracks;
-	$trackSelect = buildTrackSelect($allTracks,$includeTracks);
-	if ($audioDescription != '') {
-		$audioDescription = "
-			<tr>
-				<td colspan=5 align=left>
-					<div class='audioDescription'>
-						<h3>About this Speaker:</h3>
+	if ($_GET['sc']) {
+		$filters = [
+			'is_showcase'=>['1']
+		];
+		$showcaseVideos = getVideos(null,$filters);
+		$userSelect = buildUserSelect($showcaseVideos,$videoId);
+		$allTracks = ['linguistic','professional','cultural'];
+		$includeTracks = ($_GET['t']) ? $_GET['t'] : $allTracks;
+		$trackSelect = buildTrackSelect($allTracks,$includeTracks);
+		if ($audioDescription != '') {
+			$audioDescription = "
+						<tr>
+							<td colspan=5 align=left>
+								<div class='audioDescription'>
+									<h3>About this Speaker:</h3>
+									$audioDescription
+								</div>
+							</td>
+						</tr>
+			";
+		}
+		$userControls = "
+					<table class='controlsTable'>
+						<tr>
+							<td>
+								Select Video Presentation: 
+							</td>
+							<td>
+								$userSelect
+							</td>
+							<td>
+								Select Description Tracks: 
+							</td>
+							<td>
+								$trackSelect
+							</td>
+							<td>
+								<button type='button' class='btn btn-primary' id='update' name='update' onclick='updateUI()'>Update</button>
+							</td>
+						</tr>
 						$audioDescription
-					</div>
-				</td>
-			</tr>
+					</table>
+					<input type = hidden id='sc' name='sc' value ='".$_GET['sc']."'> 
 		";
 	}
+	else {
+		$includeTracks = [];
+	}
 	function buildUserSelect($showcaseVideos,$videoId) {
-		global $language,$audioDescription;
+		global $audioDescription;
 		$isSelected[$videoId] = " SELECTED";
 		$userSelect = "<select id='v' name='v' class='selectpicker fv_block' onChange='updateUI();'>";
 		$userSelect .= "<option value='204'". $isSelected['204'].">About the Flagship Video Project</option>";
 		foreach($showcaseVideos as $video) {
 			$progYrs = preg_replace("/(A|C)Y\ /","",$video['progYrs']);
 			$userSelect .= "<option value='".$video['id']."'". $isSelected[$video['id']].">".$video['last_name']." (".$video['language'].", " .$progYrs. ")</option>";
-			if ($video['id'] == $videoId) {
-				$language = $video['language'];	
+			if ($video['id'] == $videoId) {	
 				$audioDescription = $video['description'];
 			}
 		}
@@ -133,37 +162,12 @@
     	<div class="panel-body">
 			<div class="controlWrapper">
 				<form id='userControls'>
-					<table class='controlsTable'>
-						<tr>
-							<td>
-								Select Video Presentation: 
-							</td>
-							<td>
-								<?php
-								echo($userSelect);
-								?>
-							</td>
-							<td>
-								Select Description Tracks: 
-							</td>
-							<td>
-								<?php
-								echo($trackSelect);
-								?>
-							</td>
-							<td>
-								<button type="button" class="btn btn-primary" id="update" name="update" onclick="updateUI()">Update</button>
-							</td>
-						</tr>
-
-						<?php echo($audioDescription);?>
-					</table>
+					<?php echo($userControls); ?>
+				</form>
 			</div>
-			<iframe class='playerFrame' src='./player.php?v=<?php echo($_GET['v']); ?>&t=<?php echo(implode(',',$includeTracks)); ?>&l=<?php echo($language);?>&cm=<?php echo($captionMode);?>' allowfullscreen>
+			<iframe class='playerFrame' src='./player.php?v=<?php echo($videoId); ?>&t=<?php echo(implode(',',$includeTracks)); ?>&cm=<?php echo($captionMode);?>' allowfullscreen>
 			</iframe>
     	</div>
-
-<!-- to write transcript to an external div, pass id of an empty div via data-transcript-div -->
 
 <script language='javascript'>
 		function updateUI() {

@@ -1,9 +1,10 @@
 <?php
 /* TO DO 12/20
 1. Write progress vals to cookie
-2. Generate and upload thumb in ffmpeg
+2. Generate and upload thumb in ffmpeg 205x117
 3. Fix language and extension
 4. clean up tmp files
+5. Backfill durations
 */
     // blow open memory limit
     ini_set('memory_limit', '-1');
@@ -35,11 +36,15 @@
     else if ($method == 'POST') {
         handleCorsRequest();
         if (isset($_REQUEST["success"])) {
+            preg_match("/(.*)\.(mov|mp4|m4a)/",$key,$matches);
+            $file_name = $matches[1];
+            $video_extension = $matches[2];
             $tmpLink = verifyFileInS3();
+
             include_once("../../inc/db_pdo.php"); 
             $pid = ($_REQUEST['pid'] > 0) ? $_REQUEST['pid'] : registerVideo($_REQUEST['user_id'],$_REQUEST['event_id']);
+            renameFile($_REQUEST['key'],$pid,$video_extension);
             $transcribeResult = generateTranscript($tmpLink,$_REQUEST['key']);
-            renameFile($_REQUEST['key'],$pid);
             $confirmation = confirmUpload($pid,$transcribeResult['duration'],$transcribeResult['success'],$tmpLink);
             
         }
@@ -47,14 +52,14 @@
             signRequest();
         }
     }
-    function renameFile($key,$pid) {
+    function renameFile($key,$pid,$extension) {
         global $expectedBucketName;
         $client=getS3Client();
         // Ugh!  Only way to rename is to copy and delete-- gross!
         // FVP TO DO: kill once filenameParam in fineuploade client is working 
         $client->copyObject([
             'Bucket'     => $expectedBucketName,
-            'Key'        => "videos/$pid.mov",
+            'Key'        => "videos/$pid".".".$extension,
             'CopySource' => "$expectedBucketName/$key",
         ]);
         $client->deleteObject([
@@ -99,8 +104,6 @@
     }
     function transcribe_Watson($audioFile,$language) {
         global $SETTINGS;
-        $progressVals = json_encode(['action'=>'generateTranscript','percent'=>'0']);
-        setcookie( "uploadProgress", $progressVals, strtotime('+60 min'));
         $audio_extension = $SETTINGS['tmp_audio_extension'];
         $models = [
             'Arabic' => 'ar-AR_BroadbandModel',
@@ -194,14 +197,9 @@
         }
     }
 
-    function generateTranscript($tmpLink,$key) {
+    function generateTranscript($tmpLink,$file_name,$video_extension) {
         global $SETTINGS,$language;
-        $progressVals = json_encode(['action'=>'processAudio','percent'=>'0']);
-        setcookie( "uploadProgress", $progressVals, strtotime('+60 min'));
         $audio_extension = $SETTINGS['tmp_audio_extension'];
-        preg_match("/(.*)\.(mov|mp4|m4a)/",$key,$matches);
-        $file_name = $matches[1];
-        $video_extension = $matches[2];
         echo ("\n\nRIP file_name: $file_name\n\n");
         echo ("\n\nRIP video_extension: $video_extension\n\n");
         $output_dir = './tmpAudio/';

@@ -3140,7 +3140,7 @@
     }
 
     this.injectPlayerControlArea();
-    if (thisObj.captionMode != 'edit'){
+    if (thisObj.captionMode != 'edit' && $('#descriptionTrack').length){
       this.injectTextDescriptionArea();
     }
     
