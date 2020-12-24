@@ -194,7 +194,7 @@
 								console.log('prog:', percent);
 								if (percent == 100) {
 									console.log('GO TO FFMPEG');
-									getFFMPEGProgress(<?php echo($pid);?>
+									getFFMPEGProgress(<?php echo($pid) ;?>);
 								}
 							}
 						}
