@@ -201,24 +201,16 @@
 					});
 				});
 				function getFFMPEGProgress() {
-					console.log("FFMPEG Progress!");
-					$.ajax({
-					  url: 'http:<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']); ?>/ffmpegProgress.php?key='+key,
-					  data: {
-					    format: 'json'
-					  },
-					  error: function() {
-					    console.log('An error has occurred in getting audio progress.');
-					  },
-					  dataType: 'jsonp',
-					  success: function(progress) {
+					console.log("FFMPEG Progress for " + pid);
+					var url = 'http:<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']); ?>/ffmpegProgress.php';
+					$.post(url, {pid: pid}, 
+					  function(progress) {
 					    console.log("FFMPEG Progress: " . progress);
 					    if (progress < 100) {
 					    	getFFMPEGProgress();
 					    }
-					  },
-					  type: 'GET'
-					});
+					  }
+					);
 				}
 			</script>
     </head>
