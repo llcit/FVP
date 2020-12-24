@@ -129,66 +129,85 @@
     	</script>
 
 			<script>
-			$(document).ready(function () {
-				var noFile = false;                                                                 
-				qq.isFileOrInput = function(maybeFileOrInput) {
-					'use strict';
-					if (window.File && Object.prototype.toString.call(maybeFileOrInput) === '[object File]') {
-						return true;
-					}
+				$(document).ready(function () {
+					var noFile = false;                                                                 
+					qq.isFileOrInput = function(maybeFileOrInput) {
+						'use strict';
+						if (window.File && Object.prototype.toString.call(maybeFileOrInput) === '[object File]') {
+							return true;
+						}
 
-					return qq.isInput(maybeFileOrInput);
-				};
-				$('#fine-uploader-s3').fineUploaderS3({
-					template: 'qq-template-s3',
-					request: {
-						endpoint: 'https://<?php echo($SETTINGS['S3_BUCKET_NAME']); ?>.s3.amazonaws.com',
-						accessKey: '<?php echo($SETTINGS['AWS_SERVER_PRIVATE_KEY']); ?>',  
-						params: {
-											pid:'<?php echo($pid); ?>',
-										 	user_id:'<?php echo($user_id); ?>', 
-										 	exent_id: '<?php echo($event_id); ?>'
-										 }
-					},
-					signature: {
-						endpoint: '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']."/".$SETTINGS['FINEUPLOADER_BACKEND_SCRIPT']); ?>'
-					},
-					uploadSuccess: {
-						endpoint: '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']."/".$SETTINGS['FINEUPLOADER_BACKEND_SCRIPT']); ?>?success',
-						params: {
-							isBrowserPreviewCapable: qq.supportedFeatures.imagePreviews
+						return qq.isInput(maybeFileOrInput);
+					};
+					$('#fine-uploader-s3').fineUploaderS3({
+						template: 'qq-template-s3',
+						request: {
+							endpoint: 'https://<?php echo($SETTINGS['S3_BUCKET_NAME']); ?>.s3.amazonaws.com',
+							accessKey: '<?php echo($SETTINGS['AWS_SERVER_PRIVATE_KEY']); ?>',  
+							params: {
+												pid:'<?php echo($pid); ?>',
+											 	user_id:'<?php echo($user_id); ?>', 
+											 	event_id: '<?php echo($event_id); ?>'
+											 }
+						},
+						signature: {
+							endpoint: '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']."/".$SETTINGS['FINEUPLOADER_BACKEND_SCRIPT']); ?>'
+						},
+						uploadSuccess: {
+							endpoint: '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']."/".$SETTINGS['FINEUPLOADER_BACKEND_SCRIPT']); ?>?success',
+							params: {
+								isBrowserPreviewCapable: qq.supportedFeatures.imagePreviews
+							}
+						},
+						iframeSupport: {
+							localBlankPagePath: '/server/success.html'
+						},
+						cors: {
+							expected: true
+						},
+						chunking: {
+							enabled: true
+						},
+						resume: {
+							enabled: true
+						},
+						deleteFile: {
+							enabled: true,
+							method: 'POST',
+							endpoint: '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']."/".$SETTINGS['FINEUPLOADER_BACKEND_SCRIPT']); ?>'
+						},
+						validation: {
+							itemLimit: 5,
+							sizeLimit: '<?php echo($SETTINGS['S3_MAX_FILE_SIZE']); ?>'
+							// FVP TO DO : Ad extesions (mp4, mov, m4a ,etc)
+						},
+						thumbnails: {
+							placeholders: {
+								notAvailablePath: '<?php echo($SETTINGS['FINEUPLOADER_FRONTEND_PATH']); ?>/placeholders/not_available-generic.png',
+								waitingPath: '<?php echo($SETTINGS['FINEUPLOADER_FRONTEND_PATH']); ?>/placeholders/waiting-generic.png'
+							}
 						}
-					},
-					iframeSupport: {
-						localBlankPagePath: '/server/success.html'
-					},
-					cors: {
-						expected: true
-					},
-					chunking: {
-						enabled: true
-					},
-					resume: {
-						enabled: true
-					},
-					deleteFile: {
-						enabled: true,
-						method: 'POST',
-						endpoint: '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']."/".$SETTINGS['FINEUPLOADER_BACKEND_SCRIPT']); ?>'
-					},
-					validation: {
-						itemLimit: 5,
-						sizeLimit: '<?php echo($SETTINGS['S3_MAX_FILE_SIZE']); ?>'
-						// FVP TO DO : Ad extesions (mp4, mov, m4a ,etc)
-					},
-					thumbnails: {
-						placeholders: {
-							notAvailablePath: '<?php echo($SETTINGS['FINEUPLOADER_FRONTEND_PATH']); ?>/placeholders/not_available-generic.png',
-							waitingPath: '<?php echo($SETTINGS['FINEUPLOADER_FRONTEND_PATH']); ?>/placeholders/waiting-generic.png'
-						}
-					}
+					});
 				});
-			});
+				function getFFMPEGProgress() {
+					$.ajax({
+					  url: 'http:<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']); ?>/ffmpegProgress.php?key='+key,
+					  data: {
+					    format: 'json'
+					  },
+					  error: function() {
+					    console.log('An error has occurred in getting audio progress.');
+					  },
+					  dataType: 'jsonp',
+					  success: function(progress) {
+					    console.log("FFMPEG Progress: " . progress);
+					    if (progress < 100) {
+					    	getFFMPEGProgress();
+					    }
+					  },
+					  type: 'GET'
+					});
+				}
 			</script>
     </head>
     <body>

@@ -37,7 +37,7 @@
         handleCorsRequest();
         if (isset($_REQUEST["success"])) {
             $tmpLink = verifyFileInS3($_REQUEST['key']);
-            preg_match("/(.*)\.(mov|mp4|m4a)/",$key,$matches);
+            preg_match("/(.*)\.(mov|mp4|m4a)/",$_REQUEST['key'],$matches);
             $file_name = $matches[1];
             $video_extension = $matches[2];
             include_once("../../inc/db_pdo.php"); 
@@ -75,7 +75,7 @@
         $stmt= $pdo->prepare($sql);
         $stmt->bindValue(':user_id', $uid);
         $stmt->bindValue(':event_id', $eid);
-        $stmt->execute([$uid,$eid]);
+        $stmt->execute();
         if($stmt->rowCount() == 0) {
             $pid = $pdo->lastInsertId();
         }
@@ -90,8 +90,8 @@
             echo json_encode(array("error" => "File is too big!", "preventRetry" => true));
         }
         else {
-            $response = array("tempLink" => $link);
             $link = getTempLink($bucket, $key);
+            $response = array("tempLink" => $link);
             echo json_encode($response);
         }
     }
