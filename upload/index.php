@@ -213,7 +213,7 @@
 				    if (progress < 100) {
 				    	setTimeout(function() {
 				    		getFFMPEGProgress(pid)
-				    	},5000);
+				    	},500);
 				    }
 				    else {
 				    	console.log("DONE!");
