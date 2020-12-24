@@ -210,6 +210,9 @@
 					    	getFFMPEGProgress(pid);
 					    }
 					  }
+					).fail(function(error){
+						      console.log(error);
+						}
 					);
 				}
 			</script>
