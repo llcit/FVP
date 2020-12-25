@@ -211,7 +211,7 @@
 					request.done(function(progress) {
 				    //console.log("FFMPEG Progress: " + progress);
 				    if (progress < 100) {
-				    	//setProgressBarWidth(id, progress);
+				    	$('.qq-progress-bar-selector').css('width',progress)
 				    	setTimeout(function() {
 				    		getFFMPEGProgress(pid)
 				    	},500);
