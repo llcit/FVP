@@ -209,8 +209,9 @@
 					    contentType: 'application/json; charset=utf-8'
 					});
 					request.done(function(progress) {
-				    console.log("FFMPEG Progress: " + progress);
+				    //console.log("FFMPEG Progress: " + progress);
 				    if (progress < 100) {
+				    	//setProgressBarWidth(id, progress);
 				    	setTimeout(function() {
 				    		getFFMPEGProgress(pid)
 				    	},500);
