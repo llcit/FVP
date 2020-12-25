@@ -69,6 +69,14 @@
                 <li>
                     <span role="status" class="qq-upload-status-text-selector qq-upload-status-text"></span>
                     <div class="qq-progress-bar-container-selector qq-progress-bar-container">
+                    		<div class = "progress_status_wrapper">
+                    			<span class= "progress_status_label">
+                    				Video upload: 
+                    			</span>
+                    			<span class= "progress_status_percent">
+                    				28%
+                    			</span>
+                    		</div>
                         <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-progress-bar-selector qq-progress-bar"></div>
                     </div>
                     <span class="qq-upload-spinner-selector qq-upload-spinner"></span>
