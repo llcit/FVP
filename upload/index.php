@@ -209,14 +209,17 @@
 					    contentType: 'application/json; charset=utf-8'
 					});
 					request.done(function(progress) {
-				    //console.log("FFMPEG Progress: " + progress);
+				    console.log("FFMPEG Progress: " + progress);
 				    if (progress < 100) {
-				    	$('.qq-progress-bar-selector').css('width',progress)
+              $('.qq-progress-bar-container-selector').show();
+              $('.qq-progress-bar-selector').css('width',progress+'%');
 				    	setTimeout(function() {
 				    		getFFMPEGProgress(pid)
 				    	},500);
 				    }
 				    else {
+				    	$('.qq-progress-bar-container-selector').hide();
+              $('.qq-progress-bar-selector').css('width','0%');
 				    	console.log("DONE!");
 				    }
 					});

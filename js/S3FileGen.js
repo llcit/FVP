@@ -17,7 +17,7 @@ function generateFile(type,id,ext,language) {
       return null;
     }
   })
-  function writeHTML(type,signedUrl,ext,language) {
+  function writeHTML(type,signedUrl,ext,language=null) {
     if (type == 'video') {
       $("#video1").append("<source type='video/"+ext+"' id='video' src='"+signedUrl+"'>");
     }
@@ -26,7 +26,7 @@ function generateFile(type,id,ext,language) {
       if (type == 'translation') {
         label = 'English';
       }
-      else {
+      else if (type == 'transcript') {
         label = language;
       }
       var la = label.substr(0,2).toLowerCase();

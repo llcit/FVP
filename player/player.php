@@ -71,26 +71,7 @@
 	<main role="main">
 	  <div id="player">
 		  <video id="video1" preload="auto" width="480" height="360" poster="../ableplayer/media/wwa.jpg" data-able-player data-transcript-div="transcript" playsinline <?php echo("$editCaptions"); ?> >
-			  <script>
-			  	var hasTranscript = '<?php echo($presentationData[0]['transcript_raw']); ?>';
-			  	var hasTranslation = '<?php echo($presentationData[0]['translation_raw']); ?>';
-			  	var annotations = '<?php echo($presentationData[0]['annotations']); ?>';
-					var videoFile = generateFile('video','<?php echo($_GET['v']); ?>','<?php echo($presentationData[0]['extension']); ?>','');
-					var showTranscriptArea = false;
-					if (hasTranscript) {
-						var transcriptFile = generateFile('transcript','<?php echo($_GET['v']); ?>','vtt','<?php echo($presentationData[0]['annotations']); ?>');
-						showTranscriptArea = true;
-					}
-					if (hasTranslation) {
-						var translationFile = generateFile('translation','<?php echo($_GET['v']); ?>','vtt','<?php echo($presentationData[0]['language']); ?>');
-						showTranscriptArea = true;
-					}
-					// center the player
-					if (!showTranscriptArea) {
-						$('#player').css('float','none');
-						$('#player').css('margin','auto');
-					}				
-				</script>
+
 				<?php
 					// put empty placeholder in for ableplayer onready function
 					if ($presentationData[0]['transcript_raw'] || $presentationData[0]['translation_raw']) {
@@ -101,10 +82,30 @@
 					}
 
 				?>
-			}
+	
 		  </video>
 		</div>
 		<div id="transcript"></div>
 	</main>
+	<script>
+  	var hasTranscript = '<?php echo($presentationData[0]['transcript_raw']); ?>';
+  	var hasTranslation = '<?php echo($presentationData[0]['translation_raw']); ?>';
+  	var annotations = '<?php echo($presentationData[0]['annotations']); ?>';
+		var videoFile = generateFile('video','<?php echo($_GET['v']); ?>','<?php echo($presentationData[0]['extension']); ?>','');
+		var showTranscriptArea = false;
+		if (hasTranscript) {
+			var transcriptFile = generateFile('transcript','<?php echo($_GET['v']); ?>','vtt','<?php echo($presentationData[0]['language']); ?>');
+			showTranscriptArea = true;
+		}
+		if (hasTranslation) {
+			var translationFile = generateFile('translation','<?php echo($_GET['v']); ?>','vtt','<?php echo($presentationData[0]['language']); ?>');
+			showTranscriptArea = true;
+		}
+		// center the player
+		if (!showTranscriptArea) {
+			$('#player').css('float','none');
+			$('#player').css('margin','auto');
+		}				
+	</script>
 </body>
 </html>
