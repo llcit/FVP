@@ -8,7 +8,6 @@
 	let original_height = 0;
 	const pixelsPerSecond = 30;
 	function makeResizableDiv() {
-
 		$('.resizable').each(function(){
 			let currentCaption = $( this );				
 			let parentWrapper = currentCaption.parent();
@@ -190,16 +189,6 @@
 							nextCaption.css('top', next_top_adj + 'px');
 						}
 					}
-					/*
-height_adj: 60
-captionEditor.js:199 top_adj: 30
-captionEditor.js:162 curr_height: 150
-captionEditor.js:187 nextSnapBy_height: 13
-captionEditor.js:188 next_height_adj: 118
-captionEditor.js:162 curr_height: 150
-captionEditor.js:187 nextSnapBy_height: 0
-
-					*/
 					else {	
 						let current_top = Math.round(currentCaption.position().top);
 						let height_adj = curr_height + snapBy;
@@ -379,13 +368,13 @@ captionEditor.js:187 nextSnapBy_height: 0
 			let whiteSpace = 0;
 			if (typeof prevCaption.css('height') !== 'undefined') {
 				// get current start in total number of seconds
-				let currStartTime = $(this).find(".startTime").prop('id','st_' + captionCount);
+				let currStartTime = $(this).find(".startTime");
 				let stm_curr = currStartTime.html().match(/(\d{2})\:(\d{2})$/);
 				let currStartMin = parseFloat(stm_curr[1]);
 				let currStartSec = parseFloat(stm_curr[2]);
 				let currStartSec_total = (currStartMin*60) + currStartSec;
 				// get previous end in total number of seconds
-				let prevEndTime = prevCaption.find(".endTime").prop('id','et_' + captionCount);
+				let prevEndTime = prevCaption.find(".endTime");;
 				let stm_prev = prevEndTime.html().match(/(\d{2})\:(\d{2})$/);
 				let prevEndMin = parseFloat(stm_prev[1]);
 				let prevEndSec = parseFloat(stm_prev[2]);

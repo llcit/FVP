@@ -27,6 +27,11 @@
     include "../inc/sqlFunctions.php";
 		$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
 		$videoId = ($_GET['v']) ? $_GET['v'] : 86;
+		if ($_POST['saveCaptions']) {
+			include "./saveCaptionEdits.php";
+			$data = json_decode($_POST['captionData']);
+			writeVTTFile($videoId,$data,$_POST['captionLanguage']);
+		}
 		$presentationData = getVideos($videoId);
 		$allTracks = 'linguistic,professional,cutural';
 		$includeTracks = ($_GET['t']) ? $_GET['t'] : $allTracks;
@@ -41,6 +46,24 @@
 		    <track id='descriptionTrack' kind='descriptions' src='./buildDescriptionTrack.php?a=".$presentationData[0]['annotations']."&t=$includeTracks&v=$videoId' srclang='en'/> 
 			";
 			$transcriptHeight = '400';
+		}
+		$isOwner = 1;
+		$isShowcase = false;
+		if($isOwner && !$isShowcase) {
+			if ($_GET['cm'] == 'edit') {
+				$editControls = "
+					<div id = 'edit_controls' class = 'edit_controls'>
+						<a class='btn btn-primary' href=\"javascript:saveCaptions();\">Save Captions</a>
+					</div>
+				";
+			}
+			else {
+				$editControls = "
+					<div id = 'edit_controls' class = 'edit_controls'>
+						<a class='btn btn-primary' href=\"javascript:editCaptions();\">Edit Captions</a>
+					</div>
+				";
+			}
 		}
 	?>
 	<!-- Style for this example only -->
@@ -69,6 +92,7 @@
 
 <body>
 	<main role="main">
+		<?php echo($editControls); ?>
 	  <div id="player">
 		  <video id="video1" preload="auto" width="480" height="360" poster="../ableplayer/media/wwa.jpg" data-able-player data-transcript-div="transcript" playsinline <?php echo("$editCaptions"); ?> >
 
@@ -88,6 +112,7 @@
 		<div id="transcript"></div>
 	</main>
 	<script>
+		var GLOBAL_LANGUAGE;
   	var hasTranscript = '<?php echo($presentationData[0]['transcript_raw']); ?>';
   	var hasTranslation = '<?php echo($presentationData[0]['translation_raw']); ?>';
   	var annotations = '<?php echo($presentationData[0]['annotations']); ?>';
@@ -105,7 +130,36 @@
 		if (!showTranscriptArea) {
 			$('#player').css('float','none');
 			$('#player').css('margin','auto');
-		}				
+		}	
+		function editCaptions() {
+			$('.cm').val('edit'); // reference parent
+		}	
+		function saveCaptions() {
+			var i=0;
+			var data = [];
+			$('.captionEditInput').each(function() {
+				var text = $(this).val();
+				var startTimeMatch = $('#st_'+i).html().match(/(\d{2}\:\d{2})$/);
+				var startTime = startTimeMatch[1];
+				var endTimeMatch = $('#et_'+i).html().match(/(\d{2}\:\d{2})$/);
+				var endTime = endTimeMatch[1];
+				data.push({
+	        start: startTime,
+	        end: endTime,
+	        text:text
+	      });
+				i++;
+			});
+			$('#captionData').val(JSON.stringify(data));
+			$('#captionLanguage').val(GLOBAL_LANGUAGE);
+			$('#saveCaptions').val(1);
+			$('#saveCaptionForm').submit();
+		}		
 	</script>
+	<form method='post' id='saveCaptionForm' name='saveCaptionForm'>
+		<input type='hidden' id='saveCaptions' name='saveCaptions' value = 0> 
+		<input type='hidden' id='captionData' name='captionData' value = ''>
+		<input type='hidden' id='captionLanguage' name='captionLanguage' value = ''>
+	</form>
 </body>
 </html>

@@ -1,6 +1,6 @@
 <?php
 /* TO DO 12/20
-1. Write progress vals to cookie
+1. Finish FFMPeg progress
 2. Generate and upload thumb in ffmpeg 205x117
 3. Fix language and extension
 4. clean up tmp files
@@ -184,7 +184,6 @@
             if ($textType == 'captions') {
                 $fileContent .=  $start . " --> " . $end ."\r\n";
                 $fileContent .= $result->alternatives[0]->transcript  ."\r\n\r\n";
-                echo "--->" . $result->alternatives[0]->transcript ."\n";
             }
             else if ($textType == 'paragraph') {
                 $fileContent .= $result->alternatives[0]->transcript ." ";
@@ -192,14 +191,14 @@
             
         }
         $client = getS3Client();
-    	$command = $client->getCommand('PutObject', array(
+        $command = $client->getCommand('PutObject', array(
                 'Bucket' => $expectedBucketName,
                 'Key'    => "transcripts/$pid.vtt",
                 'Body'   => "$fileContent"
         ));
         $result = $command->getResult();
-    	$response = $command->getResponse();
-    	$code = $response->getStatusCode();
+        $response = $command->getResponse();
+        $code = $response->getStatusCode();
         $success = ($code === 200) ? true : false ;
         return $success;
     } 
