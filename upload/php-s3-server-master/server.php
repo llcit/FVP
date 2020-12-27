@@ -239,7 +239,7 @@
         $video = $ffmpeg->open($tmpLink);
         $frame = $video->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(1))->save("./tmpThumbs/$pid_large.jpg");
         // use GD to resize
-        $original = imagecreatefrompng("./tmpThumbs/$pid_large.jpg");   
+        $original = imagecreatefromjpg("./tmpThumbs/".$pid."_large.jpg");   
         $thumb = imagescale($original,205,117); 
         // save resized thumb  
         imagejpeg($thumb,"./tmpThumbs/$pid.jpg");  
@@ -272,7 +272,7 @@
         file_put_contents('./progress/'. $pid . '.txt', '100'); 
         // clean up tmp files
         unlink("./tmpThumbs/$pid.jpg");
-        unlink("./tmpThumbs/$pid_large.jpg");
+        unlink("./tmpThumbs/".$pid."_large.jpg");
         $audioFile = $pid . "." . $audio_extension;
         if ($language != 'Russian') {
             $response = transcribe_Watson($audioFile,$language);
