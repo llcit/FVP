@@ -199,6 +199,7 @@
 						callbacks: {
 							onProgress: function(id,name,uploadBytes,totalBytes) {
 								var percent = (uploadBytes/totalBytes)*100;
+								$('.progress_status_percent').html(Math.round(progress)+'%');
 								console.log('prog:', percent);
 								if (percent == 100) {
 									$('.progress_status_label').html('Creating Audio File:');
