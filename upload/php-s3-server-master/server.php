@@ -222,7 +222,7 @@
         }
     }
     function generateTranscript($tmpLink,$pid) {
-        global $SETTINGS,$language;
+        global $SETTINGS,$language,$expectedBucketName;
         $audio_extension = $SETTINGS['tmp_audio_extension'];
         echo ("\n\nRIP pid: $pid\n\n");
         $output_dir = './tmpAudio/';
