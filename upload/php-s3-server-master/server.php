@@ -238,17 +238,16 @@
         }); 
         $video = $ffmpeg->open($tmpLink);
         $thumb = $video->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(1));
-        /*$client = getS3Client();
+        $client = getS3Client();
         $command = $client->getCommand('PutObject', array(
                 'Bucket' => $expectedBucketName,
                 'Key'    => "thumbs/$pid.jpg",
-                'Body'   => "$thumb"
+                'Body'   => $thumb
         ));
         $result = $command->getResult();
         $response = $command->getResponse();
         $code = $response->getStatusCode();
         $success = ($code === 200) ? true : false ;
-        */
         if ($audio_extension == 'mp3') {
             $output_format = new FFMpeg\Format\Audio\Mp3(); 
             $output_format->setAudioCodec("libmp3lame");
