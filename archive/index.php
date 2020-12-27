@@ -56,8 +56,7 @@
 								<table>
 									<tr>
 										<td>
-											<div class = 'thumbWrapper'>
-												<img src = '../assets/thumbs/".$video['id'].".jpg' class='thumb'>
+											<div class = 'thumbWrapper' id = 'thumb_".$video['id']."'>
 											</div>
 										</td>
 										<td>
@@ -69,11 +68,14 @@
 											<p class='details'>".$video['phase']."</p>
 											</div>
 											<input type=hidden id='videoData_".$video['id']."' name='videoData_".$video['id']."'
-											value='".json_encode($video). "'>
+											value='".json_encode($video)."'>
 										</td>
 									</tr>
 								</table>
 							</div>
+							<script>
+									var thumb = generateFile('thumb','".$video['id']."','jpg','');
+							</script>
 					 ";
 		return $row;
 	}
@@ -184,33 +186,11 @@
 		$('.modal-title').append(details.join(''));
 	}
 </script>
+<script src='../js/S3FileGen.js'></script>
 </head>
 
 <body>
 
-<!-- ----------- PLAYER MODAL ----------------- -->
-<div class="container">
-  <div class="modal fade" id="playerModal" role="dialog">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <ul class="modal-title"></ul>
-        </div>
-        <div class="modal-body">
-          <div id='player'> 
-          	<iframe class='playerFrame' id='playerFrame' name='playerFrame' src='./player.php?v=1' allowfullscreen>
-						</iframe>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- ----------- /PLAYER MODAL ----------------- -->
 <div class="panel panel-default">
 	<div class="panel-heading fv_heading">
 		<img src='../img/logo_lf.png'>

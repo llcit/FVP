@@ -221,7 +221,20 @@
             return gmdate("H:i:s", $seconds) . '.' . $microseconds;
         }
     }
-
+    function generateThumb($video) {
+        $thumb = $video->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(42));
+        $client = getS3Client();
+        $command = $client->getCommand('PutObject', array(
+                'Bucket' => $expectedBucketName,
+                'Key'    => "thumbs/$pid.jpg",
+                'Body'   => "$thumb"
+        ));
+        $result = $command->getResult();
+        $response = $command->getResponse();
+        $code = $response->getStatusCode();
+        $success = ($code === 200) ? true : false ;
+        return $success;
+    }
     function generateTranscript($tmpLink,$pid) {
         global $SETTINGS,$language;
         $audio_extension = $SETTINGS['tmp_audio_extension'];
@@ -252,6 +265,8 @@
         }); 
         $saveFile = addslashes($output_dir . $pid . "." . $audio_extension);
         $video->save($output_format, $saveFile);
+        $thumb = generateThumb($video);
+
         // onprogress stops before 100, so update for progress bar
         file_put_contents('./progress/'. $pid . '.txt', '100'); 
         $audioFile = $pid . "." . $audio_extension;

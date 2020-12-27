@@ -74,5 +74,17 @@ function getUniqueVals($table,$field) {
     $stmt->execute();
     return $stmt->fetchObject();
 }
+function getUserVideos($id) {
+    global $pdo;
+    $sql = "
+        SELECT * 
+        FROM `presentations` 
+        WHERE `user_id` = '$id'
+        ORDER BY `event_id` DESC
+        ";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchObject();
+}
 
 /* ********************************** /SPECIFIC SQL QUERIES ********************************** */
