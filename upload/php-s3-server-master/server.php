@@ -237,7 +237,7 @@
             echo "MSG: " . $message."\n";
         }); 
         $video = $ffmpeg->open($tmpLink);
-        $frame = $video->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(1))->save("./tmpThumbs/$pid_large.jpg");
+        $frame = $video->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(1))->save("./tmpThumbs/".$pid."_large.jpg");
         // use GD to resize
         $original = imagecreatefromjpg("./tmpThumbs/".$pid."_large.jpg");   
         $thumb = imagescale($original,205,117); 
