@@ -221,20 +221,6 @@
             return gmdate("H:i:s", $seconds) . '.' . $microseconds;
         }
     }
-    function generateThumb($video) {
-        $thumb = $video->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(1));
-        $client = getS3Client();
-        $command = $client->getCommand('PutObject', array(
-                'Bucket' => $expectedBucketName,
-                'Key'    => "thumbs/$pid.jpg",
-                'Body'   => "$thumb"
-        ));
-        $result = $command->getResult();
-        $response = $command->getResponse();
-        $code = $response->getStatusCode();
-        $success = ($code === 200) ? true : false ;
-        return $success;
-    }
     function generateTranscript($tmpLink,$pid) {
         global $SETTINGS,$language;
         $audio_extension = $SETTINGS['tmp_audio_extension'];
@@ -263,6 +249,23 @@
         $output_format->on('progress', function ($video, $format, $percentage) use($pid) {
             file_put_contents('./progress/'. $pid . '.txt', $percentage);
         }); 
+
+
+        $thumb = $video->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(1));
+        $client = getS3Client();
+        $command = $client->getCommand('PutObject', array(
+                'Bucket' => $expectedBucketName,
+                'Key'    => "thumbs/$pid.jpg",
+                'Body'   => "$thumb"
+        ));
+        $result = $command->getResult();
+        $response = $command->getResponse();
+        $code = $response->getStatusCode();
+        $success = ($code === 200) ? true : false ;
+
+
+
+
         $saveFile = addslashes($output_dir . $pid . "." . $audio_extension);
         $video->save($output_format, $saveFile);
         $thumb = generateThumb($video);
