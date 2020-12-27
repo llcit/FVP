@@ -237,22 +237,8 @@
             echo "MSG: " . $message."\n";
         }); 
         $video = $ffmpeg->open($tmpLink);
-        if ($audio_extension == 'mp3') {
-            $output_format = new FFMpeg\Format\Audio\Mp3(); 
-            $output_format->setAudioCodec("libmp3lame");
-        }
-        if ($audio_extension == 'flac') {
-            $output_format = new FFMpeg\Format\Audio\Flac();  
-            $output_format->setAudioChannels(1);
-            $output_format->setAudioKiloBitrate(256);
-        }
-        $output_format->on('progress', function ($video, $format, $percentage) use($pid) {
-            file_put_contents('./progress/'. $pid . '.txt', $percentage);
-        }); 
-
-
-        $thumb = $ffmpeg->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(1));
-        $client = getS3Client();
+        $thumb = $video->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(1));
+        /*$client = getS3Client();
         $command = $client->getCommand('PutObject', array(
                 'Bucket' => $expectedBucketName,
                 'Key'    => "thumbs/$pid.jpg",
@@ -262,9 +248,20 @@
         $response = $command->getResponse();
         $code = $response->getStatusCode();
         $success = ($code === 200) ? true : false ;
+*/
+        if ($audio_extension == 'mp3') {
+            $output_format = new FFMpeg\Format\Audio\Mp3(); 
+            $output_format->setAudioCodec("libmp3lame");
+        }
+        if ($audio_extension == 'flac') {
+            $output_format = new FFMpeg\Format\Audio\Flac();  
+            $output_format->setAudioChannels(1);
+            $output_format->setAudioKiloBitrate(256);
+        }
 
-
-
+        $output_format->on('progress', function ($video, $format, $percentage) use($pid) {
+            file_put_contents('./progress/'. $pid . '.txt', $percentage);
+        }); 
 
         $saveFile = addslashes($output_dir . $pid . "." . $audio_extension);
         $video->save($output_format, $saveFile);
