@@ -201,7 +201,7 @@
 								var percent = (uploadBytes/totalBytes)*100;
 								console.log('prog:', percent);
 								if (percent == 100) {
-									console.log('GO TO FFMPEG');
+									$('.progress_status_label').html('Creating Audio File:');
 									getFFMPEGProgress(<?php echo($pid) ;?>);
 								}
 							}
@@ -221,6 +221,7 @@
 				    if (progress < 100) {
               $('.qq-progress-bar-container-selector').show();
               $('.qq-progress-bar-selector').css('width',progress+'%');
+              $('.progress_status_percent').html(progress+'%');
 				    	setTimeout(function() {
 				    		getFFMPEGProgress(pid)
 				    	},500);

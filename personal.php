@@ -25,10 +25,8 @@
             </a>
           ";
         }
-       	$pageContent = "
-       		<div class='fv_pageContent'>
-       			YOUR VIDEOS
-       		</div>";
+       	$pageContent = getUserVideos($user->id);
+        dump($pageContent);
       ?>
       <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
       <!-- Able Player CSS -->
@@ -60,7 +58,9 @@
                        <h2 class="card-title"><?php echo($subTitle); ?></h2>
                        <p class="card-text"><?php echo($titleText); ?></p>
                     </div>
-                    <?php echo($pageContent); ?>
+                    <div class='fv_pageContent'>
+                      <?php echo($pageContent); ?>
+                    </div>
                 </div>
 
               </div>
