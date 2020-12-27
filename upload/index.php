@@ -74,7 +74,7 @@
                     				Video upload: 
                     			</span>
                     			<span class= "progress_status_percent">
-                    				28%
+                    				0%
                     			</span>
                     		</div>
                         <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-progress-bar-selector qq-progress-bar"></div>
