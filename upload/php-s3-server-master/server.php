@@ -289,7 +289,7 @@
         // clean up tmp files
         unlink("./tmpAudio/$audioFile");
         unlink("./tmpThumbs/$pid.jpg");
-        unlink("./tmpThumbs/$pid_large.jpg");
+        unlink("./tmpThumbs/".$pid."_large.jpg");
         return ['duration' => $duration, 'success' => $transcribeSuccess];
     } 
     function getRequestMethod() {
