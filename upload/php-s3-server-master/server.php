@@ -265,7 +265,7 @@
 
         $saveFile = addslashes($output_dir . $pid . "." . $audio_extension);
         $video->save($output_format, $saveFile);
-        $thumb = generateThumb($video);
+        //$thumb = generateThumb($video);
 
         // onprogress stops before 100, so update for progress bar
         file_put_contents('./progress/'. $pid . '.txt', '100'); 
