@@ -251,7 +251,7 @@
         }); 
 
 
-        $thumb = $video->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(1));
+        $thumb = $ffmpeg->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(1));
         $client = getS3Client();
         $command = $client->getCommand('PutObject', array(
                 'Bucket' => $expectedBucketName,
