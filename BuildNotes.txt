@@ -20,10 +20,24 @@ EC2
 
 		sudo apt-get install ffmpeg
 			composer require php-ffmpeg/php-ffmpeg
+			
+	GD 
+	
+	sudo apt-get install php7.4-gd
 
 	GOOGLE SPEECH TO TEXT FOR RUSSIAN
 
 		composer require google/cloud-speech
+		export GOOGLE_APPLICATION_CREDENTIALS="/var/www/html/FVP/inc/client_secret.json"
+		Added export GOOGLE_APPLICATION_CREDENTIALS to ~/.bashrc
+		sudo apt install php-bcmath
+		sudo apt install php-pear
+		sudo apt install php-dev
+		sudo pecl install protobuf
+		 - add "extension=protobuf.so" to php.ini
+		sudo grpc install protobuf
+		 - add "extension=grpc.so" to php.ini		 
+		
 
 SES
 
@@ -59,8 +73,37 @@ Add CORS configuration
     }
 ]
 
+IAM 
 
+	Create Role : FVP_S3_Access_Mgr
+	
+	Create Policy : FVP_S3_Access
 
+		{
+			"Version": "2012-10-17",
+			"Statement": [
+				{
+					"Effect": "Allow",
+					"Action": [
+						"s3:ListBucket"
+					],
+					"Resource": [
+						"arn:aws:s3:::test"
+					]
+				},
+				{
+					"Effect": "Allow",
+					"Action": [
+						"s3:PutObject",
+						"s3:GetObject",
+						"s3:DeleteObject"
+					],
+					"Resource": [
+						"arn:aws:s3:::flagship-video-project/*"
+					]
+				}
+			]
+		}
 VPC
 	vpc-a1fa28cd
 

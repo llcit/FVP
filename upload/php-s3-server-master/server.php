@@ -237,7 +237,12 @@
             echo "MSG: " . $message."\n";
         }); 
         $video = $ffmpeg->open($tmpLink);
-        $thumb = $video->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(1))->save("./tmpThumbs/$pid.jpg");
+        $frame = $video->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(1))->save("./tmpThumbs/$pid_large.jpg");
+        // use GD to resize
+        $original = imagecreatefrompng("./tmpThumbs/$pid_large.jpg");   
+        $thumb = imagescale($original,205,117); 
+        // save resized thumb  
+        imagejpeg($thumb,"./tmpThumbs/$pid.jpg");  
         $client = getS3Client();
         $command = $client->getCommand('PutObject', array(
                 'Bucket' => $expectedBucketName,
@@ -257,17 +262,17 @@
             $output_format->setAudioChannels(1);
             $output_format->setAudioKiloBitrate(256);
         }
-
         $output_format->on('progress', function ($video, $format, $percentage) use($pid) {
             file_put_contents('./progress/'. $pid . '.txt', $percentage);
         }); 
 
         $saveFile = addslashes($output_dir . $pid . "." . $audio_extension);
         $video->save($output_format, $saveFile);
-        //$thumb = generateThumb($video);
-
         // onprogress stops before 100, so update for progress bar
         file_put_contents('./progress/'. $pid . '.txt', '100'); 
+        // clean up tmp files
+        unlink("./tmpThumbs/$pid.jpg");
+        unlink("./tmpThumbs/$pid_large.jpg");
         $audioFile = $pid . "." . $audio_extension;
         if ($language != 'Russian') {
             $response = transcribe_Watson($audioFile,$language);
@@ -281,6 +286,10 @@
         $duration =$ffprobe
             ->format($output_dir . $pid . "." . $audio_extension) // extracts file informations
             ->get('duration'); 
+        // clean up tmp files
+        unlink("./tmpAudio/$audioFile");
+        unlink("./tmpThumbs/$pid.jpg");
+        unlink("./tmpThumbs/$pid_large.jpg");
         return ['duration' => $duration, 'success' => $transcribeSuccess];
     } 
     function getRequestMethod() {
