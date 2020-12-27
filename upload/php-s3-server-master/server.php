@@ -222,7 +222,7 @@
         }
     }
     function generateThumb($video) {
-        $thumb = $video->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(42));
+        $thumb = $video->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(1));
         $client = getS3Client();
         $command = $client->getCommand('PutObject', array(
                 'Bucket' => $expectedBucketName,
