@@ -237,12 +237,12 @@
             echo "MSG: " . $message."\n";
         }); 
         $video = $ffmpeg->open($tmpLink);
-        $thumb = $video->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(1));
+        $thumb = $video->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(1))->save("./tmpThumbs/$pid.jpg");
         $client = getS3Client();
         $command = $client->getCommand('PutObject', array(
                 'Bucket' => $expectedBucketName,
                 'Key'    => "thumbs/$pid.jpg",
-                'Body'   => $thumb
+                'SourceFile'   => "./tmpThumbs/$pid.jpg"
         ));
         $result = $command->getResult();
         $response = $command->getResponse();
