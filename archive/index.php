@@ -86,7 +86,7 @@
 			'locations'=>getUniqueVals('events','city'),
 			'institutions'=>getUniqueVals('institutions','name'),
 			'types'=>getUniqueVals('presentations','type'),
-			'periods'=>getUniqueVals('presentations','phase')
+			'periods'=>getUniqueVals('events','phase')
 		];
 		$pullDowns = "
 			<div class='fv_selects_wrapper'>
@@ -100,7 +100,7 @@
 				</div>
 		";
 		$i=0;
-		foreach($fullList as $key=>$values) {
+		foreach($fullList as $k=>$values) {
 			if ($i%3==0) {
 				if ($i > 1) {
 					$pullDowns .= "</div>";
@@ -108,12 +108,14 @@
 				$pullDowns .= "<div class='row fv_select_row'>";
 			}
 			$i++;
-			$input = "<select id='".$key."[]' name='".$key."[]' class='selectpicker fv_select_wrapper' multiple>";
-			foreach($values as $value) {
-				if ($filters[$key]) {
-					$selected = (in_array($value,$filters[$key])) ? "selected='selected'" : "";
+			$input = "<select id='".$k."[]' name='".$k."[]' class='selectpicker fv_select_wrapper' multiple>";
+			foreach($values as $k2=>$val) {
+				foreach($val as $key=>$value) {
+					if ($filters[$key]) {
+						$selected = (in_array($value,$filters[$key])) ? "selected='selected'" : "";
+					}
+					$input .= "<option value='$value' $selected>".ucfirst($value)."</option>";
 				}
-				$input .= "<option value='$value' $selected>".ucfirst($value)."</option>";
 			}
 			$input .= "</select>";
 			$pullDowns .= "
@@ -128,7 +130,6 @@
 				</form>
 			</div>
 		";
-
 		return $pullDowns;
 	}
 
@@ -164,12 +165,7 @@
 	function playVideo(element_id) {
 		var id_parts = element_id.match(/(.+)\_(.+)/);
 	  var video_id = id_parts[2];
-	  var url = './player.php?v=' + video_id;
-	  writeDetails($('#videoData_' + video_id).val());
-	  
-	  $('#playerFrame').attr('src', url);
-	  $('#playerModal').modal('show');
-	  
+		window.location = "../player/index.php?v="+video_id ;
 	}
 	function writeDetails(data_str) {
 		var data = $.parseJSON(data_str);

@@ -22,12 +22,12 @@
             if ($row) {
               mysqli_query($dbcnx, "UPDATE users set  password='" . $password . "', reset_link_token='" . NULL . "' ,exp_date='" . NULL . "' WHERE email='" . $emailId . "'");
               $userMsg = '<p>Congratulations! Your password has been updated successfully.</p>';
-              $msgClass = " loginMsg_success";
+              $msgClass = "success";
               $returnToLogin = "<a class ='pull-right loginLink' href='login.php'>Return to Login</a>";
             } 
             else {
               $userMsg =  "<p>Something has gone wrong. Please try again</p>";
-              $msgClass = " loginMsg_error";
+              $msgClass = " error";
             }
          }
          else if($_GET['key'] && $_GET['token']) {
@@ -59,22 +59,22 @@
                } 
                else{
                   $userMsg = "This password link has expired";
-                  $msgClass = " loginMsg_error";
+                  $msgClass = " error";
                }
             } 
             else {
                $userMsg = "Email <i>$email</i> not found.";
-               $msgClass = " loginMsg_error";
+               $msgClass = "error";
             }  
          }
          else {
             $userMsg = "Invalid request. This page requires an email address and a valid token. You may want to try copying and pasting the entire link from the email you received.";
-            $msgClass = " loginMsg_error";
+            $msgClass = " error";
          }
 
         if ($userMsg != '') {
           $userMsgPanel = "
-                                <div class='loginMsg $msgClass' style='margin-top:25px;'>
+                                <div class='msg $msgClass' style='margin-top:25px;'>
                                     $userMsg
                                   </div>
           ";

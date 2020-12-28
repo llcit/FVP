@@ -14,7 +14,7 @@
 			  } 
 			  else {
 			  	$user = getUser($pdo,$_SESSION['username']);
-			  	$role =  $user->roles;
+			  	$role =  $user->role;
 			  	$userName = $user->first_name . " " . $user->last_name;
           if ($user) {
             $welcomeMsg = "

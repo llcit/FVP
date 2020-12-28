@@ -20,10 +20,18 @@
                         $_SESSION["username"] = $_POST["username"];
                         exit(header("location:./index.php"));
                     } else {
-                        echo "'Invalid Details'";
+                        $msg = "
+                          <div class='msg error'>
+                            Invalid Password
+                          </div>
+                        ";
                     } 
                 } else {  
-                    echo "'Invalid Details'";
+                  $msg = "
+                    <div class='msg error'>
+                      Invalid Credentials
+                    </div>
+                  ";
                 }  
             }
         ?>
@@ -60,6 +68,7 @@
                                         </div>
                                         <div class="card-footer">
                                             <div class="form-group">
+                                              <?php echo($msg); ?>
                                               <div>
                                                  <label for="username">Username:</label>
                                                  <input type="text" class="textbox" id="username" name="username" placeholder="Username" />

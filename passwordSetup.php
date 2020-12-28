@@ -53,23 +53,23 @@
                 $mail->AltBody    = $bodyText;
                 $mail->Send();
                 $userMsg =  "Check your email and click on the link to set your new password.";
-                $msgClass = "loginMsg_success";
+                $msgClass = "success";
             } catch (phpmailerException $e) {
                 $userMsg =  "An error occurred. {$e->errorMessage()}"; //Catch errors from PHPMailer.
-                $msgClass = "loginMsg_error";
+                $msgClass = "error";
             } catch (Exception $e) {
                 $userMsg =  "Email not sent. {$mail->ErrorInfo}"; //Catch errors from Amazon SES.
-                $msgClass = " loginMsg_error";
+                $msgClass = " error";
             }
           }
           else {
                 $userMsg =  "We are unable to locate that email address in the system.  Please use the address to which your invitation was sent."; 
-                $msgClass = " loginMsg_error";
+                $msgClass = " error";
           }
         }
         if ($userMsg != '') {
           $userMsgPanel = "
-                                <div class='loginMsg $msgClass'>
+                                <div class='msg $msgClass'>
                                     $userMsg
                                   </div>
           ";
