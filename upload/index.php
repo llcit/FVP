@@ -30,7 +30,7 @@
 					$pageContent = buildPresentatonSelect($userEvents);
 				}
 				else {
-					$event_id = $_GET['event_id'];
+					$event_id = ($_GET['event_id']) ? $_GET['event_id']:0;
 					$language = getLanguage($_GET['event_id']);
 					$presentation_type = $_GET['presentation_type'];
 					// generate a unique code for public asccess
@@ -270,7 +270,7 @@
 								$('.progress_status_percent').html(Math.round(percent)+'%');
 								if (percent == 100) {
 									$('.progress_status_label').html('Creating Audio File:');
-									getFFMPEGProgress(<?php echo($user->id) ;?>,<?php echo($event_id) ;?>,'<?php echo($presentation_type) ;?>');
+									getFFMPEGProgress('<?php echo($user->id) ;?>','<?php echo($event_id) ;?>','<?php echo($presentation_type) ;?>');
 								}
 							}
 						}
