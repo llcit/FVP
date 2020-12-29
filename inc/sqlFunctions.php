@@ -223,6 +223,8 @@ function getPid($uid,$eid,$presentation_type) {
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
     $row = $stmt->fetchObject();
-    return $row->id;  
+    if ($row) {
+        return $row->id; 
+    } 
 }
 
