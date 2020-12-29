@@ -221,7 +221,7 @@
 							accessKey: '<?php echo($SETTINGS['AWS_SERVER_PRIVATE_KEY']); ?>',  
 							params: {
 												pid:'<?php echo($pid); ?>',
-											 	user_id:'<?php echo($user_id); ?>', 
+											 	user_id:'<?php echo($user->id); ?>', 
 											 	event_id:'<?php echo($event_id); ?>',
 											 	language:'<?php echo($language); ?>',
 											 	presentation_type:'<?php echo($presentation_type); ?>',
