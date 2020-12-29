@@ -36,6 +36,7 @@
         handleCorsRequest();
         if (isset($_REQUEST["success"])) {
             include_once("../../inc/db_pdo.php"); 
+            include_once("../../inc/sqlFunctions.php");
             preg_match("/(.*)\.(mov|mp4|m4a)/",$_REQUEST['key'],$matches);
             $file_name = $matches[1];
             $video_extension = $matches[2];
@@ -45,7 +46,7 @@
                 $tmpLink = verifyFileInS3($_REQUEST['key']);
                 $language = $_REQUEST['language'];
                 $transcribeResult = generateTranscript($tmpLink,$pid,$language);
-                $confirmation = confirmUpload($pid,$transcribeResult['duration'],$transcribeResult['success'],$tmpLink);
+                $confirmation = confirmUpload($pid,$transcribeResult['duration'],$transcribeResult['success'],$tmpLink,$video_extension);
                 renameFile($_REQUEST['key'],$pid,$video_extension);
             }
             
@@ -71,21 +72,6 @@
         ]);
         return $newKey;
     }
-    function registerVideo($uid,$eid,$presentation_type,$extension,$access_code) {
-        global $pdo;
-        // new presentation
-        $sql = "INSERT INTO presentations (user_id,event_id,type,extension,access_code) 
-                VALUES (:user_id,:event_id,:presentation_type,:extension,:access_code)";
-        $stmt= $pdo->prepare($sql);
-        $stmt->bindValue(':user_id', $uid);
-        $stmt->bindValue(':event_id', $eid);
-        $stmt->bindValue(':presentation_type', $presentation_type);
-        $stmt->bindValue(':extension', $extension);
-        $stmt->bindValue(':access_code', $access_code);
-        $stmt->execute();
-        $pid = $pdo->lastInsertId();
-        return $pid;
-    }
     function verifyFileInS3() {
         global $expectedMaxSize;
         $bucket = $_REQUEST["bucket"];
@@ -100,36 +86,12 @@
             return $link;
         }
     }
-    function confirmUpload($pid,$duration,$transcript_success,$link) {
-        $data = ['id'=>$pid,'transcript_raw' => $transcript_success,'duration'=>$duration];
-        updateDB($data);
+    function confirmUpload($pid,$duration,$transcript_success,$link,$extension) {
+        $data = ['id'=>$pid,'transcript_raw' => $transcript_success,'duration'=>$duration,'extension'=>$extension];
+        finalizePresentation($data);
         $response = array("tempLink" => $link);
         echo json_encode($response);
         return $response;
-    }
-    function updateDB($data) {
-        global $pdo; 
-        try { 
-            $setString = '';
-            $whereString = '';
-            $comma = '';
-            foreach($data as $key=>$value) {
-                if($key == 'id') {
-                    $whereString = "$key=:$key";
-                }
-                else {
-                    $setString .= $comma . "$key=:$key";
-                    $comma = ',';
-                }
-            }
-            $sql = "UPDATE presentations SET $setString WHERE $whereString";
-            echo("\nSQL --> $sql\n\n");
-            $stmt= $pdo->prepare($sql)->execute($data);  
-        }catch (Exception $e) {
-          echo json_encode(array("error" => "$e"));
-        }
-
-
     }
     function transcribe_Watson($audioFile,$language) {
         global $SETTINGS;

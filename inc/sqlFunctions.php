@@ -47,8 +47,8 @@
     $sql = "
         SELECT pres.`id`,pres.`extension`,pres.`duration`,pres.`transcript_raw`,pres.`transcript_final`,
                pres.`translation_raw`,pres.`translation_final`,pres.`annotations`,u.`first_name`,u.`last_name`,
-               i.`name` as `institution`,prog.`name` as `program`,prog.`progYrs`,prog.`language`,
-               DATE_FORMAT(e.`start_date`,'%M %Y') as `date`, pres.`type`,e.`phase`,e.`city`,e.`country`
+               pres.`user_id`,i.`name` as `institution`,prog.`name` as `program`,prog.`progYrs`,prog.`language`,
+               DATE_FORMAT(e.`start_date`,'%M %Y') as `date`, pres.`type`,e.`phase`,e.`city`,e.`country`,pres.`is_showcase`
         FROM `presentations` pres 
         LEFT JOIN `users` u on u.`id` = pres.`user_id` 
         LEFT JOIN `events` e on e.`id`= pres.`event_id` 
@@ -223,5 +223,42 @@ function getPid($uid,$eid,$presentation_type) {
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
     return $stmt->fetchObject();
+}
+function registerVideo($uid,$eid,$presentation_type,$extension,$access_code) {
+    global $pdo;
+    // new presentation
+    $sql = "INSERT INTO presentations (user_id,event_id,type,extension,access_code) 
+            VALUES (:user_id,:event_id,:presentation_type,:extension,:access_code)";
+    $stmt= $pdo->prepare($sql);
+    $stmt->bindValue(':user_id', $uid);
+    $stmt->bindValue(':event_id', $eid);
+    $stmt->bindValue(':presentation_type', $presentation_type);
+    $stmt->bindValue(':extension', $extension);
+    $stmt->bindValue(':access_code', $access_code);
+    $stmt->execute();
+    $pid = $pdo->lastInsertId();
+    return $pid;
+}
+function finalizePresentation($data) {
+    global $pdo; 
+    try { 
+        $setString = '';
+        $whereString = '';
+        $comma = '';
+        foreach($data as $key=>$value) {
+            if($key == 'id') {
+                $whereString = "$key=:$key";
+            }
+            else {
+                $setString .= $comma . "$key=:$key";
+                $comma = ',';
+            }
+        }
+        $sql = "UPDATE presentations SET $setString WHERE $whereString";
+        echo("\nSQL --> $sql\n\n");
+        $stmt= $pdo->prepare($sql)->execute($data);  
+    }catch (Exception $e) {
+      echo json_encode(array("error" => "$e"));
+    }
 }
 

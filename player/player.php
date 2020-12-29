@@ -47,8 +47,8 @@
 			";
 			$transcriptHeight = '400';
 		}
-		$isOwner = 1;
-		$isShowcase = false;
+		$isOwner = ($user->id == $presentationData[0]['user_id']) ? true : false;
+		$isShowcase = ($presentationData[0]['is_showcase']==1) ? true : false;
 		if($isOwner && !$isShowcase) {
 			if ($_GET['cm'] == 'edit') {
 				$editControls = "
@@ -132,7 +132,7 @@
 			$('#player').css('margin','auto');
 		}	
 		function editCaptions() {
-			$('.cm').val('edit'); // reference parent
+			window.top.location.href = "./index.php?v=<?php echo($_GET['v']); ?>&cm=edit";  // reference parent
 		}	
 		function saveCaptions() {
 			var i=0;
