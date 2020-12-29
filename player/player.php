@@ -26,6 +26,7 @@
     include "../inc/dump.php";
     include "../inc/sqlFunctions.php";
 		$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
+		$user = getUser($pdo,$_SESSION['username']);
 		$videoId = ($_GET['v']) ? $_GET['v'] : 86;
 		if ($_POST['saveCaptions']) {
 			include "./saveCaptionEdits.php";
