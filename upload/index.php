@@ -291,7 +291,7 @@
               $('.qq-progress-bar-selector').css('width',progress+'%');
               $('.progress_status_percent').html(progress+'%');
 				    	setTimeout(function() {
-				    		getFFMPEGProgress(pid)
+				    		getFFMPEGProgress(uid,eid,presentation_type)
 				    	},500);
 				    }
 				    else {
