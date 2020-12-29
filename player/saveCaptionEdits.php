@@ -25,8 +25,7 @@
       $fileContent .= $row->text  ."\r\n\r\n";         
     }
     $captionType = ($language == 'en') ? 'translation' : 'transcipt';
-    $key = "$captionType/$pid.vtt";
-
+    $key = $captionType".s/".$pid."vtt";
     $client = getS3Client();
     $command = $client->getCommand('PutObject', array(
             'Bucket' => $expectedBucketName,
@@ -41,7 +40,6 @@
   }
   function time_format($rawTime) {
     if ($rawTime) {
-        // always 0 microseconds
         $microseconds = '000';
         return $rawTime . '.' . $microseconds;
     }
