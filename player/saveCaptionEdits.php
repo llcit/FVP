@@ -43,7 +43,7 @@
     if ($rawTime) {
         // always 0 microseconds
         $microseconds = '000';
-        return gmdate("H:i:s", $seconds) . '.' . $microseconds;
+        return $rawTime . '.' . $microseconds;
     }
   }     
 ?>
