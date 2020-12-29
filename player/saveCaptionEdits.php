@@ -19,8 +19,8 @@
     }
     $captionType = ($language == 'en') ? 'translation' : 'transcipt';
     $key = "$captionType/$pid.vtt";
-    dump($key);
-    /*$client = getS3Client();
+
+    $client = getS3Client();
     $command = $client->getCommand('PutObject', array(
             'Bucket' => $expectedBucketName,
             'Key'    => "$key",
@@ -30,7 +30,7 @@
     $response = $command->getResponse();
     $code = $response->getStatusCode();
     $success = ($code === 200) ? true : false ;
-    return $success;*/
+    return $success;
   }
   function time_format($rawTime) {
     if ($rawTime) {
