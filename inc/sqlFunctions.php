@@ -199,3 +199,16 @@ function getPresentationId($user_id,$event_id) {
     }
     return $pid;
 }
+function getLanguage($event_id) {
+    global $pdo;
+    $sql = "
+        SELECT p.`language`
+        FROM `events` e 
+        JOIN `programs` p on p.`id`=e.`program_id`
+        WHERE e.`id` = '$event_id'
+        ";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    $row = $stmt->fetchObject();
+    return $row->language;  
+}

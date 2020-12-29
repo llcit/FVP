@@ -29,12 +29,15 @@
 				if (!$_GET['event_id']) {
 					$userEvents = getUserEvents($user->id);
 					$pageContent = buildPresentatonSelect($userEvents);
-
 				}
 				else {
 					$event_id = $_GET['event_id'];
+					$language = getLanguage($_GET['event_id']);
 					$presentation_type = $_GET['presentation_type'];
-					$pid = getPresentationId($user->id,$event_id,$prenentation_type);
+					// generate a unique code for public asccess
+					$salt = $user->id.$event_id.$presentation_type;
+					$access_code=md5(uniqid($salt, true));
+					$pid = getPresentationId($user->id,$event_id,$presentation_type);
 				  $pageContent = "
 				            <div id='fine-uploader-s3'></div>
 				  ";
@@ -77,20 +80,20 @@
 		          <p><b>Presentation Type:</b></p>
 		          <div style='padding-left:30px'>
 								<div class='form-check'>
-								  <input class='form-check-input' type='radio' name='presentationType' id='presentationType' value='Presentation' checked>
-								  <label class='form-check-label' for='presentationType'>
+								  <input class='form-check-input' type='radio' name='presentation_type' id='presentation_type' value='Presentation' checked>
+								  <label class='form-check-label' for='presentation_type'>
 								    Presentation
 								  </label>
 								</div>
 							  <div class='form-check'>
-								  <input class='form-check-input' type='radio' name='presentationType' id='presentationType' value='Presentation + Q&A'>
-								  <label class='form-check-label' for='presentationType'>
+								  <input class='form-check-input' type='radio' name='presentation_type' id='presentation_type' value='Presentation + Q&A'>
+								  <label class='form-check-label' for='presentation_type'>
 								    Presentation + Q&A
 								  </label>
 								</div>
 								<div class='form-check'>
-								  <input class='form-check-input' type='radio' name='presentationType' id='presentationType' value='Interview'>
-								  <label class='form-check-label' for='presentationType'>
+								  <input class='form-check-input' type='radio' name='presentation_type' id='presentation_type' value='Interview'>
+								  <label class='form-check-label' for='presentation_type'>
 								    Interview
 								  </label>
 								 </div>
@@ -213,13 +216,16 @@
 					};
 					$('#fine-uploader-s3').fineUploaderS3({
 						template: 'qq-template-s3',
-						request: {
+						request: { 
 							endpoint: 'https://<?php echo($SETTINGS['S3_BUCKET_NAME']); ?>.s3.amazonaws.com',
 							accessKey: '<?php echo($SETTINGS['AWS_SERVER_PRIVATE_KEY']); ?>',  
 							params: {
 												pid:'<?php echo($pid); ?>',
 											 	user_id:'<?php echo($user_id); ?>', 
-											 	event_id: '<?php echo($event_id); ?>'
+											 	event_id:'<?php echo($event_id); ?>',
+											 	language:'<?php echo($language); ?>',
+											 	presentation_type:'<?php echo($presentation_type); ?>',
+											 	access_code:'<?php echo($access_code); ?>'
 											 }
 						},
 						signature: {

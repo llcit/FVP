@@ -9,7 +9,6 @@
     // blow open memory limit
     ini_set('memory_limit', '-1');
     require './vendor/autoload.php';
-    $language = 'English';
     use Aws\S3\S3Client;
     use Google\Cloud\Speech\V1\SpeechClient;
     use Google\Cloud\Speech\V1\RecognitionAudio;
@@ -40,11 +39,12 @@
             preg_match("/(.*)\.(mov|mp4|m4a)/",$_REQUEST['key'],$matches);
             $file_name = $matches[1];
             $video_extension = $matches[2];
-            $pid = ($_REQUEST['pid'] > 0) ? $_REQUEST['pid'] : registerVideo($_REQUEST['user_id'],$_REQUEST['event_id'],$video_extension);
+            $pid = ($_REQUEST['pid'] > 0) ? $_REQUEST['pid'] : registerVideo($_REQUEST['user_id'],$_REQUEST['event_id'],$_REQUEST['presentation_type'],$video_extension,$_REQUEST['access_code']);
             echo($pid);
             if ($pid) {
                 $tmpLink = verifyFileInS3($_REQUEST['key']);
-                $transcribeResult = generateTranscript($tmpLink,$pid);
+                $language = $_REQUEST['language'];
+                $transcribeResult = generateTranscript($tmpLink,$pid,$language);
                 $confirmation = confirmUpload($pid,$transcribeResult['duration'],$transcribeResult['success'],$tmpLink);
                 renameFile($_REQUEST['key'],$pid,$video_extension);
             }
@@ -71,14 +71,17 @@
         ]);
         return $newKey;
     }
-    function registerVideo($uid,$eid,$extension) {
+    function registerVideo($uid,$eid,$presentation_type,$extension,$access_code) {
         global $pdo;
         // new presentation
-        $sql = "INSERT INTO presentations (user_id,event_id,extension) VALUES (:user_id,:event_id,:extension)";
+        $sql = "INSERT INTO presentations (user_id,event_id,presentation_type,extension,access_code) 
+                VALUES (:user_id,:event_id,:presentation_type,:extension)";
         $stmt= $pdo->prepare($sql);
         $stmt->bindValue(':user_id', $uid);
         $stmt->bindValue(':event_id', $eid);
+        $stmt->bindValue(':presentation_type', $presentation_type);
         $stmt->bindValue(':extension', $extension);
+        $stmt->bindValue(':access_code', $access_code);
         $stmt->execute();
         $pid = $pdo->lastInsertId();
         return $pid;
@@ -221,8 +224,8 @@
             return gmdate("H:i:s", $seconds) . '.' . $microseconds;
         }
     }
-    function generateTranscript($tmpLink,$pid) {
-        global $SETTINGS,$language,$expectedBucketName;
+    function generateTranscript($tmpLink,$pid,$language) {
+        global $SETTINGS,$expectedBucketName;
         $audio_extension = $SETTINGS['tmp_audio_extension'];
         echo ("\n\nRIP pid: $pid\n\n");
         $output_dir = './tmpAudio/';
