@@ -103,11 +103,11 @@
             'Korean' => 'ko-KR_BroadbandModel',
             'Portuguese' => 'pt-BR_BroadbandModel'
         ];
-        $url = $SETTINGS['WATSON_BASE_URL']."/".$models[$language].
+        $url = $SETTINGS['WATSON_SPEECH_URL']."/".$models[$language].
                "/recognize?timestamps=true";
         echo("\n\nWatson URL: $url\n\n");
-        $username = $SETTINGS['WATSON_USER'];
-        $password = $SETTINGS['WATSON_PWD'];
+        $username = $SETTINGS['WATSON_SPEECH_USER'];
+        $password = $SETTINGS['WATSON_SPEECH_PWD'];
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER,true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);

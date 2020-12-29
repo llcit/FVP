@@ -43,8 +43,18 @@
         else {
        	  $pageContent = buildVideoList();
         }
-        function buildVideoList() {
-          return "ALL OF MY VIDEOS";
+        function buildVideoList($userVideos) {
+          $videoList = '';
+          foreach($userVideos as $video) {
+            $videoList = "
+              <p>
+                <a href='<a href='./player/?v=".$video['id']."'>
+                  ".$video['progName']." ".$video['progYrs']." (".$video['phase'].")
+                </a>
+              </p>
+            ";
+          }
+          return $videoList;
         }
       ?>
       <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">

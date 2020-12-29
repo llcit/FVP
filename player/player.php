@@ -40,6 +40,9 @@
 				markAsFinal($videoId,'translation');
 			}
 		}
+		if ($_POST['translateCaptions']) {
+			include "../upload/php-s3-server-master.php?translateCaptions.php?pid=".$_GET['v'];
+		}
 		$presentationData = getVideos($videoId);
 		$allTracks = 'linguistic,professional,cutural';
 		$includeTracks = ($_GET['t']) ? $_GET['t'] : $allTracks;
@@ -71,6 +74,11 @@
 				";
 			}
 			else {
+				if ($presentationData[0]['transcript_final'] == 1) {
+					$translateButton = "
+						<a style='display:inline;' class='btn btn-primary' href=\"javascript:translate();\">Generate Translation</a>
+					";
+				}
 				$editControls = "
 					<div id = 'edit_controls' class = 'edit_controls'>
 						<a class='btn btn-primary' href=\"javascript:editCaptions();\">Edit Captions</a>
@@ -109,7 +117,6 @@
 			<?php echo($editControls); ?>
 		  <div id="player">
 			  <video id="video1" preload="auto" width="480" height="360" poster="../ableplayer/media/wwa.jpg" data-able-player data-transcript-div="transcript" playsinline <?php echo("$editCaptionTag"); ?> >
-
 					<?php
 						// put empty placeholder in for ableplayer onready function
 						if ($presentationData[0]['transcript_raw'] || $presentationData[0]['translation_raw']) {
@@ -118,9 +125,7 @@
 						if ($presentationData[0]['annotations'] != '') {
 							echo("$descriptionTracks");
 						}
-
 					?>
-	
 			  </video>
 			</div>
 			<div id="transcript"></div>
@@ -169,10 +174,15 @@
 				$('#saveCaptions').val(1);
 				$('#saveCaptionForm').submit();
 			}		
+			function translate() {
+				$('#translateCaptions').val(1);
+				$('#translateCaptions').submit();
+			}
 		</script>
 			<input type='hidden' id='saveCaptions' name='saveCaptions' value = 0> 
 			<input type='hidden' id='captionData' name='captionData' value = ''>
 			<input type='hidden' id='captionLanguage' name='captionLanguage' value = ''>
+			<input type='hidden' id='translateCaptions' name='translateCaptions' value = 0> 
 		</form>
 	</body>
 </html>
