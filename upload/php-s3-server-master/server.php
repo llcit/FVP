@@ -75,7 +75,7 @@
         global $pdo;
         // new presentation
         $sql = "INSERT INTO presentations (user_id,event_id,type,extension,access_code) 
-                VALUES (:user_id,:event_id,:presentation_type,:extension)";
+                VALUES (:user_id,:event_id,:presentation_type,:extension,:access_code)";
         $stmt= $pdo->prepare($sql);
         $stmt->bindValue(':user_id', $uid);
         $stmt->bindValue(':event_id', $eid);

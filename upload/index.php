@@ -17,7 +17,6 @@
 				else {
 					$user = getUser($pdo,$_SESSION['username']);
 					$navLinks = writeNavLinks($user->role,'header');
-					$role =  $user->roles;
 					$userName = "<h5 style='display:inline'>" . $user->first_name . " " . $user->last_name . "</h5>";
           $welcomeMsg = "
             $userName 
