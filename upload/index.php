@@ -44,7 +44,17 @@
 
 				$videoExists = '';
 				if ($pid) {
-					$videoExists = "<p> You already have a video uploaded for this event! [LINK TO VID IN NEW WINDOW]";
+					$videoExists = "
+						<p class='card-text'>
+							You have previously uploaded a video uploaded for this event! If you upload a new video, it will overwrite the existing video!
+						</p>
+						<p class='card-text'>
+							<a href='../player/?v=$pid' target=_blank>
+								View saved video
+							</a>
+						</p>
+
+					";
 
 				}
 				function buildPresentatonSelect($events) {

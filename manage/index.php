@@ -13,7 +13,7 @@
 			$titleText = "You may select an existing event to edit or add a new event.  You may only delete an event if it  does not have any videos uploaded to it.";
 			session_start();
 			if (!isset($_SESSION['username'])) { 
-		    exit(header("location:./login.php"));
+		    exit(header("location:../login.php"));
 		  } 
 		  else {
         if ($_POST['manageEvent'] == 1) {
