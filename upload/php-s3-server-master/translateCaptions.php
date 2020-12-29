@@ -1,46 +1,45 @@
 <?php
     require './vendor/autoload.php';
     use Aws\S3\S3Client;
+    function translateVTTFile($pid) {
+        $SETTINGS = parse_ini_file(__DIR__."/../../inc/settings.ini");
+        $clientPrivateKey = $SETTINGS['AWS_CLIENT_SECRET_KEY'];
+        $serverPublicKey = $SETTINGS['AWS_SERVER_PUBLIC_KEY'];
+        $serverPrivateKey = $SETTINGS['AWS_SERVER_PRIVATE_KEY'];
+        $expectedBucketName = $SETTINGS['S3_BUCKET_NAME'];
 
-    $SETTINGS = parse_ini_file(__DIR__."/../../inc/settings.ini");
-    $clientPrivateKey = $SETTINGS['AWS_CLIENT_SECRET_KEY'];
-    $serverPublicKey = $SETTINGS['AWS_SERVER_PUBLIC_KEY'];
-    $serverPrivateKey = $SETTINGS['AWS_SERVER_PRIVATE_KEY'];
-    $expectedBucketName = $SETTINGS['S3_BUCKET_NAME'];
-
-    $type = 'transcript';
-    $pid = $_GET['pid'];
-    $ext = 'vtt';
-    $key =  $type . "s/".$pid."." . $ext;
-  
-    $client = getS3Client();
-    $client->registerStreamWrapper();
-    if ($stream = fopen("s3://$expectedBucketName/$key", 'r')) {
-        // While the stream is still open
-        while (!feof($stream)) {
-            // Read 1024 bytes from the stream
-            $transcriptContents = fread($stream, 1024);
+        $type = 'transcript';
+        $ext = 'vtt';
+        $key =  $type . "s/".$pid."." . $ext;
+      
+        $client = getS3Client();
+        $client->registerStreamWrapper();
+        if ($stream = fopen("s3://$expectedBucketName/$key", 'r')) {
+            // While the stream is still open
+            while (!feof($stream)) {
+                // Read 1024 bytes from the stream
+                $transcriptContents = fread($stream, 1024);
+            }
+            // Be sure to close the stream resource when you're done with it
+            fclose($stream);
         }
-        // Be sure to close the stream resource when you're done with it
-        fclose($stream);
+        $parsedCaptions = parseCaptions($transcriptContents);
+        $translatedContents = "WEBVTT\nKind: captions\nLanguage: en\n\n";
+        for ($i=0;$i<count($parsedCaptions);$i++) {
+            $translatedContents .= $parsedCaptions[$i]['timeCodes'] . "\n";
+            $translatedContents .= $parsedCaptions[$i]['translation']. "\n\n";
+        }
+        $command = $client->getCommand('PutObject', array(
+                    'Bucket' => $expectedBucketName,
+                    'Key'    => "transcripts/$pid.vtt",
+                    'Body'   => "$translatedContents"
+            ));
+        $result = $command->getResult();
+        $response = $command->getResponse();
+        $code = $response->getStatusCode();
+        $success = ($code === 200) ? true : false ;
+        return $success;
     }
-    $parsedCaptions = parseCaptions($transcriptContents);
-    $translatedContents = "WEBVTT\nKind: captions\nLanguage: en\n\n";
-    for ($i=0;$i<count($parsedCaptions);$i++) {
-        $translatedContents .= $parsedCaptions[$i]['timeCodes'] . "\n";
-        $translatedContents .= $parsedCaptions[$i]['translation']. "\n\n";
-    }
-    $command = $client->getCommand('PutObject', array(
-                'Bucket' => $expectedBucketName,
-                'Key'    => "transcripts/$pid.vtt",
-                'Body'   => "$translatedContents"
-        ));
-    $result = $command->getResult();
-    $response = $command->getResponse();
-    $code = $response->getStatusCode();
-    $success = ($code === 200) ? true : false ;
-    return $success;
-
     function parseCaptions($transcriptContents){
         $lines = preg_split("/\\n/", $transcriptContents);
         // do not start capturing text until we are past the header

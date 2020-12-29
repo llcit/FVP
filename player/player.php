@@ -41,7 +41,8 @@
 			}
 		}
 		if ($_POST['translateCaptions']) {
-			include "../upload/php-s3-server-master.php?translateCaptions.php?pid=".$_GET['v'];
+			include "../upload/php-s3-server-master.php?translateCaptions.php";
+			translateVTTFile($videoId);
 		}
 		$presentationData = getVideos($videoId);
 		$allTracks = 'linguistic,professional,cutural';
@@ -81,6 +82,7 @@
 				}
 				$editControls = "
 					<div id = 'edit_controls' class = 'edit_controls'>
+						$translateButton
 						<a class='btn btn-primary' href=\"javascript:editCaptions();\">Edit Captions</a>
 					</div>
 				";
