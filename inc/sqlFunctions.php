@@ -1,6 +1,6 @@
 <?php
     function getUser($pdo,$username) {
-        $sql ="SELECT u.`first_name`,u.`last_name`, a.`role` 
+        $sql ="SELECT u.`id`,u.`first_name`,u.`last_name`, a.`role` 
                FROM `users` u
                JOIN `affiliations` a ON a.`user_id` = u.`id` 
                WHERE (u.`username`=:username)
@@ -169,4 +169,33 @@ function deleteEvent($event_id) {
     } catch(PDOException $e) {
         return $e->getMessage();
     }
+}
+function getUserEvents($user_id) {
+    global $pdo;
+    $sql = "
+        SELECT e.`id` AS `event_id`,prog.`id` AS `progId`, prog.`name` AS `progName`,prog.`progYrs`, 
+        e.`start_date`,e.`end_date`,e.`phase`,e.`city`,e.`country`,pres.`id` AS `presId`,pres.`type` AS `presType`
+        FROM `affiliations` a 
+        JOIN `programs` prog ON prog.`id`=a.`program_id`
+        JOIN `events` e ON e.`program_id` = prog.`id` 
+        LEFT JOIN `presentations` pres on pres.`user_id`=a.`user_id`
+        WHERE a.`user_id` = '$user_id'
+        ";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchAll();      
+}
+function getPresentationId($user_id,$event_id) {
+    global $pdo;
+    $sql ="SELECT id FROM presentations WHERE (user_id=? AND event_id=?)";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$user_id,$event_id]); 
+    if($stmt->rowCount() > 0) {
+        // presentation exists-- overwrite
+        $result = $stmt->fetch(PDO::FETCH_OBJ);
+        $pid = $result->id;
+    } else {  
+        $pid = null;
+    }
+    return $pid;
 }

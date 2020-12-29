@@ -35,8 +35,8 @@
                   <div style='width:100%; text-align:center;margin-top:30px;'>
                     <a href='./upload/'> 
                       Upload a video now.
-                    </div>
-                  </p>
+                    </a>
+                  </div>
                 </div>
           ";
         }

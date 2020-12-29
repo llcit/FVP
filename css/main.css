@@ -10,10 +10,6 @@
         max-width:1200px;
         min-height:95vh;
     }
-    .logo {
-        max-width:100%;
-        max-height:100%;
-    }
     .fv_pageContent {
         padding:20px;
     }
@@ -334,6 +330,12 @@
         width:100%;
         padding:10px;
         text-align:right;
+    }
+    .eventList {
+        padding:30px;
+    }
+    .eventListItem {
+        padding:15px;
     }
 
 

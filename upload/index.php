@@ -26,30 +26,84 @@
             </a>
           ";
 				}
-			  $pageContent = "
-			            <div id='fine-uploader-s3'></div>
-				";
-				$user_id = $_GET['user_id']; // FVP TO DO: switch to $_POST after testing
-				$event_id = $_GET['event_id'];
-				$pid = getPresentationId($user_id,$event_id);
+				if (!$_GET['event_id']) {
+					$userEvents = getUserEvents($user->id);
+					$pageContent = buildPresentatonSelect($userEvents);
+
+				}
+				else {
+					$event_id = $_GET['event_id'];
+					$presentation_type = $_GET['presentation_type'];
+					$pid = getPresentationId($user->id,$event_id,$prenentation_type);
+				  $pageContent = "
+				            <div id='fine-uploader-s3'></div>
+				  ";
+					}
+
 				$videoExists = '';
 				if ($pid) {
 					$videoExists = "<p> You already have a video uploaded for this event! [LINK TO VID IN NEW WINDOW]";
 
 				}
-				function getPresentationId($user_id,$event_id) {
-					global $pdo;
-					$sql ="SELECT id FROM presentations WHERE (user_id=? AND event_id=?)";
-	        $stmt = $pdo->prepare($sql);
-	        $stmt->execute([$user_id,$event_id]); 
-	        if($stmt->rowCount() > 0) {
-	            // presentation exists-- overwrite
-	            $result = $stmt->fetch(PDO::FETCH_OBJ);
-	            $pid = $result->id;
-	        } else {  
-	            $pid = null;
-	        }
-	        return $pid;
+				function buildPresentatonSelect($events) {
+					if (count($events)==0) {
+						$eventSelect = "
+                <div class='msg neutral'>
+                  You have not been registered for any events yet.
+                </div>
+             ";
+					}
+					else {
+						$eventSelect = "
+							<div class='eventList'>
+								<H4>
+									Select the event and presentation type you want to upload a video to.
+								</H4>
+								<div class='form-group' style='border:solid 1px #000;padding:30px;'>
+														";
+						$eventSelect .= "
+			          <label for='events' style='width:50px;'>Event:</label>
+			          <select class='form-control fv_inline_select' id='event_id' name='event_id' style='width:500px;margin-top:30px;margin-bottom:30px;'>
+			      ";
+						foreach($events as $event) {
+			        $eventSelect .= "
+			            <option value='".$event['event_id']."'>".
+			            $event['progName']." ".$event['progYrs']." (".$event['phase'].")
+			            </option>
+			        ";
+			      }
+			      $eventSelect .= "
+		          </select>
+		          <p><b>Presentation Type:</b></p>
+		          <div style='padding-left:30px'>
+								<div class='form-check'>
+								  <input class='form-check-input' type='radio' name='presentationType' id='presentationType' value='Presentation' checked>
+								  <label class='form-check-label' for='presentationType'>
+								    Presentation
+								  </label>
+								</div>
+							  <div class='form-check'>
+								  <input class='form-check-input' type='radio' name='presentationType' id='presentationType' value='Presentation + Q&A'>
+								  <label class='form-check-label' for='presentationType'>
+								    Presentation + Q&A
+								  </label>
+								</div>
+								<div class='form-check'>
+								  <input class='form-check-input' type='radio' name='presentationType' id='presentationType' value='Interview'>
+								  <label class='form-check-label' for='presentationType'>
+								    Interview
+								  </label>
+								 </div>
+							</div>
+						</div>
+						<div style='width:100%;text-align:center;'>
+		          <a href='javascript:setUploadVals();' class='btn btn-primary' id='setValsButton'>
+		            Continue
+		          </a>
+		        </div>
+						";
+					}
+				return $eventSelect;
 				}
       ?>
 			<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
@@ -245,6 +299,9 @@
 					  console.log('Error in getting audio progress',textStatus);
 					});
 				}
+				function setUploadVals() {
+					$('#uploadForm').submit();
+				}
 			</script>
     </head>
     <body>
@@ -262,7 +319,7 @@
 	        <?php echo($navLinks); ?>
 	        <?php echo($welcomeMsg); ?>
       	</div>
-        <form method="post" action="">
+        <form method="get" action="" id='uploadForm' name='uploadForm'>
           <div class="container">
              <div class="row fv_main">
                 <div class="card fv_card">
