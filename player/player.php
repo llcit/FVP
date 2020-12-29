@@ -41,7 +41,7 @@
 			}
 		}
 		if ($_POST['translateCaptions']) {
-			include "../upload/php-s3-server-master.php/translateCaptions.php";
+			include "../upload/php-s3-server-master-php/translateCaptions.php";
 			translateVTTFile($videoId);
 		}
 		$presentationData = getVideos($videoId);
