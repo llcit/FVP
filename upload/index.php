@@ -270,18 +270,18 @@
 								$('.progress_status_percent').html(Math.round(percent)+'%');
 								if (percent == 100) {
 									$('.progress_status_label').html('Creating Audio File:');
-									getFFMPEGProgress(<?php echo($pid) ;?>);
+									getFFMPEGProgress(<?php echo($user->id) ;?>,<?php echo($event_id) ;?>,<?php echo($presentation_type) ;?>);
 								}
 							}
 						}
 					});
 				});
-				function getFFMPEGProgress(pid) {
+				function getFFMPEGProgress(uid,eid,presentation_type) {
 					var url = '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']); ?>/ffmpegProgress.php';
 					var request = $.ajax({
 					    url: url,
 					    type: 'GET',
-					    data: { pid: pid} ,
+					    data: { uid:uid,eid:eid,presentation_type,presentation_type} ,
 					    contentType: 'application/json; charset=utf-8'
 					});
 					request.done(function(progress) {
