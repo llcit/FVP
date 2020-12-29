@@ -12,7 +12,7 @@
 				$titleText = "Select one or more videos and press upload.";
 				session_start();
 				if (!isset($_SESSION['username'])) { 
-					exit(header("location:./login.php"));
+					exit(header("location:../login.php"));
 				} 
 				else {
 					$user = getUser($pdo,$_SESSION['username']);
