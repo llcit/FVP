@@ -178,7 +178,7 @@
 			}		
 			function translate() {
 				$('#translateCaptions').val(1);
-				$('#translateCaptions').submit();
+				$('#saveCaptionForm').submit();
 			}
 		</script>
 			<input type='hidden' id='saveCaptions' name='saveCaptions' value = 0> 
