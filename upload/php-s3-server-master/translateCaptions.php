@@ -1,5 +1,5 @@
 <?php
-    require './vendor/autoload.php';
+    require '/var/www/html/FVP/upload/php-s3-server-master//vendor/autoload.php';
     use Aws\S3\S3Client;
     function translateVTTFile($pid) {
         $SETTINGS = parse_ini_file(__DIR__."/../../inc/settings.ini");
