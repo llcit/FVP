@@ -24,7 +24,7 @@
       $fileContent .=  $start . " --> " . $end ."\r\n";
       $fileContent .= $row->text  ."\r\n\r\n";         
     }
-    $captionType = ($language == 'en') ? 'translation' : 'transcipt';
+    $captionType = ($language == 'en') ? 'translation' : 'transcript';
     $key = $captionType."s/".$pid."vtt";
     $client = getS3Client();
     $command = $client->getCommand('PutObject', array(
