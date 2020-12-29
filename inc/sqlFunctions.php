@@ -265,7 +265,7 @@ function markAsFinal($videoId,$captionType) {
     try { 
         $field = "$captionType"."_final"; 
         $sql = "UPDATE presentations SET `$field` = 1 WHERE `id`=$videoId";
-        $stmt= $pdo->prepare($sql)->execute([$videoId,$captionType]);  
+        $stmt= $pdo->prepare($sql)->execute();  
     }catch (Exception $e) {
       echo json_encode(array("error" => "$e"));
     }
