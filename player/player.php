@@ -33,6 +33,12 @@
 			include "./saveCaptionEdits.php";
 			$data = json_decode($_POST['captionData']);
 			writeVTTFile($videoId,$data,$_POST['captionLanguage']);
+			if ($_POST['transcript_final']) {
+				markAsFinal($videoId,'transcript');
+			}
+			if ($_POST['translation_final']) {
+				markAsFinal($videoId,'translation');
+			}
 		}
 		$presentationData = getVideos($videoId);
 		$allTracks = 'linguistic,professional,cutural';
@@ -56,7 +62,11 @@
 			if ($editCaptions) {
 				$editControls = "
 					<div id = 'edit_controls' class = 'edit_controls'>
-						<a class='btn btn-primary' href=\"javascript:saveCaptions();\">Save Captions</a>
+						<div class='form-check' style='display:inline;'>
+						  <input type='checkbox' class='transcript_final' id='transcript_final'>
+						  <label class='form-check-label' for='transcript_final'>Save as Final</label>
+						</div>
+						<a style='margin-left:20px;' class='btn btn-primary' href=\"javascript:saveCaptions();\">Save Captions</a>
 					</div>
 				";
 			}

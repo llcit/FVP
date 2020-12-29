@@ -255,8 +255,16 @@ function finalizePresentation($data) {
             }
         }
         $sql = "UPDATE presentations SET $setString WHERE $whereString";
-        echo("\nSQL --> $sql\n\n");
         $stmt= $pdo->prepare($sql)->execute($data);  
+    }catch (Exception $e) {
+      echo json_encode(array("error" => "$e"));
+    }
+}
+function markAsFinal($videoId,$captionType) {
+    global $pdo; 
+    try { 
+        $sql = "UPDATE presentations SET `captionType` = 1 WHERE `id`=$videoId";
+        $stmt= $pdo->prepare($sql)->execute([$videoId,$captionType]);  
     }catch (Exception $e) {
       echo json_encode(array("error" => "$e"));
     }
