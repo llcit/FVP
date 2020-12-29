@@ -5,7 +5,29 @@
 	include_once("../inc/dump.php");
 	include_once("../inc/db_pdo.php");
 	include_once("../inc/sqlFunctions.php");
+	include_once("../inc/navLinks.php");
+	$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
+	session_start();
 	$videoId = ($_GET['v']) ? $_GET['v'] : 204;
+	$user = getUser($pdo,$_SESSION['username']);
+	if (!isset($_SESSION['username'])) { 
+    $role = 'anonymous'; 
+  } 
+  else {
+  	$user = getUser($pdo,$_SESSION['username']);
+  	$role =  $user->role;
+  	$userName = "<h5 style='display:inline'>" . $user->first_name . " " . $user->last_name . "</h5>";
+    if ($user) {
+      $welcomeMsg = "
+        $userName 
+        <a href='".$SETTINGS['base_url']."/logout.php' class='btn btn-xs btn-icon btn-danger'>
+          <i class='fa fa-sign-out-alt' aria-hidden='true'></i>
+        </a>
+      ";
+    }
+  }
+  $navLinks = writeNavLinks($user->role,'header');
+  $pageContent = writeNavLinks($role,'body');
 	if ($_GET['sc']) {
 		$filters = [
 			'is_showcase'=>['1']
@@ -150,24 +172,27 @@
 </head>
 
 <body>
-
-    <div class="panel panel-default">
-    	<div class="panel-heading fv_heading">
-    		<img src='../img/logo_lf.png'>
-    		&nbsp;&nbsp;&nbsp;Flagship Video Showcase 
-    		<span class='pull-right'>
-  				<img src='../img/logo_ac.png'>
-  			</span>
-    	</div>
-    	<div class="panel-body">
-			<div class="controlWrapper">
-				<form id='userControls'>
-					<?php echo($userControls); ?>
-				</form>
-			</div>
-			<iframe class='playerFrame' src='./player.php?v=<?php echo($videoId); ?>&t=<?php echo(implode(',',$includeTracks)); ?>&cm=<?php echo($captionMode);?>' allowfullscreen>
-			</iframe>
-    	</div>
+  <div class="panel panel-default">
+  	<div class="panel-heading fv_heading">
+  		<img src='../img/logo_lf.png'>
+  		Flagship Video Showcase 
+  		<span class='pull-right'>
+				<img src='../img/logo_ac.png'>
+			</span>
+  	</div>
+    <div class='fv_subHeader'>
+      <?php echo($navLinks); ?>
+      <?php echo($welcomeMsg); ?>
+    </div>
+  	<div class="panel-body">
+		<div class="controlWrapper">
+			<form id='userControls'>
+				<?php echo($userControls); ?>
+			</form>
+		</div>
+		<iframe class='playerFrame' src='./player.php?v=<?php echo($videoId); ?>&t=<?php echo(implode(',',$includeTracks)); ?>&cm=<?php echo($captionMode);?>' allowfullscreen>
+		</iframe>
+  	</div>
 
 <script language='javascript'>
 		function updateUI() {

@@ -5,6 +5,8 @@
         include "./inc/db_pdo.php";
         include "./inc/dump.php";
         include "./inc/sqlFunctions.php";
+        include "./inc/navLinks.php";
+        $SETTINGS = parse_ini_file(__DIR__."/inc/settings.ini");
 				$pageTitle = "Flagship Video Project";
 				$subTitle = "Your Videos";
 				$titleText = "";
@@ -14,19 +16,36 @@
 			  } 
 			  else {
 			  	$user = getUser($pdo,$_SESSION['username']);
-			  	$role =  $user->role;
-			  	$userName = $user->first_name . " " . $user->last_name;
+			  	$userName = "<h5 style='display:inline'>" . $user->first_name . " " . $user->last_name . "</h5>";
+          $navLinks = writeNavLinks($user->role,'header');
 			  }
         if ($user) {
           $welcomeMsg = "
             $userName 
-            <a href='./logout.php' class='btn btn-icon btn-danger'>
+            <a href='".$SETTINGS['base_url']."/logout.php' class='btn btn-xs btn-icon btn-danger'>
               <i class='fa fa-sign-out-alt' aria-hidden='true'></i>
             </a>
           ";
         }
-       	$pageContent = getUserVideos($user->id);
-        dump($pageContent);
+        $userVideos = getUserVideos($user->id);
+        if(!$userVideos) {
+          $pageContent = "
+                <div class='msg neutral'>
+                  You do not have any videos saved yet.
+                  <div style='width:100%; text-align:center;margin-top:30px;'>
+                    <a href='./upload/'> 
+                      Upload a video now.
+                    </div>
+                  </p>
+                </div>
+          ";
+        }
+        else {
+       	  $pageContent = buildVideoList();
+        }
+        function buildVideoList() {
+          return "ALL OF MY VIDEOS";
+        }
       ?>
       <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
       <!-- Able Player CSS -->
@@ -48,6 +67,7 @@
           </span>
         </div>
         <div class='fv_subHeader'>
+          <?php echo($navLinks); ?>
           <?php echo($welcomeMsg); ?>
         </div>
         <form method="post" action="">

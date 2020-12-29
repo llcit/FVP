@@ -5,18 +5,26 @@
         include "../inc/db_pdo.php";
         include "../inc/dump.php";
         include "../inc/sqlFunctions.php";
+        include "../inc/navLinks.php";
 				$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
-				$pageTitle = "Flagship Video Upload";
+				$pageTitle = "Flagship Video Project";
 				$subTitle = "Upload Video";
 				$titleText = "Select one or more videos and press upload.";
 				session_start();
 				if (!isset($_SESSION['username'])) { 
-					$role = 'anonymous'; 
+					exit(header("location:./login.php"));
 				} 
 				else {
 					$user = getUser($pdo,$_SESSION['username']);
+					$navLinks = writeNavLinks($user->role,'header');
 					$role =  $user->roles;
-					$userName = $user->first_name . " " . $user->last_name;
+					$userName = "<h5 style='display:inline'>" . $user->first_name . " " . $user->last_name . "</h5>";
+          $welcomeMsg = "
+            $userName 
+            <a href='".$SETTINGS['base_url']."/logout.php' class='btn btn-xs btn-icon btn-danger'>
+              <i class='fa fa-sign-out-alt' aria-hidden='true'></i>
+            </a>
+          ";
 				}
 			  $pageContent = "
 			            <div id='fine-uploader-s3'></div>
@@ -49,6 +57,7 @@
 			<link href="<?php echo($SETTINGS['FINEUPLOADER_FRONTEND_PATH']); ?>/fine-uploader-gallery.css" rel="stylesheet">
 			<script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 			<script src='<?php echo($SETTINGS['FINEUPLOADER_FRONTEND_PATH']); ?>/s3.jquery.fine-uploader.min.js'></script>
+	    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
 
  			<script type="text/template" id="qq-template-s3">
         <div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="Drop files here">
@@ -249,6 +258,10 @@
             <img src='../img/logo_ac.png'>
           </span>
         </div>
+        <div class='fv_subHeader'>
+	        <?php echo($navLinks); ?>
+	        <?php echo($welcomeMsg); ?>
+      	</div>
         <form method="post" action="">
           <div class="container">
              <div class="row fv_main">

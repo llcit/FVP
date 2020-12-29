@@ -1,10 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+      <style>
+#im {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("path/to/img");
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+      </style>
       <?php
         include "./inc/db_pdo.php";
         include "./inc/dump.php";
         include "./inc/sqlFunctions.php";
+        include "./inc/navLinks.php";
+        $SETTINGS = parse_ini_file(__DIR__."/inc/settings.ini");
 				$pageTitle = "Flagship Video Project";
 				$subTitle = "[SUBTITLE]";
 				$titleText = "[SOME WORDS]";
@@ -14,13 +28,13 @@
 			  } 
 			  else {
 			  	$user = getUser($pdo,$_SESSION['username']);
-			  	$role =  $user->role;
-			  	$userName = $user->first_name . " " . $user->last_name;
+          $navLinks = writeNavLinks($user->role,'header');
+			  	$userName = "<h5 style='display:inline'>" . $user->first_name . " " . $user->last_name . "</h5>";
 			  }
         if ($user) {
           $welcomeMsg = "
             $userName 
-            <a href='./logout.php' class='btn btn-icon btn-danger'>
+            <a href='".$SETTINGS['base_url']."/logout.php' class='btn btn-xs btn-icon btn-danger'>
               <i class='fa fa-sign-out-alt' aria-hidden='true'></i>
             </a>
           ";
@@ -41,15 +55,16 @@
     <body>
       <div class="panel panel-default">
         <div class="panel-heading fv_heading">
-          <img src='./img/logo_lf.png'>
+          <img src='./img/logo_lf.png' class='logo'>
           <span class='pageTitle'>
           		<?php echo($pageTitle); ?>
           </span>
           <span class='pull-right'>
-            <img src='./img/logo_ac.png'>
+            <img src='./img/logo_ac.png' class='logo'>
           </span>
         </div>
         <div class='fv_subHeader'>
+          <?php echo($navLinks); ?>
           <?php echo($welcomeMsg); ?>
         </div>
         <form method="post" action="">

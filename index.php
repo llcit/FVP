@@ -5,6 +5,8 @@
         include "./inc/db_pdo.php";
         include "./inc/dump.php";
         include "./inc/sqlFunctions.php";
+        include "./inc/navLinks.php";
+        $SETTINGS = parse_ini_file(__DIR__."/inc/settings.ini");
 				$pageTitle = "Flagship Video Home";
 				$subTitle = "Main Menu";
 				$titleText = "Select one of the links below.";
@@ -15,41 +17,19 @@
 			  else {
 			  	$user = getUser($pdo,$_SESSION['username']);
 			  	$role =  $user->role;
-			  	$userName = $user->first_name . " " . $user->last_name;
+			  	$userName = "<h5 style='display:inline'>" . $user->first_name . " " . $user->last_name . "</h5>";
           if ($user) {
             $welcomeMsg = "
               Welcome $userName! 
-              <a href='./logout.php' class='btn btn-icon btn-danger'>
+              <a href='".$SETTINGS['base_url']."/logout.php' class='btn btn-xs btn-icon btn-danger'>
                 <i class='fa fa-sign-out-alt' aria-hidden='true'></i>
               </a>
             ";
           }
 			  }
-			  $links = [
-			  	['label'=>'Login','href'=>'./login.php','req'=>['anonymous']],
-			  	['label'=> 'Your Videos','href'=>'./personal.php','req'=>['student']],
-          ['label'=>'Upload Video','href'=>'./upload/','req'=>['student','staff','admin']],
-          ['label'=>'Manage Users and Events','href'=>'./manage/','req'=>['staff','admin']],
-			  	['label'=>'Video Showcase','href'=>'./player/'],
-			  	['label'=>'Video Archive','href'=>'./archive/','req'=>['staff','admin']],
-			  	['label'=>'About This Site','href'=>'./about.php'],
-
-			  	
-			  ];
-			  $linkList = "
-			  	<ul class='linkList'>
-			  ";
-			  foreach($links as $link) {
-			  	if (!$link['req'] || in_array($role,$link['req'])) {
-			  		$linkList .= "
-			  			<li><a href='".$link['href']."'>".$link['label']."</a></li>
-			  		";
-			  	}
-			  }
-       	$pageContent = $linkList;
+        $pageContent = writeNavLinks($role,'body');
       ?>
       <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-      <!-- Able Player CSS -->
       <link rel="stylesheet" href="./css/main.css" type="text/css"/>
       <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
       <script>

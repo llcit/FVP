@@ -6,27 +6,55 @@
 	include_once("../inc/dump.php");
 	include_once("../inc/db_pdo.php");
 	include_once("../inc/sqlFunctions.php");
+	include_once("../inc/navLinks.php");
+	$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
 	session_start();
 	if (!isset($_SESSION['username'])) { 
     header('Location: ../login.php'); 
   } 
-	/*  ------------ READ IN POST VALS ------------- */
-	$filters = [
-		'programs'=>$_POST['programs'],
-		'years'=>$_POST['years'],
-		'locations'=>$_POST['locations'],
-		'institutions'=>$_POST['institutions'],
-		'types'=>$_POST['types'],
-		'periods'=>$_POST['periods'],
-	];
-	//vdump($filters);
-	/*  ------------ /READ IN POST VALS ------------- */
-	/* ---------- MAIN ---------- */
-	$videoData = getVideos(null,$filters);
-	$videoList =buildVideoList($videoData);
-	$filterPulldowns = buildPullDowns($filters);
-	/* ---------- /MAIN ---------- */
+  $user = getUser($pdo,$_SESSION['username']);
+  $navLinks = writeNavLinks($user->role,'header');
+  $userName = "<h5 style='display:inline'>" . $user->first_name . " " . $user->last_name . "</h5>";
+  $welcomeMsg = "
+    $userName 
+    <a href='".$SETTINGS['base_url']."/logout.php' class='btn btn-xs btn-icon btn-danger'>
+      <i class='fa fa-sign-out-alt' aria-hidden='true'></i>
+    </a>
+  ";
+    if ($user->role == 'admin' || $user->role == 'staff') {
+		/*  ------------ READ IN POST VALS ------------- */
+		$filters = [
+			'programs'=>$_POST['programs'],
+			'years'=>$_POST['years'],
+			'locations'=>$_POST['locations'],
+			'institutions'=>$_POST['institutions'],
+			'types'=>$_POST['types'],
+			'periods'=>$_POST['periods'],
+		];
+		//vdump($filters);
+		/*  ------------ /READ IN POST VALS ------------- */
+		/* ---------- MAIN ---------- */
+		$videoData = getVideos(null,$filters);
+		$videoList =buildVideoList($videoData);
+		$filterPulldowns = buildPullDowns($filters);
+		$pageContent = "
+			$filterPulldowns
+			<div class = 'videoListWrapper'>
+				$videoList
+			</div>
+			";
 
+		/* ---------- /MAIN ---------- */
+	}
+	else {
+    $pageContent = "
+      <div class = 'msg error' style='margin-top:30px;'>
+        Permission denied! You must be staff or admin to access this page.
+      </div>
+      <p style='width:100%;text-align:center;margin-top:30px;'>
+        <a href='../index.php'>Retun to Home</a>
+    ";
+  }
 
 	function buildVideoList($videos) {
 		$count = 0;
@@ -195,11 +223,12 @@
 			<img src='../img/logo_ac.png'>
 		</span>
 	</div>
+	<div class='fv_subHeader'>
+		<?php echo($navLinks); ?>
+    <?php echo($welcomeMsg); ?>
+  </div>
 	<div class="panel-body">
-		<?php echo($filterPulldowns); ?>
-		<div class = 'videoListWrapper'>
-			<?php echo("$videoList"); ?>
-		</div>
+		<?php echo($pageContent); ?>
 	</div>
 
 	<!-- to write transcript to an external div, pass id of an empty div via data-transcript-div -->

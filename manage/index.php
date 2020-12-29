@@ -6,7 +6,8 @@
       include "../inc/db_pdo.php";
       include "../inc/dump.php";
       include "../inc/sqlFunctions.php";
-      
+      include "../inc/navLinks.php";
+      $SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
 			$pageTitle = "Flagship Video Project";
 			$subTitle = "Manage Filming Events";
 			$titleText = "You may select an existing event to edit or add a new event.  You may only delete an event if it  does not have any videos uploaded to it.";
@@ -66,11 +67,12 @@
           $existingEvents = getEvents();
           $eventList = formatEvents($existingEvents);
   		  	$user = getUser($pdo,$_SESSION['username']);
+          $navLinks = writeNavLinks($user->role,'header');
           if ($user->role == 'admin' || $user->role == 'staff') {
-            $userName = $user->first_name . " " . $user->last_name;
+            $userName = "<h5 style='display:inline'>" . $user->first_name . " " . $user->last_name . "</h5>";
             $welcomeMsg = "
               $userName 
-              <a href='./logout.php' class='btn btn-icon btn-danger'>
+              <a href='".$SETTINGS['base_url']."/logout.php' class='btn btn-xs btn-icon btn-danger'>
                 <i class='fa fa-sign-out-alt' aria-hidden='true'></i>
               </a>
             ";
@@ -156,6 +158,7 @@
         </span>
       </div>
       <div class='fv_subHeader'>
+        <?php echo($navLinks); ?>
         <?php echo($welcomeMsg); ?>
       </div>
       <form method="post" id='eventForm' action=''>
