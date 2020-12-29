@@ -270,7 +270,7 @@
 								$('.progress_status_percent').html(Math.round(percent)+'%');
 								if (percent == 100) {
 									$('.progress_status_label').html('Creating Audio File:');
-									getFFMPEGProgress(<?php echo($user->id) ;?>,<?php echo($event_id) ;?>,<?php echo($presentation_type) ;?>);
+									getFFMPEGProgress(<?php echo($user->id) ;?>,<?php echo($event_id) ;?>,'<?php echo($presentation_type) ;?>');
 								}
 							}
 						}
