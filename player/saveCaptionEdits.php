@@ -19,7 +19,7 @@
     $fileContent = "WEBVTT\r\nKind: captions\r\nLanguage: ".$language."\r\n\r\n";
     foreach($data as $row) {
       $start = time_format($row->start);
-      $end = time_format($row->start);
+      $end = time_format($row->end);
       $text = $row->text;
       $fileContent .=  $start . " --> " . $end ."\r\n";
       $fileContent .= $row->text  ."\r\n\r\n";         
