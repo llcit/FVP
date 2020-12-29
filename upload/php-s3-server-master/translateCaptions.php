@@ -31,7 +31,7 @@
         }
         $command = $client->getCommand('PutObject', array(
                     'Bucket' => $expectedBucketName,
-                    'Key'    => "transcripts/$pid.vtt",
+                    'Key'    => "translations/$pid.vtt",
                     'Body'   => "$translatedContents"
             ));
         $result = $command->getResult();
