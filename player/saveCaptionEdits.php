@@ -41,7 +41,6 @@
   }
   function time_format($rawTime) {
     if ($rawTime) {
-        list($seconds, $ms) = preg_split("/\./",$rawTime);
         // always 0 microseconds
         $microseconds = '000';
         return gmdate("H:i:s", $seconds) . '.' . $microseconds;
