@@ -37,8 +37,9 @@
 		$presentationData = getVideos($videoId);
 		$allTracks = 'linguistic,professional,cutural';
 		$includeTracks = ($_GET['t']) ? $_GET['t'] : $allTracks;
-		if ($_GET['cm'] == 'edit') {
-			$editCaptions = 'editCaptions';
+		$editCaptions = ($_GET['cm'] == 'edit' && $_POST['saveCaptions'] != 1)? true : false;
+		if ($editCaptions) {
+			$editCaptionTag = 'editCaptions';
 			echo("<script src='../js/captionEditor.js'></script>");
 			echo("<link rel='stylesheet' href='../css/captionEditor.css' type='text/css'/>");
 			$transcriptHeight = '1000';
@@ -52,7 +53,7 @@
 		$isOwner = ($user->id == $presentationData[0]['user_id']) ? true : false;
 		$isShowcase = ($presentationData[0]['is_showcase']==1) ? true : false;
 		if($isOwner && !$isShowcase) {
-			if ($_GET['cm'] == 'edit') {
+			if ($editCaptions) {
 				$editControls = "
 					<div id = 'edit_controls' class = 'edit_controls'>
 						<a class='btn btn-primary' href=\"javascript:saveCaptions();\">Save Captions</a>
@@ -96,7 +97,7 @@
 	<main role="main">
 		<?php echo($editControls); ?>
 	  <div id="player">
-		  <video id="video1" preload="auto" width="480" height="360" poster="../ableplayer/media/wwa.jpg" data-able-player data-transcript-div="transcript" playsinline <?php echo("$editCaptions"); ?> >
+		  <video id="video1" preload="auto" width="480" height="360" poster="../ableplayer/media/wwa.jpg" data-able-player data-transcript-div="transcript" playsinline <?php echo("$editCaptionTag"); ?> >
 
 				<?php
 					// put empty placeholder in for ableplayer onready function
