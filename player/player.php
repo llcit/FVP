@@ -103,76 +103,76 @@
 	</style>
 </head>
 
-<body>
-	<main role="main">
-		<?php echo($editControls); ?>
-	  <div id="player">
-		  <video id="video1" preload="auto" width="480" height="360" poster="../ableplayer/media/wwa.jpg" data-able-player data-transcript-div="transcript" playsinline <?php echo("$editCaptionTag"); ?> >
+	<body>
+		<form method='post' id='saveCaptionForm' name='saveCaptionForm'>
+		<main role="main">
+			<?php echo($editControls); ?>
+		  <div id="player">
+			  <video id="video1" preload="auto" width="480" height="360" poster="../ableplayer/media/wwa.jpg" data-able-player data-transcript-div="transcript" playsinline <?php echo("$editCaptionTag"); ?> >
 
-				<?php
-					// put empty placeholder in for ableplayer onready function
-					if ($presentationData[0]['transcript_raw'] || $presentationData[0]['translation_raw']) {
-						echo("<track kind='captions' src='' srclang='' label=''/>");
-					}
-					if ($presentationData[0]['annotations'] != '') {
-						echo("$descriptionTracks");
-					}
+					<?php
+						// put empty placeholder in for ableplayer onready function
+						if ($presentationData[0]['transcript_raw'] || $presentationData[0]['translation_raw']) {
+							echo("<track kind='captions' src='' srclang='' label=''/>");
+						}
+						if ($presentationData[0]['annotations'] != '') {
+							echo("$descriptionTracks");
+						}
 
-				?>
+					?>
 	
-		  </video>
-		</div>
-		<div id="transcript"></div>
-	</main>
-	<script>
-		var GLOBAL_LANGUAGE;
-  	var hasTranscript = '<?php echo($presentationData[0]['transcript_raw']); ?>';
-  	var hasTranslation = '<?php echo($presentationData[0]['translation_raw']); ?>';
-  	var annotations = '<?php echo($presentationData[0]['annotations']); ?>';
-		var videoFile = generateFile('video','<?php echo($_GET['v']); ?>','<?php echo($presentationData[0]['extension']); ?>','');
-		var showTranscriptArea = false;
-		if (hasTranscript) {
-			var transcriptFile = generateFile('transcript','<?php echo($_GET['v']); ?>','vtt','<?php echo($presentationData[0]['language']); ?>');
-			showTranscriptArea = true;
-		}
-		if (hasTranslation) {
-			var translationFile = generateFile('translation','<?php echo($_GET['v']); ?>','vtt','<?php echo($presentationData[0]['language']); ?>');
-			showTranscriptArea = true;
-		}
-		// center the player
-		if (!showTranscriptArea) {
-			$('#player').css('float','none');
-			$('#player').css('margin','auto');
-		}	
-		function editCaptions() {
-			window.top.location.href = "./index.php?v=<?php echo($_GET['v']); ?>&cm=edit";  // reference parent
-		}	
-		function saveCaptions() {
-			var i=0;
-			var data = [];
-			$('.captionEditInput').each(function() {
-				var text = $(this).val();
-				var startTimeMatch = $('#st_'+i).html().match(/(\d{2}\:\d{2})$/);
-				var startTime = startTimeMatch[1];
-				var endTimeMatch = $('#et_'+i).html().match(/(\d{2}\:\d{2})$/);
-				var endTime = endTimeMatch[1];
-				data.push({
-	        start: startTime,
-	        end: endTime,
-	        text:text
-	      });
-				i++;
-			});
-			$('#captionData').val(JSON.stringify(data));
-			$('#captionLanguage').val(GLOBAL_LANGUAGE);
-			$('#saveCaptions').val(1);
-			$('#saveCaptionForm').submit();
-		}		
-	</script>
-	<form method='post' id='saveCaptionForm' name='saveCaptionForm'>
-		<input type='hidden' id='saveCaptions' name='saveCaptions' value = 0> 
-		<input type='hidden' id='captionData' name='captionData' value = ''>
-		<input type='hidden' id='captionLanguage' name='captionLanguage' value = ''>
-	</form>
-</body>
+			  </video>
+			</div>
+			<div id="transcript"></div>
+		</main>
+		<script>
+			var GLOBAL_LANGUAGE;
+	  	var hasTranscript = '<?php echo($presentationData[0]['transcript_raw']); ?>';
+	  	var hasTranslation = '<?php echo($presentationData[0]['translation_raw']); ?>';
+	  	var annotations = '<?php echo($presentationData[0]['annotations']); ?>';
+			var videoFile = generateFile('video','<?php echo($_GET['v']); ?>','<?php echo($presentationData[0]['extension']); ?>','');
+			var showTranscriptArea = false;
+			if (hasTranscript) {
+				var transcriptFile = generateFile('transcript','<?php echo($_GET['v']); ?>','vtt','<?php echo($presentationData[0]['language']); ?>');
+				showTranscriptArea = true;
+			}
+			if (hasTranslation) {
+				var translationFile = generateFile('translation','<?php echo($_GET['v']); ?>','vtt','<?php echo($presentationData[0]['language']); ?>');
+				showTranscriptArea = true;
+			}
+			// center the player
+			if (!showTranscriptArea) {
+				$('#player').css('float','none');
+				$('#player').css('margin','auto');
+			}	
+			function editCaptions() {
+				window.top.location.href = "./index.php?v=<?php echo($_GET['v']); ?>&cm=edit";  // reference parent
+			}	
+			function saveCaptions() {
+				var i=0;
+				var data = [];
+				$('.captionEditInput').each(function() {
+					var text = $(this).val();
+					var startTimeMatch = $('#st_'+i).html().match(/(\d{2}\:\d{2})$/);
+					var startTime = startTimeMatch[1];
+					var endTimeMatch = $('#et_'+i).html().match(/(\d{2}\:\d{2})$/);
+					var endTime = endTimeMatch[1];
+					data.push({
+		        start: startTime,
+		        end: endTime,
+		        text:text
+		      });
+					i++;
+				});
+				$('#captionData').val(JSON.stringify(data));
+				$('#captionLanguage').val(GLOBAL_LANGUAGE);
+				$('#saveCaptions').val(1);
+				$('#saveCaptionForm').submit();
+			}		
+		</script>
+			<input type='hidden' id='saveCaptions' name='saveCaptions' value = 0> 
+			<input type='hidden' id='captionData' name='captionData' value = ''>
+			<input type='hidden' id='captionLanguage' name='captionLanguage' value = ''>
+		</form>
+	</body>
 </html>
