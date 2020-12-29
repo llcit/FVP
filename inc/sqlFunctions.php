@@ -143,6 +143,7 @@ function getLocations() {
 function saveEvent($vals) {
     global $pdo;
     try {
+        if ($vals['event_id'] == '') $vals['event_id'] = null;
         $startDate = date ('Y-m-d H:i:s', strtotime($vals['start_date']));
         $endDate = date ('Y-m-d H:i:s', strtotime($vals['start_date']));
         $sql = "
