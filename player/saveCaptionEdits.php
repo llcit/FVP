@@ -7,6 +7,13 @@
   $serverPrivateKey = $SETTINGS['AWS_SERVER_PRIVATE_KEY'];
   $expectedBucketName = $SETTINGS['S3_BUCKET_NAME'];
 
+  function getS3Client() {
+      global $clientPrivateKey, $serverPrivateKey;
+      return S3Client::factory(array(
+          'key' => $serverPrivateKey,
+          'secret' => $clientPrivateKey
+      ));
+  }
   function writeVTTFile($pid,$data,$language) {
     global $expectedBucketName;
     $fileContent = "WEBVTT\r\nKind: captions\r\nLanguage: ".$language."\r\n\r\n";
