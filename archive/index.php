@@ -34,7 +34,7 @@
 		//vdump($filters);
 		/*  ------------ /READ IN POST VALS ------------- */
 		/* ---------- MAIN ---------- */
-		$videoData = getVideos(null,$filters);
+		$videoData = getVideos(null,null,$filters);
 		$videoList =buildVideoList($videoData);
 		$filterPulldowns = buildPullDowns($filters);
 		$pageContent = "

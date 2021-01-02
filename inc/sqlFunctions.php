@@ -13,7 +13,7 @@
             return($result); 
         }  
     }
-   function getVideos($pid=null,$filters=null) {
+   function getVideos($id=null,$id_type=null,$filters=null) {
     global $pdo;
     $matchVals = [
         'programs' => ['table_handle'=>'prog','field'=>'name'],
@@ -26,8 +26,8 @@
     ];
     $where = '';
     $and = '';
-    if ($pid) {
-        $where = "pres.`id`='$pid'";
+    if ($id) {
+        $where = "pres.`$id_type`='$id'";
     }
     else {
         foreach($filters as $key=>$value) {
@@ -72,18 +72,6 @@ function getUniqueVals($table,$field) {
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
     return $stmt->fetchAll();
-}
-function getUserVideos($id) {
-    global $pdo;
-    $sql = "
-        SELECT * 
-        FROM `presentations` 
-        WHERE `user_id` = '$id'
-        ORDER BY `event_id` DESC
-        ";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-    return $stmt->fetchObject();
 }
 function getEvents() {
     global $pdo;

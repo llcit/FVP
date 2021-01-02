@@ -27,7 +27,7 @@
             </a>
           ";
         }
-        $userVideos = getUserVideos($user->id);
+        $userVideos = getVideos($user->id,'user_id');
         if(!$userVideos) {
           $pageContent = "
                 <div class='msg neutral'>
@@ -41,10 +41,11 @@
           ";
         }
         else {
-       	  $pageContent = buildVideoList();
+       	  $pageContent = buildVideoList($userVideos);
         }
         function buildVideoList($userVideos) {
           $videoList = '';
+          dump($userVideos);
           foreach($userVideos as $video) {
             $videoList = "
               <p>

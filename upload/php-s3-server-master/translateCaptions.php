@@ -41,95 +41,136 @@
         return $success;
     }
     function parseCaptions($transcriptContents){
+        global $targetLanguage;
+        $transcriptContents = file_get_contents($dir . $file);
         $lines = preg_split("/\\n/", $transcriptContents);
-        // do not start capturing text until we are past the header
+        // do not start capturing text untile we are past the header
         $captureText = false;
-        $count = -1;
         // split out the target language, the time codes and the original texts
         $parsedCaptions = [];
-        // 1st pass combine lines with carriage returns into a single entry
-        $fragments = [];
+        // store time codes and raw text data in an array
+        // raw text may include carriage returns that need to be stripped before processing.
+        $lineData = [];
+        $lineNumber = 0;
+        $sentences = [];
+        $sentenceNumber = 0;
+        $sentences[$sentenceNumber]['line_proportions'] = [];
         foreach ($lines as $line) {
             if (substr($line, 0, 8) == 'Language') {
                 // grab the 2-char language code from the transcript
-                $targetLanguage = substr($line, 10,12);
+                $targetLanguage = substr($line, 10,2);
+                echo ("Language Model: $targetLanguage<br>");
                 $captureText = true;
             }
             else if (substr($line, 0, 3) == '00:'){
-                $count++;
-                $parsedCaptions[$count]['timeCodes'] = $line;
+                $lineNumber++;
+                $lineData[$lineNumber]['timeCodes'] = trim($line);
             }
-            else if ($line != "" && $captureText) {
-                $parsedCaptions[$count]['text'] .= $line;
-                $captionSplitsSentence = (preg_match("/\.|\?|\!|\。/",substr($line, -1))) ? false : true;
-                $captionContainsSentenceEnd = (preg_match("/\.|\?|\!|\。/",$line)) ? true : false;
-                if (count($fragments)> 0 && $captionContainsSentenceEnd) {
-                    $backFill=true;
-                }
-                $sentences = preg_split("/\.|\?|\!|\。/",$line,$matches);
-                if ($captionSplitsSentence)  {
-                    array_push($fragments, $sentences[count($sentences)-1]);
-                    unset($sentences[count($sentences)-1]);
-                }
-                // translate each of the complete sentences found in the caption
-                for ($i=0;$i<count($sentences);$i++) {
-                    if ($backFill && $captionContainsSentenceEnd) {
-                        // add the final fragment from the beginning of the line
-                        array_push($fragments, $sentences[0]);
-                        // compile the whole sentence for translation
-                        for($i=0;$i<count($fragments);$i++) {
-                            $fullSentence .= $fragments[$i] . ' ';
-                        }
-                        if ($fullSentence != '') {
-                            echo("Time: " . $parsedCaptions[$count]['timeCodes'] . "<br>");
-                            echo("fullSentence: " . $fullSentence . "<br>");
-                            $translation = translate($fullSentence,$targetLanguage);
-                            echo("translation: " . $translation . "<br>");
-                            backFillSentenceFragments($parsedCaptions,$count,$fragments,$fullSentence,$translation);
-                            $fullSentence = "";
-                        }
-                        $fragments = [];
-                        $backFill = false;
-                    } 
-                    else {
-                        if ($sentences[$i] != '') {
-                            echo("Time: " . $parsedCaptions[$count]['timeCodes'] . "<br>");
-                            echo("SENTENCE[$i]: " . $sentences[$i] . "<br>");
-                            $translation = translate($sentences[$i],$targetLanguage);
-                            echo("translation: " . $translation . "<br>");
-                            $parsedCaptions[$count]['translation'] .= $translation;
-                        }
+            else if (preg_match("/[a-zA-Z0-9*]/",$line) && $captureText) {
+                // account for carriage returns and add white space when joining multi line entries
+                $lineData[$lineNumber]['original_text'] .= ' ' .$line;
+                // remove white space from beginning and end
+                $lineData[$lineNumber]['original_text'] = trim($lineData[$lineNumber]['original_text']);
+            }
+        }
+        for ($i=1;$i<=count($lineData);$i++) {
+            // swap elipsis with unicode variant thereof
+            $lineData[$i]['original_text'] = preg_replace('/\.{3}/', '…', $lineData[$i]['original_text']);
+            $lineFragments = preg_split("/\.|\?|\!|\。|…/",$lineData[$i]['original_text']);
+            $finalChar = substr($lineData[$i]['original_text'], -1);
+            $sentenceIncomplete = (preg_match("/\.|\?|\!|\。|\.{3}/",$finalChar)) ? false : true;
+            preg_match_all("/(\.|\?|\!|\。|…)/",$lineData[$i]['original_text'],$matches);
+            $punctuationMarks = $matches[1];
+            
+            for ($j=0;$j<count($lineFragments);$j++) {
+                // skip null entries from split on final punctuation
+                if ($lineFragments[$j] != '') {
+                    $sentences[$sentenceNumber]['sentence'] .= $lineFragments[$j] . ' ';
+                    $sentences[$sentenceNumber]['punctuation_mark'] .= $punctuationMarks[$j] . ' ';
+                    $fragmentData = [
+                            'lineNumber'=> $i,
+                            'length'=> mb_strlen($lineFragments[$j], 'UTF-8')
+                    ];
+                    //print "SentNum:" .$sentenceNumber ."<br>LineNum:" .$i ."<br>";
+                    //print "Fragment: " .$lineFragments[$j] . "<br>";
+                    //vdump($fragmentData);
+                    array_push($sentences[$sentenceNumber]['line_proportions'],$fragmentData);
+                    if ($i != count($lineData) && ($j < count($lineFragments)-1 || !$sentenceIncomplete)) {
+                        $sentenceNumber++;
+                        $sentences[$sentenceNumber]['line_proportions'] = [];
                     }
                 }
             }
         }
-        return $parsedCaptions;
-    }
-    function backFillSentenceFragments(&$parsedCaptions,$currentLine,$fragments,$fullSentence, $translation) {
-        $percentSplits = [];
-        $targetSentenceLength = mb_strlen($fullSentence, 'UTF-8');
-        $rowsBack = count($fragments)-1;
-        for($i=0;$i<count($fragments);$i++) {
-            $fragmentLength = mb_strlen($fragments[$i] . ' ', 'UTF-8');
-            $percentSplits[$i] =  ['lineNumber' => ($currentLine - $rowsBack),'percentage' => ($fragmentLength/$targetSentenceLength)];
-            $rowsBack--;
-        }
-        $translatedSentenceLength = mb_strlen($translation, 'UTF-8');
-        $words = preg_split("/\ /",$translation);
-        $count = 0;
-        $newFragment = '';
-        for($i=0;$i<count($words);$i++) {
-            $newFragment .= $words[$i] . ' ';
-            $newFragmentLength = mb_strlen($newFragment, 'UTF-8');
-            if (($newFragmentLength/$translatedSentenceLength) > $percentSplits[$count]['percentage']) {
-                $parsedCaptions[$percentSplits[$count]['lineNumber']]['translation'] .= $newFragment . ' ';
-                $newFragment = '';
-                $count++;
+        //print "Num sentences: " .count($sentences). "<br>";
+        for($i=0;$i<count($sentences);$i++) {
+            print "<hr><hr>Original sentence $i: " . $sentences[$i]['sentence']  . "<br>";
+            //vdump($sentences[$i]);
+            $translation = translate(trim($sentences[$i]['sentence']),$targetLanguage);
+            print "Translation: " . $translation . "<br>";
+            //print "Line data:";
+            //vdump($sentences[$i]['line_proportions']);
+            // if the entire sentence goes on one line, just add it to the line
+            if (count($sentences[$i]['line_proportions'])<2) {
+                $lineNum = $sentences[$i]['line_proportions'][0]['lineNumber'];
+                $lineData[$lineNum]['translated_text'] .= ' ' . $translation;
             }
+            //otherwise, we neet to split it across lines
+            else {
+                $originalSentenceLength = mb_strlen($sentences[$i]['sentence'], 'UTF-8');
+                //print "Total sentence length: " . $sentenceLength  . "<br>";
+                $translationLength = mb_strlen($translation, 'UTF-8');
+                //print "Translation length: " . $translationLength . "<br>";
+                $transWords = preg_split("/\ /", $translation);
+                // running count of words processed across lines
+                $wordCount = 0;
+                // build fragment of translated sentence to measure and apportion to lines
+                $tmpString = '';
+                // the proportion of the translated fragment to the entire translated sentence
+                $proportion = 0;
+                for ($j=0;$j<count($sentences[$i]['line_proportions']);$j++) {
+                    $lineNum = $sentences[$i]['line_proportions'][$j]['lineNumber'];
+                    $targetProportion = $sentences[$i]['line_proportions'][$j]['length']/$originalSentenceLength;
+                    //print "targetProportion: $targetProportion<br>";
+                    for ($k=$wordCount;$k<count($transWords);$k++) {
+                        // build fragment and add space
+                        $tmpString .= $transWords[$k] . ' ';
+                        $tmpLength = mb_strlen($tmpString, 'UTF-8');
+                        //print "TMP STRING: $tmpString <BR>";
+                        $proportion = $tmpLength/$translationLength;
+                        //print "\$proportion: $proportion<br>";
+                        //print "\$targetProportion: $targetProportion<br>"; 
+                        if ($proportion >= $targetProportion || $k == count($transWords)-1) {
+                            $distanceFromTarget = abs($proportion - $targetProportion);
+                            $prevDistance = abs($prevProportion - $targetProportion);
+                            if ($distanceFromTarget < $prevDistance || $j == count($sentences[$i]['line_proportions'])-1) {
+                                //print "ADD CURR: $tmpString<hr><hr>";
+                                $lineData[$lineNum]['translated_text'] .= $tmpString;
+                                $wordCount = $k+1; 
+                                $tmpString = '';
+                                break;
+                            }
+                            else {
+                                //print "ADD PREV: $prevString<hr><hr>";
+                                $lineData[$lineNum]['translated_text'] .= $prevString;
+                                $wordCount = $k;
+                                $tmpString = '';
+                                break; 
+                            }
+                        } 
+                        // store current as previous to measure closest cut point by word
+                        $prevProportion = $proportion;
+                        $prevString = $tmpString;
+                    }
+                }
+            }
+            // clean up sentence and add punctuation mark
+            $lineData[$lineNum]['translated_text'] = preg_replace("/[ \t]+/"," ",$lineData[$lineNum]['translated_text']);
+            $lineData[$lineNum]['translated_text'] = trim($lineData[$lineNum]['translated_text']);
+            $lineData[$lineNum]['translated_text'] .= trim($sentences[$i]['punctuation_mark']) . ' ';
         }
-        $parsedCaptions[$currentLine]['translation'] = $newFragment . ' ';
+        return $lineData;
     }
-
     function translate($text,$targetLanguage) {
         echo("TRANSLATING: " . $text . "<br>");
         $data = ['text' => [$text],'model_id'=>$targetLanguage.'-en'];

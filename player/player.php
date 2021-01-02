@@ -42,9 +42,9 @@
 		}
 		if ($_POST['translateCaptions']) {
 			include "../upload/php-s3-server-master/translateCaptions.php";
-			translateVTTFile($videoId);
+			translateVTTFile($videoId,);
 		}
-		$presentationData = getVideos($videoId);
+		$presentationData = getVideos($videoId,'id');
 		$allTracks = 'linguistic,professional,cutural';
 		$includeTracks = ($_GET['t']) ? $_GET['t'] : $allTracks;
 		$editCaptions = ($_GET['cm'] == 'edit' && $_POST['saveCaptions'] != 1)? true : false;

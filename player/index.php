@@ -26,13 +26,12 @@
       ";
     }
   }
-  $navLinks = writeNavLinks($user->role,'header');
-  $pageContent = writeNavLinks($role,'body');
+  $navLinks = writeNavLinks($role,'header');
 	if ($_GET['sc']) {
 		$filters = [
 			'is_showcase'=>['1']
 		];
-		$showcaseVideos = getVideos(null,$filters);
+		$showcaseVideos = getVideos(null,null,$filters);
 		$userSelect = buildUserSelect($showcaseVideos,$videoId);
 		$allTracks = ['linguistic','professional','cultural'];
 		$includeTracks = ($_GET['t']) ? $_GET['t'] : $allTracks;
