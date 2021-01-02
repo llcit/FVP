@@ -14,11 +14,12 @@
       
         $client = getS3Client();
         $client->registerStreamWrapper();
+        $transcriptContents = '';
         if ($stream = fopen("s3://$expectedBucketName/$key", 'r')) {
             // While the stream is still open
             while (!feof($stream)) {
                 // Read 1024 bytes from the stream
-                $transcriptContents = fread($stream, 1024);
+                $transcriptContents .= fread($stream, 1024);
             }
             // Be sure to close the stream resource when you're done with it
             fclose($stream);
@@ -27,7 +28,7 @@
         $translatedContents = "WEBVTT\nKind: captions\nLanguage: en\n\n";
         for ($i=0;$i<count($parsedCaptions);$i++) {
             $translatedContents .= $parsedCaptions[$i]['timeCodes'] . "\n";
-            $translatedContents .= $parsedCaptions[$i]['translation']. "\n\n";
+            $translatedContents .= $parsedCaptions[$i]['translated_text']. "\n\n";
         }
         $command = $client->getCommand('PutObject', array(
                     'Bucket' => $expectedBucketName,
@@ -171,6 +172,7 @@
         return $lineData;
     }
     function translate($text,$targetLanguage) {
+        global $SETTINGS;
         echo("TRANSLATING: " . $text . "<br>");
         $data = ['text' => [$text],'model_id'=>$targetLanguage.'-en'];
         $url = $SETTINGS['WATSON_TRANSLATE_URL'];
