@@ -42,7 +42,6 @@
     }
     function parseCaptions($transcriptContents){
         global $targetLanguage;
-        $transcriptContents = file_get_contents($dir . $file);
         $lines = preg_split("/\\n/", $transcriptContents);
         // do not start capturing text untile we are past the header
         $captureText = false;
