@@ -149,7 +149,6 @@
     }
     function translate($text,$targetLanguage) {
         global $SETTINGS;
-        echo("TRANSLATING: " . $text . "<br>");
         $data = ['text' => [$text],'model_id'=>$targetLanguage.'-en'];
         $url = $SETTINGS['WATSON_TRANSLATE_URL'];
         $apiKey = $SETTINGS['WATSON_TRANSLATE_KEY'];;
