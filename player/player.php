@@ -76,9 +76,10 @@
 				";
 			}
 			else {
-				if ($presentationData[0]['transcript_final'] == 1) {
+				if ($presentationData[0]['transcript_final'] == 1 && $presentationData[0]['translation_final'] != 1) {
+					$label = ($presentationData[0]['translation_raw'] == 1) ? 'Regenerate' : 'Generate';
 					$translateButton = "
-						<a style='display:inline;' class='btn btn-primary' href=\"javascript:translate();\">Generate Translation</a>
+						<a style='display:inline;' class='btn btn-primary' href=\"javascript:translate();\">$label Translation</a>
 					";
 				}
 				$editControls = "
