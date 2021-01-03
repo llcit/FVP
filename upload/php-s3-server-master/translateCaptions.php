@@ -26,7 +26,7 @@
         }
         $parsedCaptions = parseCaptions($transcriptContents);
         $translatedContents = "WEBVTT\nKind: captions\nLanguage: en\n\n";
-        for ($i=0;$i<count($parsedCaptions);$i++) {
+        for ($i=1;$i<=count($parsedCaptions);$i++) {
             $translatedContents .= $parsedCaptions[$i]['timeCodes'] . "\n";
             $translatedContents .= $parsedCaptions[$i]['translated_text']. "\n\n";
         }
