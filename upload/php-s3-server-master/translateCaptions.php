@@ -7,21 +7,16 @@
         $serverPublicKey = $SETTINGS['AWS_SERVER_PUBLIC_KEY'];
         $serverPrivateKey = $SETTINGS['AWS_SERVER_PRIVATE_KEY'];
         $expectedBucketName = $SETTINGS['S3_BUCKET_NAME'];
-
         $type = 'transcript';
         $ext = 'vtt';
         $key =  $type . "s/".$pid."." . $ext;
-      
         $client = getS3Client();
         $client->registerStreamWrapper();
         $transcriptContents = '';
         if ($stream = fopen("s3://$expectedBucketName/$key", 'r')) {
-            // While the stream is still open
             while (!feof($stream)) {
-                // Read 1024 bytes from the stream
                 $transcriptContents .= fread($stream, 1024);
             }
-            // Be sure to close the stream resource when you're done with it
             fclose($stream);
         }
         $parsedCaptions = parseCaptions($transcriptContents);
@@ -59,7 +54,6 @@
             if (substr($line, 0, 8) == 'Language') {
                 // grab the 2-char language code from the transcript
                 $targetLanguage = substr($line, 10,2);
-                echo ("Language Model: $targetLanguage<br>");
                 $captureText = true;
             }
             else if (substr($line, 0, 3) == '00:'){
@@ -80,8 +74,7 @@
             $finalChar = substr($lineData[$i]['original_text'], -1);
             $sentenceIncomplete = (preg_match("/\.|\?|\!|\。|\.{3}/",$finalChar)) ? false : true;
             preg_match_all("/(\.|\?|\!|\。|…)/",$lineData[$i]['original_text'],$matches);
-            $punctuationMarks = $matches[1];
-            
+            $punctuationMarks = $matches[1]; 
             for ($j=0;$j<count($lineFragments);$j++) {
                 // skip null entries from split on final punctuation
                 if ($lineFragments[$j] != '') {
@@ -91,9 +84,6 @@
                             'lineNumber'=> $i,
                             'length'=> mb_strlen($lineFragments[$j], 'UTF-8')
                     ];
-                    //print "SentNum:" .$sentenceNumber ."<br>LineNum:" .$i ."<br>";
-                    //print "Fragment: " .$lineFragments[$j] . "<br>";
-                    //vdump($fragmentData);
                     array_push($sentences[$sentenceNumber]['line_proportions'],$fragmentData);
                     if ($i != count($lineData) && ($j < count($lineFragments)-1 || !$sentenceIncomplete)) {
                         $sentenceNumber++;
@@ -102,14 +92,8 @@
                 }
             }
         }
-        //print "Num sentences: " .count($sentences). "<br>";
         for($i=0;$i<count($sentences);$i++) {
-            print "<hr><hr>Original sentence $i: " . $sentences[$i]['sentence']  . "<br>";
-            //vdump($sentences[$i]);
             $translation = translate(trim($sentences[$i]['sentence']),$targetLanguage);
-            print "Translation: " . $translation . "<br>";
-            //print "Line data:";
-            //vdump($sentences[$i]['line_proportions']);
             // if the entire sentence goes on one line, just add it to the line
             if (count($sentences[$i]['line_proportions'])<2) {
                 $lineNum = $sentences[$i]['line_proportions'][0]['lineNumber'];
@@ -118,9 +102,7 @@
             //otherwise, we neet to split it across lines
             else {
                 $originalSentenceLength = mb_strlen($sentences[$i]['sentence'], 'UTF-8');
-                //print "Total sentence length: " . $sentenceLength  . "<br>";
                 $translationLength = mb_strlen($translation, 'UTF-8');
-                //print "Translation length: " . $translationLength . "<br>";
                 $transWords = preg_split("/\ /", $translation);
                 // running count of words processed across lines
                 $wordCount = 0;
@@ -131,27 +113,21 @@
                 for ($j=0;$j<count($sentences[$i]['line_proportions']);$j++) {
                     $lineNum = $sentences[$i]['line_proportions'][$j]['lineNumber'];
                     $targetProportion = $sentences[$i]['line_proportions'][$j]['length']/$originalSentenceLength;
-                    //print "targetProportion: $targetProportion<br>";
                     for ($k=$wordCount;$k<count($transWords);$k++) {
                         // build fragment and add space
                         $tmpString .= $transWords[$k] . ' ';
                         $tmpLength = mb_strlen($tmpString, 'UTF-8');
-                        //print "TMP STRING: $tmpString <BR>";
                         $proportion = $tmpLength/$translationLength;
-                        //print "\$proportion: $proportion<br>";
-                        //print "\$targetProportion: $targetProportion<br>"; 
                         if ($proportion >= $targetProportion || $k == count($transWords)-1) {
                             $distanceFromTarget = abs($proportion - $targetProportion);
                             $prevDistance = abs($prevProportion - $targetProportion);
                             if ($distanceFromTarget < $prevDistance || $j == count($sentences[$i]['line_proportions'])-1) {
-                                //print "ADD CURR: $tmpString<hr><hr>";
                                 $lineData[$lineNum]['translated_text'] .= $tmpString;
                                 $wordCount = $k+1; 
                                 $tmpString = '';
                                 break;
                             }
                             else {
-                                //print "ADD PREV: $prevString<hr><hr>";
                                 $lineData[$lineNum]['translated_text'] .= $prevString;
                                 $wordCount = $k;
                                 $tmpString = '';
@@ -198,16 +174,13 @@
             return true;
         }
     }
-
     function time_format($rawTime) {
-        list($seconds, $microseconds) = preg_split("/\./",$rawTime);
-        if (!$microseconds) {
-            $microseconds = '00';
+        if ($rawTime) {
+            list($seconds, $ms) = preg_split("/\./",$rawTime);
+            // always 0 microseconds
+            $microseconds = '000';
+            return gmdate("H:i:s", $seconds) . '.' . $microseconds;
         }
-        else if (strlen($microseconds) == 1) {
-            $microseconds = '0' . $microseconds;
-        }
-        return gmdate("H:i:s", $seconds) . ',' . $microseconds;
     }
     function getS3Client() {
         global $clientPrivateKey, $serverPrivateKey;

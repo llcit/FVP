@@ -248,11 +248,10 @@ function finalizePresentation($data) {
       echo json_encode(array("error" => "$e"));
     }
 }
-function markAsFinal($videoId,$captionType) {
+function updatePresentationStatus($videoId,$status) {
     global $pdo; 
     try { 
-        $field = "$captionType"."_final"; 
-        $sql = "UPDATE presentations SET `$field` = 1 WHERE `id`=$videoId";
+        $sql = "UPDATE presentations SET `$status` = 1 WHERE `id`=$videoId";
         $stmt= $pdo->prepare($sql)->execute();  
     }catch (Exception $e) {
       echo json_encode(array("error" => "$e"));

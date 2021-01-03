@@ -34,15 +34,16 @@
 			$data = json_decode($_POST['captionData']);
 			writeVTTFile($videoId,$data,$_POST['captionLanguage']);
 			if ($_POST['transcript_final']) {
-				markAsFinal($videoId,'transcript');
+				updatePresentationStatus($videoId,'transcript_final');
 			}
 			if ($_POST['translation_final']) {
-				markAsFinal($videoId,'translation');
+				updatePresentationStatus($videoId,'translation_final');
 			}
 		}
 		if ($_POST['translateCaptions']) {
 			include "../upload/php-s3-server-master/translateCaptions.php";
 			translateVTTFile($videoId,);
+			updatePresentationStatus($videoId,'translation_raw');
 		}
 		$presentationData = getVideos($videoId,'id');
 		$allTracks = 'linguistic,professional,cutural';
