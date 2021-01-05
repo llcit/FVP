@@ -170,7 +170,7 @@
     } 
 
     function transcribe_Google($audioFile,$language) {
-        global $expectedBucketName,$pid;
+        global $expectedBucketName,$pid,$SETTINGS;
         $source = "./tmpAudio/$audioFile";
         $objectName = "$audioFile";
         $storage = new StorageClient(['keyFilePath'=>$SETTINGS['GOOGLE_CREDS']]);
