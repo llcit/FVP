@@ -172,11 +172,10 @@
     function transcribe_Google($audioFile,$language) {
         global $expectedBucketName,$pid;
         $source = "./tmpAudio/$audioFile";
-        $googleBucketName = 'flagship-video';
         $objectName = "$audioFile";
-        $storage = new StorageClient();
+        $storage = new StorageClient($SETTINGS['GOOGLE_CREDS']);
         $file = fopen($source, 'r');
-        $bucket = $storage->bucket($googleBucketName);
+        $bucket = $storage->bucket($SETTINGS['GOOGLE_BUCKET_NAME']);
         $object = $bucket->upload($file, [
             'name' => $objectName
         ]);
@@ -186,10 +185,7 @@
         $encoding = AudioEncoding::FLAC;
         $sampleRateHertz = 48000;
         $languageCode = $languages[$language];
-        if (!extension_loaded('grpc')) {
-            throw new \Exception('Install the grpc extension (pecl install grpc)');
-        }
-        $gcsURI = "gs://$googleBucketName/$audioFile";
+        $gcsURI = "gs://".$SETTINGS['GOOGLE_BUCKET_NAME']."/$audioFile";
         $audio = (new RecognitionAudio())
             ->setUri($gcsURI);
         // set config
@@ -199,7 +195,7 @@
             ->setLanguageCode($languageCode)
             ->setEnableWordTimeOffsets(1);
         // create the speech client
-        $client = new SpeechClient();
+        $client = new SpeechClient(['keyFilePath'=>$SETTINGS['GOOGLE_CREDS']]);
         // create the asyncronous recognize operation
         $operation = $client->longRunningRecognize($config, $audio);
         $operation->pollUntilComplete();
