@@ -201,7 +201,8 @@
         $operation->pollUntilComplete();
         if ($operation->operationSucceeded()) {
             $response = $operation->getResult();
-            $fileContent = "WEBVTT\r\nKind: captions\r\nLanguage: ru\r\n\r\n";
+            $vttLang = substr($languages[$language],0,2);
+            $fileContent = "WEBVTT\r\nKind: captions\r\nLanguage: $vttLang\r\n\r\n";
             $startNewLine = true;
             foreach ($response->getResults() as $result) {
                 $alternatives = $result->getAlternatives();
@@ -248,7 +249,9 @@
         } else {
             print_r($operation->getError());
         }
-
+        // Clean up audio file when done
+        $object = $bucket->object($objectName);
+        $object->delete();
         $client->close();
     }
 
