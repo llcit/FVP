@@ -317,10 +317,10 @@
         $audioFile = $pid . "." . $audio_extension;
         if ($language != 'Russian') {
             $response = transcribe_Watson($audioFile,$language);
+            $transcribeSuccess = writeVTTFile($response['file'],$response['response'],$language);
         }
         else {
             $response = transcribe_Google($audioFile,$language);
-            $transcribeSuccess = writeVTTFile($response['file'],$response['response'],$language);
         }
         
         $ffprobe = FFMpeg\FFProbe::create();
