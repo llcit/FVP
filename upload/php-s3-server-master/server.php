@@ -244,8 +244,6 @@
         $AWSResponse = $command->getResponse();
         $code = $AWSResponse->getStatusCode();
         $success = ($code === 200) ? true : false ;
-        return $success;
-
         } else {
             print_r($operation->getError());
         }
@@ -253,6 +251,7 @@
         $object = $bucket->object($objectName);
         $object->delete();
         $client->close();
+        return $success;
     }
 
     function time_format($rawTime) {
@@ -323,7 +322,7 @@
             $transcribeSuccess = writeVTTFile($response['file'],$response['response'],$language);
         }
         else {
-            $response = transcribe_Google($audioFile,$language);
+            $transcribeSuccess = transcribe_Google($audioFile,$language);
         }
         
         $ffprobe = FFMpeg\FFProbe::create();
