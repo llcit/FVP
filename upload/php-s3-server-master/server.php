@@ -320,8 +320,9 @@
         }
         else {
             $response = transcribe_Google($audioFile,$language);
+            $transcribeSuccess = writeVTTFile($response['file'],$response['response'],$language);
         }
-        $transcribeSuccess = writeVTTFile($response['file'],$response['response'],$language);
+        
         $ffprobe = FFMpeg\FFProbe::create();
         $ffprobe = FFMpeg\FFProbe::create();
         $duration =$ffprobe
