@@ -195,15 +195,16 @@
             ->setLanguageCode($languageCode)
             ->setEnableWordTimeOffsets(1);
         // create the speech client
-        $client = new SpeechClient(['keyFilePath'=>$SETTINGS['GOOGLE_CREDS']]);
+        $googleClient = new SpeechClient(['keyFilePath'=>$SETTINGS['GOOGLE_CREDS']]);
         // create the asyncronous recognize operation
-        $operation = $client->longRunningRecognize($config, $audio);
+        $operation = $googleClient->longRunningRecognize($config, $audio);
         $operation->pollUntilComplete();
         if ($operation->operationSucceeded()) {
             $response = $operation->getResult();
             $vttLang = substr($languages[$language],0,2);
             $fileContent = "WEBVTT\r\nKind: captions\r\nLanguage: $vttLang\r\n\r\n";
             $startNewLine = true;
+            $totalWordCount = 0;
             foreach ($response->getResults() as $result) {
                 $alternatives = $result->getAlternatives();
                 $mostLikely = $alternatives[0];
@@ -224,7 +225,6 @@
                             $wordCount++;
                         }
                         else {
-                            $count++;
                             $endTime = $wordInfo->getEndTime();
                             $end = time_format($endTime->serializeToJsonString());
                             $fileContent .= $start . " --> " . $end ."\r\n";
@@ -234,8 +234,8 @@
                     }
                 }
             }
-        $client = getS3Client();
-        $command = $client->getCommand('PutObject', array(
+        $AWSClient = getS3Client();
+        $command = $AWSClient->getCommand('PutObject', array(
                 'Bucket' => $expectedBucketName,
                 'Key'    => "transcripts/$pid.vtt",
                 'Body'   => "$fileContent"
@@ -250,7 +250,7 @@
         // Clean up audio file when done
         $object = $bucket->object($objectName);
         $object->delete();
-        $client->close();
+        $googleClient->close();
         return $success;
     }
 
