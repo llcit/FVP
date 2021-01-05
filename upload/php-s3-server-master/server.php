@@ -17,7 +17,7 @@
     use Google\Cloud\Speech\V1\RecognitionConfig\AudioEncoding;
 
     $SETTINGS = parse_ini_file(__DIR__."/../../inc/settings.ini");
-
+    putenv("GOOGLE_APPLICATION_CREDENTIALS=". $SETTINGS['GOOGLE_CREDS']);
     $clientPrivateKey = $SETTINGS['AWS_CLIENT_SECRET_KEY'];
     $serverPublicKey = $SETTINGS['AWS_SERVER_PUBLIC_KEY'];
     $serverPrivateKey = $SETTINGS['AWS_SERVER_PRIVATE_KEY'];
@@ -173,7 +173,7 @@
         global $expectedBucketName,$pid;
         $source = "./tmpAudio/$audioFile";
         $objectName = "$audioFile";
-        $storage = new StorageClient($SETTINGS['GOOGLE_CREDS']);
+        $storage = new StorageClient(['keyFilePath'=>$SETTINGS['GOOGLE_CREDS']]);
         $file = fopen($source, 'r');
         $bucket = $storage->bucket($SETTINGS['GOOGLE_BUCKET_NAME']);
         $object = $bucket->upload($file, [
@@ -254,10 +254,12 @@
 
     function time_format($rawTime) {
         if ($rawTime) {
+            $rawTime = preg_replace("/\"/","",$rawTime);
+            $rawTime = preg_replace("/s$/","",$rawTime);
             list($seconds, $ms) = preg_split("/\./",$rawTime);
             // always 0 microseconds
             $microseconds = '000';
-            return gmdate("H:i:s", $seconds) . '.' . $microseconds;
+            return gmdate("H:i:s", intval($seconds)) . '.' . $microseconds;
         }
     }
     function generateTranscript($tmpLink,$pid,$language) {
