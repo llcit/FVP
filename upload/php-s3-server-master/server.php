@@ -10,6 +10,7 @@
     ini_set('memory_limit', '-1');
     require './vendor/autoload.php';
     use Aws\S3\S3Client;
+    use Google\Cloud\Storage\StorageClient;
     use Google\Cloud\Speech\V1\SpeechClient;
     use Google\Cloud\Speech\V1\RecognitionAudio;
     use Google\Cloud\Speech\V1\RecognitionConfig;
@@ -169,13 +170,90 @@
     } 
 
     function transcribe_Google($audioFile,$language) {
-
+        global $expectedBucketName,$pid;
+        $source = "./tmpAudio/$audioFile";
+        $googleBucketName = 'flagship-video';
+        $objectName = "$audioFile";
+        $storage = new StorageClient();
+        $file = fopen($source, 'r');
+        $bucket = $storage->bucket($googleBucketName);
+        $object = $bucket->upload($file, [
+            'name' => $objectName
+        ]);
         $languages = [
-            'Russian' => 'ru'
+            'Russian' => 'ru-RU'
         ];
-      
+        $encoding = AudioEncoding::FLAC;
+        $sampleRateHertz = 48000;
+        $languageCode = $languages[$language];
+        if (!extension_loaded('grpc')) {
+            throw new \Exception('Install the grpc extension (pecl install grpc)');
+        }
+        $gcsURI = "gs://$googleBucketName/$audioFile";
+        $audio = (new RecognitionAudio())
+            ->setUri($gcsURI);
+        // set config
+        $config = (new RecognitionConfig())
+            ->setEncoding($encoding)
+            ->setSampleRateHertz($sampleRateHertz)
+            ->setLanguageCode($languageCode)
+            ->setEnableWordTimeOffsets(1);
+        // create the speech client
+        $client = new SpeechClient();
+        // create the asyncronous recognize operation
+        $operation = $client->longRunningRecognize($config, $audio);
+        $operation->pollUntilComplete();
+        if ($operation->operationSucceeded()) {
+            $response = $operation->getResult();
+            $fileContent = "WEBVTT\r\nKind: captions\r\nLanguage: ru\r\n\r\n";
+            $startNewLine = true;
+            foreach ($response->getResults() as $result) {
+                $alternatives = $result->getAlternatives();
+                $mostLikely = $alternatives[0];
+                if ($mostLikely) {
+                    foreach ($mostLikely->getWords() as $wordInfo) {
+                        $totalWordCount++;
+                        if ($startNewLine) {
+                            $startTime = $wordInfo->getStartTime();
+                            $start = time_format($startTime->serializeToJsonString());
+                            $wordCount = 0;
+                            $caption = '';
+                            $space = '';
+                        }
+                        $caption .=  $space . $wordInfo->getWord();
+                        $space = ' ';
+                        if ($wordCount<=7 && $totalWordCount != count($mostLikely->getWords())) {
+                            $startNewLine = false;
+                            $wordCount++;
+                        }
+                        else {
+                            $count++;
+                            $endTime = $wordInfo->getEndTime();
+                            $end = time_format($endTime->serializeToJsonString());
+                            $fileContent .= $start . " --> " . $end ."\r\n";
+                            $fileContent .= $caption ."\r\n\r\n";
+                            $startNewLine = true;
+                        }
+                    }
+                }
+            }
+        $client = getS3Client();
+        $command = $client->getCommand('PutObject', array(
+                'Bucket' => $expectedBucketName,
+                'Key'    => "transcripts/$pid.vtt",
+                'Body'   => "$fileContent"
+        ));
+        $AWSResult = $command->getResult();
+        $AWSResponse = $command->getResponse();
+        $code = $AWSResponse->getStatusCode();
+        $success = ($code === 200) ? true : false ;
+        return $success;
 
-        return true;
+        } else {
+            print_r($operation->getError());
+        }
+
+        $client->close();
     }
 
     function time_format($rawTime) {

@@ -1,17 +1,44 @@
 AWS FVP Build notes:
 
 EC2
+	t2.medium
+	i-0e9df2bf80ed3feda
+VPC
+	vpc-a1fa28cd
+	
+File System:
+	EBS: vol-03c91fbae7e75bc46
+	18-208-127-93
+		
+	Manual Snapshot: snap-05350ab0635de0369
+	Generated Snapshot for image: snap-05350ab0635de0369
+
+Image: ami-070c174a96e4d6cdb
 
 	Lamp Stack 
+		sudo apt update
 		sudo apt-get install apache2
+		sudo apt update
 		sudo apt-get install mysql-server
-		sudo apt-get install php libapache2-mod-php php-mcrypt php-mysql
+		sudo apt update
+		sudo apt install autoconf zlib1g-dev php php-cli php-fpm php-json php-common php-mysql php-zip php-gd php-mbstring php-curl php-xml php-dev php-pear php-bcmath libapache2-mod-php php-mcrypt php-mysql
+
 		
 		Mysql Credentials:  FVPUser/1400KStreetStreetNW!
+		/etc/mysql/mysql.cnf to provide /etc/mysql/my.cnf (my.cnf) in auto mode
+		sudo mysql
+			CREATE USER 'FVPUser'@'localhost' IDENTIFIED BY '1400KStreetStreetNW!';
+			GRANT ALL PRIVILEGES ON * . * TO 'FVPUser'@'localhost';
 		
-	SMTP Client (Composer require phpmailer)
+	Install Composer
+		curl -sS https://getcomposer.org/installer | php
+		sudo mv composer.phar /usr/local/bin/composer
+		
+	SMTP Client (composer require phpmailer)
 	Install npm (sudo apt install npm & npm init)
 	Install Fineuploader (npm install fine-uploader)
+
+	
 	Add IAM User: videoFileManager
 		- Access Key: AKIA5GGQGDXJ7N57DNHH
 		- Secret Access Key: 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
@@ -37,7 +64,6 @@ EC2
 		 - add "extension=protobuf.so" to php.ini
 		sudo grpc install protobuf
 		 - add "extension=grpc.so" to php.ini		 
-		
 
 SES
 
@@ -75,6 +101,10 @@ Add CORS configuration
 
 IAM 
 
+
+	External principal (IAM User)
+	arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity E152Q6KG3739IO
+	
 	Create Role : FVP_S3_Access_Mgr
 	
 	Create Policy : FVP_S3_Access
@@ -104,7 +134,8 @@ IAM
 				}
 			]
 		}
-VPC
-	vpc-a1fa28cd
 
 
+Deal with :
+
+sg-c405ffab
