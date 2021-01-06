@@ -52,7 +52,8 @@
 						currentResizerType = 'bottom';
 						let currentElement = currentCaption;
 						const height = before_height + (e.pageY - before_mouse_y);
-						if (height >= minimum_size) {
+						let offset = e.pageY - before_mouse_y;
+						if (height >= minimum_size || offset > 0) {
 							currentElement.css('height',height + 'px');
 							let global_offset = Math.round(height - original_height);
 							if ((Math.abs(global_offset)%(pixelsPerSecond)==pixelsPerSecond/2) && global_offset != currentBreakPoint) { 
@@ -60,7 +61,6 @@
 								//console.log('height:',height);
 								//console.log('original_height:',original_height);
 								//console.log('currentBreakPoint:',currentBreakPoint);
-
 								let currentEndTime = currentElement.find(".endTime");
 								updateTime(currentEndTime,currentDirection);
 								currentBreakPoint = global_offset;
@@ -102,7 +102,7 @@
 						let offset = e.pageY - before_mouse_y;
 						let global_offset = Math.round(currentCaption.position().top - original_top);
 						const height = before_height - offset;
-						if (height >= minimum_size) {
+						if (height >= minimum_size || offset < 0) {
 							currentCaption.css('height',height + 'px');
 							let top_adj = (before_top + offset) + scrollTop;
 							if ((Math.abs(global_offset)%(pixelsPerSecond)==pixelsPerSecond/2) && global_offset != currentBreakPoint) { 
@@ -245,7 +245,7 @@
     var $resizerWrapper = $('<div>',{
       'class': 'resizers'
     });
-    var $resizerTop = $('<div>',{
+    var $resizerTop = $('<span>',{
       'class': 'resizer top'
     });
 
@@ -308,7 +308,6 @@
         }
         return result;
       };
-
       if (comp.type === 'string') {
         result = result.concat(flattenString(comp.value));
       }

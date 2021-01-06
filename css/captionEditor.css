@@ -50,14 +50,14 @@
 	}
 
 	.resizable .resizers .resizer.bottom { 
-	  bottom: 0px;
+	  bottom: -1px;
 	  padding: 0px 0px 10px 0px;
 	  border-top-left-radius:5px;
 	  border-top-right-radius:5px;
 	}
 	.fa-sort-down {
-		border:1px solid blue;
-		top: 0px;
+		top: -8px;
+		position: relative;
 	}
 	.resizable .resizers .resizer.both {
 	  top: -15px;
@@ -70,21 +70,23 @@
 	}
 	.startTime {
 	  top: 0px;
-	  padding-top:5px;
+	  padding-top:0px;
 	  -border: solid 1px #000;
 	  left: 73%;
 	  width:150px;
 	  position: absolute;
 	  text-align:right;
+	  font-size:11px;
 	}
 	.endTime {
 	  bottom: 0px;
-	  padding-bottom:5px;
+	  padding-bottom:0px;
 	  -border: solid 1px #000;
 	  left: 73%;
 	  width:150px;
 	  position: absolute;
 	  text-align:right;
+	  font-size:11px;
 	}
 	.resize_header {
 	  width: 100%;
@@ -104,13 +106,7 @@
   	top: 0; bottom: 0; left: 0; right: 0;
   	margin: auto;
   	overflow-wrap: normal;
+  	padding-top:0px;
 
   }
-	.griddy {
-		position:absolute;
-		top:0px;
-		left:1px;
-		-z-index: -10;
-		height:100%;
-		width:100%;
-		-background: repeating-linear-gradient(#000, #000 1px, #fff 1px, #fff 30px);
+	
