@@ -3147,9 +3147,11 @@
 
     if (this.transcriptType) {
       if (this.transcriptType === 'popup' || this.transcriptType === 'external') {
+        console.log('Inject!');
         this.injectTranscriptArea();
       }
       else if (this.transcriptType === 'manual') {
+        console.log('setupManual!');
         this.setupManualTranscript();
       }
       this.addTranscriptAreaEvents();
@@ -9474,7 +9476,7 @@ AblePlayer.prototype.showDescription = function(now) {
     this.$unknownTranscriptOption = $('<option val="unknown">' + this.tt.unknown + '</option>');
     this.$transcriptLanguageSelect.append(this.$unknownTranscriptOption);
     this.$transcriptLanguageSelect.prop('disabled', true);
-  this.$transcriptLanguageSelect.css('color', '#000');
+    this.$transcriptLanguageSelect.css('color', '#000');
 
     var languageSelectWrapper = $('<div class="transcript-language-select-wrapper">');
     this.$transcriptLanguageSelectContainer = languageSelectWrapper;

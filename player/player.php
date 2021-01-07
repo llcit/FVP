@@ -65,6 +65,7 @@
 			if ($editCaptions) {
 				$editControls = "
 					<div id = 'edit_controls' class = 'edit_controls'>
+						<a style='margin-left:20px;' class='btn btn-secondary' href=\"javascript:cancelEdit();\">Cancel</a>
 						<div class='form-check' style='display:inline;'>
 						  <input type='checkbox' class='transcript_final' id='transcript_final' name='transcript_final'>
 						  <label class='form-check-label' for='transcript_final'>Save as Final</label>
@@ -135,6 +136,10 @@
 		function editCaptions() {
 			window.top.location.href = "./index.php?v=<?php echo($_GET['v']); ?>&cm=edit";  // reference parent
 		}	
+		function cancelEdit() {
+			window.top.location.href = "./index.php?v=<?php echo($_GET['v']); ?>";  // reference parent
+		}	
+
 		function saveCaptions() {
 			var i=0;
 			var data = [];

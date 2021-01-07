@@ -5,7 +5,7 @@
 	include_once("../inc/dump.php");
 	include_once("../inc/db_pdo.php");
 	include_once("../inc/sqlFunctions.php");
-	include_once("../inc/navLinks.php");
+	include_once("../inc/htmlFunctions.php");
 	$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
 	session_start();
 	$videoId = ($_GET['v']) ? $_GET['v'] : 204;

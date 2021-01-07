@@ -6,7 +6,8 @@
 	include_once("../inc/dump.php");
 	include_once("../inc/db_pdo.php");
 	include_once("../inc/sqlFunctions.php");
-	include_once("../inc/navLinks.php");
+	include_once("../inc/htmlFunctions.php");
+	include_once("../inc/htmlFunctions.php");
 	$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
 	session_start();
 	if (!isset($_SESSION['username'])) { 
@@ -56,57 +57,7 @@
     ";
   }
 
-	function buildVideoList($videos) {
-		$count = 0;
-		$videoList = "<form id='videoData' name='videoData'>";
-		if ($videos) {
-			foreach ($videos as $video) {
-				if ($count%3==0) {
-					if ($count > 1) {
-						$videoList .= "</div>";
-					}
-					$videoList .= "<div class='row'>";
-				}
-				$videoList .= buildRow($video);
-				$count++;
-			}
-			$videoList .= "</div>";
-		}
-		else {
-			$videoList .= "<div class='empty'>There are no videos that meet the search options you have selected.</div>";
-		}
-		$videoList .= "</form>";
-		return $videoList;
-	}
-	function buildRow($video) {
-		$row = "
-							<div class='videoPanel col-sm-4' id='videoPanel_".$video['id']."' name='videoPanel_".$video['id']."'>
-								<table>
-									<tr>
-										<td>
-											<div class = 'thumbWrapper' id = 'thumb_".$video['id']."'>
-											</div>
-										</td>
-										<td>
-											<div class = 'videoDetails'>
-											<p class='studentName'>".$video['first_name']." ".$video['last_name']."</p>
-											<p class='details'>".$video['progYrs']."</p>
-											<p class='details'>".$video['city'].", ".$video['country']."</p>
-											<p class='details'>".$video['type']."</p>
-											<p class='details'>".$video['phase']."</p>
-											</div>
-											<input type=hidden id='videoData_".$video['id']."' name='videoData_".$video['id']."'
-											value='".json_encode($video)."'>
-										</td>
-									</tr>
-								</table>
-							</div>
-							<script>
-									var thumb = generateFile('thumb','".$video['id']."','jpg','');
-							</script>
-					 ";
-		return $row;
-	}
+
 	function buildPullDowns($filters){
 		$fullList = [
 			'programs' => getUniqueVals('programs','name'),
@@ -183,34 +134,12 @@
 	$( document ).ready(function() {
     $('.videoPanel').each(function() {
     	$(this).click(function(){ 
-    		playVideo($(this).attr('id'))
+    		playVideo($(this).attr('id'),true)
     	});
     })
-	$('#playerModal').on('hidden.bs.modal', function (e) {
-  	$('#playerFrame').attr('src', '');
-		});
-	});
-	function playVideo(element_id) {
-		var id_parts = element_id.match(/(.+)\_(.+)/);
-	  var video_id = id_parts[2];
-		window.location = "../player/index.php?v="+video_id ;
-	}
-	function writeDetails(data_str) {
-		var data = $.parseJSON(data_str);
-		console.log(data);
-		var details = [];
-		details.push('<li>' + data.first_name + ' ' + data.last_name + '</li>');
-		details.push('<li>Program: ' + data.program + '</li>');
-		details.push('<li>Program Year: ' + data.progYrs + '</li>');
-		details.push('<li>Program Period: ' + data.phase + '</li>');
-		details.push('<li>Domestic Institution: ' + data.institution + '</li>');
-		details.push('<li>Overseas Location: ' + data.city + ', ' + data.country + '</li>');
-		details.push('<li>Performance Type: ' + data.type + '</li>');
-		$('.modal-title').empty();
-		$('.modal-title').append(details.join(''));
-	}
 </script>
 <script src='../js/S3FileGen.js'></script>
+<script src='../js/main.js'></script>
 </head>
 
 <body>

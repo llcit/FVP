@@ -5,7 +5,7 @@
         include "./inc/db_pdo.php";
         include "./inc/dump.php";
         include "./inc/sqlFunctions.php";
-        include "./inc/navLinks.php";
+        include "./inc/htmlFunctions.php";
         $SETTINGS = parse_ini_file(__DIR__."/inc/settings.ini");
 				$pageTitle = "Flagship Video Project";
 				$subTitle = "Your Videos";
@@ -43,27 +43,23 @@
         else {
        	  $pageContent = buildVideoList($userVideos);
         }
-        function buildVideoList($userVideos) {
-          $videoList = '';
-          dump($userVideos);
-          foreach($userVideos as $video) {
-            $videoList = "
-              <p>
-                <a href='<a href='./player/?v=".$video['id']."'>
-                  ".$video['progName']." ".$video['progYrs']." (".$video['phase'].")
-                </a>
-              </p>
-            ";
-          }
-          return $videoList;
-        }
       ?>
       <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
       <!-- Able Player CSS -->
       <link rel="stylesheet" href="./css/main.css" type="text/css"/>
       <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <link rel="stylesheet" href="./css/archive.css" type="text/css"/>
+      <script src='./js/S3FileGen.js'></script>
+      <script src='./js/main.js'></script>
       <script>
-
+        $( document ).ready(function() {
+          $('.videoPanel').each(function() {
+            $(this).click(function(){ 
+              playVideo($(this).attr('id'),false)
+            });
+          });
+        });
       </script>
     </head>
     <body>
