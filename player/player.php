@@ -89,6 +89,14 @@
 				";
 			}
 		}
+    $languages = [
+        'Arabic' => 'ar',
+        'Chinese' => 'zh',
+        'English' => 'en',
+        'Korean' => 'ko',
+        'Portuguese' => 'pt',
+        'Russian' => 'ru'
+    ];
 	?>
 	<!-- Style for this example only -->
 	<style>
@@ -114,10 +122,10 @@
 	</style>
 
 	<script>
-		var GLOBAL_LANGUAGE;
-  	var hasTranscript = '<?php echo($presentationData[0]['transcript_raw']); ?>';
-  	var hasTranslation = '<?php echo($presentationData[0]['translation_raw']); ?>';
-  	var annotations = '<?php echo($presentationData[0]['annotations']); ?>';
+		var GLOBAL_LANGUAGE = '<?php echo($languages[$presentationData[0]['language']]); ?>';
+		var hasTranscript = '<?php echo($presentationData[0]['transcript_raw']); ?>';
+		var hasTranslation = '<?php echo($presentationData[0]['translation_raw']); ?>';
+		var annotations = '<?php echo($presentationData[0]['annotations']); ?>';
 		var videoFile = generateFile('video','<?php echo($_GET['v']); ?>','<?php echo($presentationData[0]['extension']); ?>','');
 		var showTranscriptArea = false;
 		if (hasTranscript == 1) {
@@ -134,7 +142,14 @@
 			$('#player').css('margin','auto');
 		}	
 		function editCaptions() {
-			window.top.location.href = "./index.php?v=<?php echo($_GET['v']); ?>&cm=edit";  // reference parent
+			if (typeof $("#transcript-language-select") !== "undefined") {
+				language = $("#transcript-language-select option:selected").val();
+			}
+			else {
+				language = GLOBAL_LANGUAGE;
+			}
+			if (language == 'ch') language = 'zh';
+			window.top.location.href = "./index.php?v=<?php echo($_GET['v']); ?>&cm=edit&language="+language;  // reference parent
 		}	
 		function cancelEdit() {
 			window.top.location.href = "./index.php?v=<?php echo($_GET['v']); ?>";  // reference parent
@@ -157,7 +172,6 @@
 				i++;
 			});
 			$('#captionData').val(JSON.stringify(data));
-			$('#captionLanguage').val(GLOBAL_LANGUAGE);
 			$('#saveCaptions').val(1);
 			$('#saveCaptionForm').submit();
 		}		
@@ -169,12 +183,11 @@
 	<!-- Able Player JavaScript -->
 	<script src="../ableplayer/build/ableplayer.js"></script>
 </head>
-
 	<body>
 		<form method='post' id='saveCaptionForm' name='saveCaptionForm'>
 			<input type='hidden' id='saveCaptions' name='saveCaptions' value = 0> 
 			<input type='hidden' id='captionData' name='captionData' value = ''>
-			<input type='hidden' id='captionLanguage' name='captionLanguage' value = ''>
+			<input type='hidden' id='captionLanguage' name='captionLanguage' value = '<?php echo($_GET['language']); ?>'>
 			<input type='hidden' id='translateCaptions' name='translateCaptions' value = 0> 
 			<?php echo($editControls); ?>
 		</form>

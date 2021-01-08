@@ -56,11 +56,11 @@
                 $targetLanguage = substr($line, 10,2);
                 $captureText = true;
             }
-            else if (substr($line, 0, 3) == '00:'){
+            else if (preg_match("/\d{2}\:\d{2}\.\d{3}\ \-\-\>\ \d{2}\:\d{2}\.\d{3}/",$line)){
                 $lineNumber++;
                 $lineData[$lineNumber]['timeCodes'] = trim($line);
             }
-            else if (preg_match("/[a-zA-Z0-9*]/",$line) && $captureText) {
+            else if ($line != "" && $captureText) {
                 // account for carriage returns and add white space when joining multi line entries
                 $lineData[$lineNumber]['original_text'] .= ' ' .$line;
                 // remove white space from beginning and end
@@ -93,7 +93,9 @@
             }
         }
         for($i=0;$i<count($sentences);$i++) {
+            echo("Sentence in: " . $sentences[$i]['sentence'] . "<br>");
             $translation = translate(trim($sentences[$i]['sentence']),$targetLanguage);
+            echo("Translation: " . $translation . "<br>");
             // if the entire sentence goes on one line, just add it to the line
             if (count($sentences[$i]['line_proportions'])<2) {
                 $lineNum = $sentences[$i]['line_proportions'][0]['lineNumber'];

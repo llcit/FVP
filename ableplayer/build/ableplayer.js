@@ -9537,10 +9537,7 @@ AblePlayer.prototype.showDescription = function(now) {
       });
 
       this.$transcriptLanguageSelect.on('change',function () {
-
         var language = thisObj.$transcriptLanguageSelect.val();
-        // FVP: Set global for caption editor
-        GLOBAL_LANGUAGE = language;
         thisObj.syncTrackLanguages('transcript',language);
       });
     }
