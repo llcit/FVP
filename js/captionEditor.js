@@ -21,8 +21,6 @@
 			let before_mouse_y = 0;
 			let before_height_prev = 0;
 			let before_height_next = 0;
-			// prevent multiple firing of updateTime
-			let currentBreakPoint = 0;
 			// ...but, signal that sibling time should be updated
 			let updateSiblingTime = false;
 
@@ -43,9 +41,6 @@
 					if (currentY > 0 && currentY != e.pageY) {
 						let prevDirection = currentDirection;
 						currentDirection = (e.pageY > currentY) ? 'down' : 'up';
-						if (currentDirection != prevDirection) {
-							currentBreakPoint = 0;
-						}
 					}
 					currentY = e.pageY;
 					if (currentResizer.hasClass('bottom')) {
@@ -55,18 +50,9 @@
 						let offset = e.pageY - before_mouse_y;
 						if (height >= minimum_size || offset > 0) {
 							currentElement.css('height',height + 'px');
-							let global_offset = Math.round(height - original_height);
-							if ((Math.abs(global_offset)%(pixelsPerSecond)==pixelsPerSecond/2) && global_offset != currentBreakPoint) { 
-								//console.log('global_offset:',global_offset);
-								//console.log('height:',height);
-								//console.log('original_height:',original_height);
-								//console.log('currentBreakPoint:',currentBreakPoint);
-								let currentEndTime = currentElement.find(".endTime");
-								updateTime(currentEndTime,currentDirection);
-								currentBreakPoint = global_offset;
-								updateSiblingTime = true;
-							}
-
+							let currentEndTime = currentElement.find(".endTime");
+							updateTime(currentEndTime,currentDirection);
+							updateSiblingTime = true;
 							var currHeight = parseFloat(currentElement.css('height').replace('px', ''));
 							var currTop = parseFloat(currentElement.position().top);						
 							if (typeof nextCaption.css('height') !== 'undefined')  {
@@ -74,9 +60,7 @@
 								const next_top = Math.round(nextCaption.position().top);
 								const bottom = Math.round(currTop + currHeight);
 								if (bottom > next_top) {
-									//console.log("Next top: ", next_top);
 									const height_offset = Math.round(bottom-next_top);
-									//console.log("Height Offset: ", height_offset);
 									const next_height_adj = next_height_orig - height_offset;
 									if (next_height_adj >= minimum_size) {
 										nextCaption.css('height',next_height_adj + 'px');
@@ -100,21 +84,13 @@
 					if (currentResizer.hasClass('top')) {
 						currentResizerType = 'top';
 						let offset = e.pageY - before_mouse_y;
-						let global_offset = Math.round(currentCaption.position().top - original_top);
 						const height = before_height - offset;
 						if (height >= minimum_size || offset < 0) {
 							currentCaption.css('height',height + 'px');
 							let top_adj = (before_top + offset) + scrollTop;
-							if ((Math.abs(global_offset)%(pixelsPerSecond)==pixelsPerSecond/2) && global_offset != currentBreakPoint) { 
-								//console.log('global_offset:',global_offset);
-								//console.log('e.pageY:',e.pageY);
-								//console.log('original_top:',original_top);
-								//console.log('currentBreakPoint:',currentBreakPoint);
-								let currentStartTime = $(currentCaption).find(".startTime");
-								updateTime(currentStartTime,currentDirection);
-								currentBreakPoint = global_offset;
-								updateSiblingTime = true;
-							}
+							let currentStartTime = $(currentCaption).find(".startTime");
+							updateTime(currentStartTime,currentDirection);
+							updateSiblingTime = true;
 							currentCaption.css('top', top_adj + 'px');
 						}
 						if (typeof prevCaption.css('height') !== 'undefined')  {
@@ -149,12 +125,10 @@
 					let parentWrapper = currentCaption.parent();
 					let scrollWrapper = parentWrapper.parent();
 					let scrollTop = Math.round($(scrollWrapper).scrollTop());
-					//console.log('scrollTop--> ', scrollTop);
 					let curr_height = Math.round(parseFloat(currentCaption.css('height').replace('px', '')));
 					let curr_top = Math.round(currentCaption.position().top);
 					let snapOffset = Math.round(curr_height%pixelsPerSecond);
 					let snapBy = (snapOffset >= pixelsPerSecond/2) ? pixelsPerSecond - snapOffset : snapOffset*-1;
-					
 					window.removeEventListener('mousemove', resize);
 					if (currentResizerType == 'bottom') {
 						let height_adj = Math.round(curr_height + snapBy);	
@@ -214,26 +188,38 @@
 							prevCaption.css('height',prev_height_adj + 'px');
 						}
 					}
-					currentBreakPoint = 0;
 				} // end stopResize
 			}); // end each resizer
 		});// end each currentCaption
 	}	// end makeResizableDiv	
+
 	function updateTime(element,direction){
-		let stm = element.html().match(/(\d{2})\:(\d{2})$/);
-		let currMin = parseFloat(stm[1]);
-		let currSec = parseFloat(stm[2]);
-		let bool = (direction =='up') ? -1 : 1;
-		let startMin = pad((currMin), 2);
-		let startSec=pad((currSec+bool), 2);
-		let whichTime = (element.hasClass('startTime')) ? 'Start' : 'End';
-		element.html(whichTime + " time: " + startMin+":"+startSec);
-		//console.log('direction: ', direction);
+		let elementId = element.attr('id');
+		let idParts = elementId.split("\_");
+		let elementType = idParts[0];
+		let elementIndex = idParts[1];
+		let partnerHandle = (elementType == 'st') ? '#et_'+elementIndex : '#st_'+elementIndex;
+		let partnerTime = $(partnerHandle).html().match(/(\d{2})\:(\d{2})$/);
+		let partnerMin = parseFloat(partnerTime[1]);
+		let partnerMinSec = partnerMin*60;
+		let partnerSec = parseFloat(partnerTime[2]);	
+		let partnerTotalSec = partnerMinSec+partnerSec;
+		let currentCaption = $('#rs_'+elementIndex);
+		let wrapperHeight = parseFloat(currentCaption.css('height').replace('px', ''));
+		let currTotalSec;
+		if (elementType == 'st') {
+			currTotalSec = partnerTotalSec - (wrapperHeight - (pixelsPerSecond/2))/pixelsPerSecond;
+		}
+		else {
+			currTotalSec = partnerTotalSec + (wrapperHeight - (pixelsPerSecond/2))/pixelsPerSecond;
+		}
+		let currMin = Math.floor(currTotalSec/60);
+		var currSec = Math.floor(currTotalSec - (currMin*60));
+		let updateMin = pad((currMin), 2);
+		let updateSec = pad((currSec), 2);
+		let whichTime = (elementType == 'st') ? 'Start' : 'End';
+		element.html(whichTime + " time: " + updateMin+":"+updateSec);
 	}
-	function compareTime() {
-
-	}
-
 	var addEditableCaption = function(div, cap) {
     var $capSpan = $('<span>',{
       'class': 'able-transcript-seekpoint able-transcript-caption'
@@ -355,6 +341,9 @@
 		makeResizableDiv();
 		var i=0;
 		var relOffsets=[];
+		// number of vertical pixels to add between non-concurrent captions
+		// (number of seconds * pixelsPerSecond) 
+		let whiteSpace = 0;
 		$('.resizable').each(function(){	
 			$(this).prop('id','rs_' + captionCount);
 			$(this).find(".startTime").prop('id','st_' + captionCount);
@@ -362,9 +351,6 @@
 			$(this).find(".captionEditInput").prop('id','cip_' + captionCount);
 			/*  add space between non-concurrent captions */
 			let prevCaption = $(this).prev('.resizable');
-			// number of vertical pixels to add between non-concurrent captions
-			// (number of seconds * pixelsPerSecond) 
-			let whiteSpace = 0;
 			if (typeof prevCaption.css('height') !== 'undefined') {
 				// get current start in total number of seconds
 				let currStartTime = $(this).find(".startTime");
@@ -379,7 +365,9 @@
 				let prevEndSec = parseFloat(stm_prev[2]);
 				let prevEndSec_total = (prevEndMin*60) + prevEndSec;
 				// calulate the vertical space to add between captions
-				whiteSpace = (currStartSec_total - prevEndSec_total) * pixelsPerSecond;
+				whiteSpace += (currStartSec_total - prevEndSec_total) * pixelsPerSecond;
+				console.log('id: ' ,$(this).attr('id'));
+				console.log('whiteSpace: ' ,whiteSpace);
 			}
 			/*  /add space between non-concurrent captions */
 			var currTop = $( this ).position().top + whiteSpace;
@@ -387,7 +375,7 @@
 			relOffsets[captionCount] = {'top':currTop,'left':currLeft};
 			captionCount++;
 		});
-		////console.log('relOffsets: ', relOffsets);
+		console.log('relOffsets: ', relOffsets);
 		for (let j = 0;j < relOffsets.length; j++) {
 			$( '#rs_' + j ).css({position:'absolute',top:relOffsets[j].top});
 		}
