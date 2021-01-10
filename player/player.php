@@ -37,6 +37,11 @@
 			if ($_POST['translation_final']) {
 				updatePresentationStatus($videoId,'translation_final');
 			}
+			// plant as hidden for multiple edit/saves
+			$captionLanguage = $_POST['captionLanguage'];
+		}
+		else {
+			$captionLanguage = $_GET['language'];
 		}
 		if ($_POST['translateCaptions']) {
 			include "../upload/php-s3-server-master/translateCaptions.php";
@@ -208,7 +213,7 @@
 		<form method='post' id='saveCaptionForm' name='saveCaptionForm'>
 			<input type='hidden' id='saveCaptions' name='saveCaptions' value = 0> 
 			<input type='hidden' id='captionData' name='captionData' value = ''>
-			<input type='hidden' id='captionLanguage' name='captionLanguage' value = '<?php echo($_GET['language']); ?>'>
+			<input type='hidden' id='captionLanguage' name='captionLanguage' value = '<?php echo($captionLanguage); ?>'>
 			<input type='hidden' id='translateCaptions' name='translateCaptions' value = 0> 
 			<?php echo($editControls); ?>
 		</form>
