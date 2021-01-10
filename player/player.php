@@ -39,13 +39,15 @@
 			}
 			// plant as hidden for multiple edit/saves
 			$captionLanguage = $_POST['captionLanguage'];
+			$captionMode = '';
 		}
 		else {
 			$captionLanguage = $_GET['language'];
+			$captionMode = $_GET['cm'];
 		}
 		if ($_POST['translateCaptions']) {
 			include "../upload/php-s3-server-master/translateCaptions.php";
-			translateVTTFile($videoId,);
+			translateVTTFile($videoId);
 			updatePresentationStatus($videoId,'translation_raw');
 		}
 		$presentationData = getVideos($videoId,'id');
@@ -127,13 +129,14 @@
 	</style>
 
 	<script>
+		var captionMode = '<?php echo($captionMode);?>';
 		var hasTranscript;
 		var hasTranslation;
 		var annotations;
 		var DEFAULT_LANGUAGE = '<?php echo($languages[$presentationData[0]['language']]); ?>';
 		var SELECTED_LANGUAGE = '<?php echo($_GET['language']); ?>';
 		// caption language for editing
-		if (SELECTED_LANGUAGE) {
+		if (SELECTED_LANGUAGE && captionMode == 'edit') {
 			// editing translation
 			if (SELECTED_LANGUAGE == 'en') {
 				hasTranslation = 1;
@@ -146,11 +149,18 @@
 			}
 		}
 		else {
+			// after save, keep selected language
+			if (SELECTED_LANGUAGE != '') {
+				timerID=setTimeout(function() {
+					$("#transcript-language-select").val(SELECTED_LANGUAGE);
+					$("#transcript-language-select").change();
+				},500);
+				
+			}
 			hasTranscript = '<?php echo($presentationData[0]['transcript_raw']); ?>';
 			hasTranslation = '<?php echo($presentationData[0]['translation_raw']); ?>';
 			annotations = '<?php echo($presentationData[0]['annotations']); ?>';
 		}
-
 		var annotations = '<?php echo($presentationData[0]['annotations']); ?>';
 		var videoFile = generateFile('video','<?php echo($_GET['v']); ?>','<?php echo($presentationData[0]['extension']); ?>','');
 		var showTranscriptArea = false;
@@ -168,7 +178,7 @@
 			$('#player').css('margin','auto');
 		}	
 		function editCaptions() {
-			if (typeof $("#transcript-language-select") !== "undefined") {
+			if (typeof $("#transcript-language-select") !== "undefined" && $("#transcript-language-select > option").length>0) {
 				language = $("#transcript-language-select option:selected").val();
 			}
 			else {
