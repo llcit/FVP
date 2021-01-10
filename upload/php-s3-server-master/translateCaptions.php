@@ -60,7 +60,7 @@
                 $lineNumber++;
                 $lineData[$lineNumber]['timeCodes'] = trim($line);
             }
-            else if ($line != "" && $captureText) {
+            else if ($line != "" && $line != "\r" && $line != "\n" && $captureText) {
                 // account for carriage returns and add white space when joining multi line entries
                 $lineData[$lineNumber]['original_text'] .= ' ' .$line;
                 // remove white space from beginning and end
