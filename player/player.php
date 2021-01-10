@@ -122,9 +122,30 @@
 	</style>
 
 	<script>
-		var GLOBAL_LANGUAGE = '<?php echo($languages[$presentationData[0]['language']]); ?>';
-		var hasTranscript = '<?php echo($presentationData[0]['transcript_raw']); ?>';
-		var hasTranslation = '<?php echo($presentationData[0]['translation_raw']); ?>';
+		var hasTranscript;
+		var hasTranslation;
+		var annotations;
+		var DEFAULT_LANGUAGE = '<?php echo($languages[$presentationData[0]['language']]); ?>';
+		var SELECTED_LANGUAGE = '<?php echo($_GET['language']); ?>';
+		// caption language for editing
+		if (SELECTED_LANGUAGE) {
+			// editing translation
+			if (SELECTED_LANGUAGE == 'en') {
+				hasTranslation = 1;
+				hasTranscript = 0;
+			}
+			// editing transcript
+			else {
+				hasTranslation = 0;
+				hasTranscript = 1;				
+			}
+		}
+		else {
+			hasTranscript = '<?php echo($presentationData[0]['transcript_raw']); ?>';
+			hasTranslation = '<?php echo($presentationData[0]['translation_raw']); ?>';
+			annotations = '<?php echo($presentationData[0]['annotations']); ?>';
+		}
+
 		var annotations = '<?php echo($presentationData[0]['annotations']); ?>';
 		var videoFile = generateFile('video','<?php echo($_GET['v']); ?>','<?php echo($presentationData[0]['extension']); ?>','');
 		var showTranscriptArea = false;
@@ -146,7 +167,7 @@
 				language = $("#transcript-language-select option:selected").val();
 			}
 			else {
-				language = GLOBAL_LANGUAGE;
+				language = DEFAULT_LANGUAGE;
 			}
 			if (language == 'ch') language = 'zh';
 			window.top.location.href = "./index.php?v=<?php echo($_GET['v']); ?>&cm=edit&language="+language;  // reference parent

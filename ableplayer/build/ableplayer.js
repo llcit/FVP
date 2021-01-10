@@ -374,7 +374,9 @@
     }
 
     // Language
+
     this.lang = 'en';
+    
     if ($(media).data('lang') !== undefined && $(media).data('lang') !== "") {
       var lang = $(media).data('lang');
       if (lang.length == 2) {
@@ -4819,6 +4821,8 @@
     this.meta = [];
 
     var loadingPromises = [];
+
+          console.log("tracks: " , this.$tracks);
     for (var ii = 0; ii < this.$tracks.length; ii++) {
       var track = this.$tracks[ii];
       var kind = track.getAttribute('kind');
@@ -4830,7 +4834,6 @@
         // Nothing to load!
         continue;
       }
-
       var loadingPromise = this.loadTextObject(trackSrc);
       loadingPromises.push(loadingPromise);
       loadingPromise.then((function (track, kind) {

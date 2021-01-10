@@ -366,8 +366,8 @@
 				let prevEndSec_total = (prevEndMin*60) + prevEndSec;
 				// calulate the vertical space to add between captions
 				whiteSpace += (currStartSec_total - prevEndSec_total) * pixelsPerSecond;
-				console.log('id: ' ,$(this).attr('id'));
-				console.log('whiteSpace: ' ,whiteSpace);
+				//console.log('id: ' ,$(this).attr('id'));
+				//console.log('whiteSpace: ' ,whiteSpace);
 			}
 			/*  /add space between non-concurrent captions */
 			var currTop = $( this ).position().top + whiteSpace;
@@ -375,7 +375,7 @@
 			relOffsets[captionCount] = {'top':currTop,'left':currLeft};
 			captionCount++;
 		});
-		console.log('relOffsets: ', relOffsets);
+		//console.log('relOffsets: ', relOffsets);
 		for (let j = 0;j < relOffsets.length; j++) {
 			$( '#rs_' + j ).css({position:'absolute',top:relOffsets[j].top});
 		}
