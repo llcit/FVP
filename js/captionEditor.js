@@ -183,8 +183,11 @@
 							else {
 								prevSnapBy_height = prevSnapOffset;
 							}
-							let prev_height_adj = Math.round(prev_height + prevSnapBy_height);
+							let prev_height_adj = Math.round(prev_height - prevSnapBy_height);
+							console.log('prev_height:',prev_height);
+							console.log('prevSnapBy_height:',prevSnapBy_height);
 							console.log('prev_height_adj:',prev_height_adj);
+							console.log('snapBy:',snapBy);
 							prevCaption.css('height',prev_height_adj + 'px');
 						}
 					}
@@ -195,6 +198,7 @@
 
 	function updateTime(element,direction){
 		let elementId = element.attr('id');
+		console.log('elementId:',elementId);
 		let idParts = elementId.split("\_");
 		let elementType = idParts[0];
 		let elementIndex = idParts[1];
@@ -218,6 +222,9 @@
 		let updateMin = pad((currMin), 2);
 		let updateSec = pad((currSec), 2);
 		let whichTime = (elementType == 'st') ? 'Start' : 'End';
+		console.log('wrapperHeight:',wrapperHeight);
+		
+		console.log('updateSec:',updateSec);
 		element.html(whichTime + " time: " + updateMin+":"+updateSec);
 	}
 	var addEditableCaption = function(div, cap) {
@@ -250,8 +257,9 @@
     var $endTime = $('<div>',{
       'class': 'endTime'
     });
+    var rightToLeft = (SELECTED_LANGUAGE == 'ar') ? 'rightToLeft' : '';
     var $capInput =  $('<textarea>',{
-      'class': 'captionEditInput',
+      'class': 'captionEditInput ' + rightToLeft,
       'wrap': 'soft'
     });
 

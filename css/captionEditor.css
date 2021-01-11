@@ -94,6 +94,10 @@
 	  -border: 3px solid red;
 	  text-align:right;				
 	}
+	.rightToLeft {
+		text-align:right;
+		direction: rtl;
+	}
 	.captionEditInput {
   	width:95%;
   	height:50%;
