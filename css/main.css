@@ -2,6 +2,18 @@
     span.pageTitle {
         padding-left:15px;
     }
+    .audioDescription {
+        width:95%;
+        background-color: #EEE;
+        border: thin solid #336;
+        border-radius: 5px;
+        -moz-border-radius: 5px
+        font-style: italic;
+        font-size:14px;
+        padding: 0px 10px 15px 10px;
+        margin-left:25px;   
+        text-align:left;
+    }
     .container{
         width:100%;
         margin:0 auto;

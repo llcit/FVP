@@ -134,9 +134,10 @@
 	$( document ).ready(function() {
     $('.videoPanel').each(function() {
     	$(this).click(function(){ 
-    		playVideo($(this).attr('id'),true)
+    		playVideo($(this).attr('id'),true);
     	});
-    })
+    });
+  });
 </script>
 <script src='../js/S3FileGen.js'></script>
 <script src='../js/main.js'></script>

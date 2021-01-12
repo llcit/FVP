@@ -36,17 +36,19 @@
 		$allTracks = ['linguistic','professional','cultural'];
 		$includeTracks = ($_GET['t']) ? $_GET['t'] : $allTracks;
 		$trackSelect = buildTrackSelect($allTracks,$includeTracks);
-		if ($audioDescription != '') {
-			$audioDescription = "
-						<tr>
-							<td colspan=5 align=left>
-								<div class='audioDescription'>
-									<h3>About this Speaker:</h3>
-									$audioDescription
-								</div>
-							</td>
-						</tr>
-			";
+		for ($i=0;$i<count($showcaseVideos);$i++) {
+			if ($showcaseVideos[$i]['id'] == $_GET['v']) {
+				$audioDescription = "
+					<tr>
+						<td colspan=5 align=left>
+							<div class='audioDescription'>
+								<h3>About this Speaker:</h3>
+								".$showcaseVideos[$i]['description']."
+							</div>
+						</td>
+					</tr>
+				";
+			}
 		}
 		$userControls = "
 					<table class='controlsTable'>
@@ -83,9 +85,6 @@
 		foreach($showcaseVideos as $video) {
 			$progYrs = preg_replace("/(A|C)Y\ /","",$video['progYrs']);
 			$userSelect .= "<option value='".$video['id']."'". $isSelected[$video['id']].">".$video['last_name']." (".$video['language'].", " .$progYrs. ")</option>";
-			if ($video['id'] == $videoId) {	
-				$audioDescription = $video['description'];
-			}
 		}
 		$userSelect .= "</select>";
 		return $userSelect;
