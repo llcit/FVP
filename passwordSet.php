@@ -10,23 +10,27 @@
    </head>
    <body>
       <?php
-         include "./inc/db.php";
+         include "./inc/db_pdo.php";
          $userMsg = '';
          if (isset($_POST['password']) || $_POST['reset_link_token'] || $_POST['email']) {
             $emailId  = $_POST['email'];
             $token    = $_POST['reset_link_token'];
             $password=password_hash($_POST['password'], PASSWORD_DEFAULT);
-            $query    = mysqli_query($dbcnx, "SELECT * FROM `users` WHERE `reset_link_token`='" . $token . "' and `email`='" . $emailId . "'");
-
-            $row = mysqli_num_rows($query);
-            if ($row) {
-              mysqli_query($dbcnx, "UPDATE users set  password='" . $password . "', reset_link_token='" . NULL . "' ,exp_date='" . NULL . "' WHERE email='" . $emailId . "'");
-              $userMsg = '<p>Congratulations! Your password has been updated successfully.</p>';
-              $msgClass = "success";
-              $returnToLogin = "<a class ='pull-right loginLink' href='login.php'>Return to Login</a>";
+            $userExists = getExistingUser($token,$emailId);
+            if ($userExists) {
+               $success = updatePassword($password,$emailId); 
+               if ($success) {  
+                  $userMsg = "<p>Congratulations! Your password has been updated successfully.</p>";
+                  $msgClass = "success";
+                  $returnToLogin = "<a class ='pull-right loginLink' href='login.php'>Return to Login</a>";
+               }
+               else {
+                 $userMsg = "<p>There was a problem updating your password. Please try again.</p>"; 
+                 $msgClass = "error";
+               }
             } 
             else {
-              $userMsg =  "<p>Something has gone wrong. Please try again</p>";
+              $userMsg =  "<p>Cannot locate this user. Please try again</p>";
               $msgClass = " error";
             }
          }

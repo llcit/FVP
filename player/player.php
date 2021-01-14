@@ -3,7 +3,7 @@
 <head>
 	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 	<meta charset="UTF-8">
-	<title>Flagship Video Demo</title>
+	<title>Flagship Video Player</title>
 	<!-- Dependencies -->
 
 	<script src="../ableplayer/thirdparty/modernizr.custom.js"></script>

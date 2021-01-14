@@ -1,18 +1,6 @@
 /*! ableplayer V3.1.00 */
 
-.audioDescription {
-	width:95%;
-    background-color: #EEE;
-    border: thin solid #336;
-    border-radius: 5px;
-    -moz-border-radius: 5px
-    font-style: italic;
-	font-size:14px;
-    padding: 0px 10px 15px 10px;
-	margin-left:25px;	
-	text-align:left;
-    display:none;
-}
+
 div.descriptor {
     background-color: #fff;
     border: thin solid #000;

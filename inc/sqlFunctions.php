@@ -169,6 +169,7 @@ function getUserEvents($user_id) {
         JOIN `events` e ON e.`program_id` = prog.`id` 
         LEFT JOIN `presentations` pres on pres.`user_id`=a.`user_id`
         WHERE a.`user_id` = '$user_id'
+        GROUP BY e.`id`;
         ";
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
@@ -253,6 +254,34 @@ function updatePresentationStatus($videoId,$status) {
     try { 
         $sql = "UPDATE presentations SET `$status` = 1 WHERE `id`=$videoId";
         $stmt= $pdo->prepare($sql)->execute();  
+    }catch (Exception $e) {
+      echo json_encode(array("error" => "$e"));
+    }
+}
+function getExistingUser($token,$emailId) {
+    global $pdo;
+    try { 
+        $sql = "
+           SELECT * FROM `users` 
+           WHERE `reset_link_token`='" . $token . "' and `email`='" . $emailId . "'
+        ";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        if ($stmt->fetchObject()) {
+            return $stmt->fetchObject();
+        }
+        else {
+            return false;
+        } 
+    }catch (Exception $e) {
+      echo json_encode(array("error" => "$e"));
+    }
+}
+function updatePassword($password,$emailId) {
+    global $pdo; 
+    try { 
+    $sql = "UPDATE users set  password='" . $password . "', reset_link_token='" . NULL . "' ,exp_date='" . NULL . "' WHERE email='" . $emailId . "'";
+    $stmt= $pdo->prepare($sql)->execute();  
     }catch (Exception $e) {
       echo json_encode(array("error" => "$e"));
     }

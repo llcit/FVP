@@ -4,7 +4,6 @@
     function translateVTTFile($pid) {
         $SETTINGS = parse_ini_file(__DIR__."/../../inc/settings.ini");
         $clientPrivateKey = $SETTINGS['AWS_CLIENT_SECRET_KEY'];
-        $serverPublicKey = $SETTINGS['AWS_SERVER_PUBLIC_KEY'];
         $serverPrivateKey = $SETTINGS['AWS_SERVER_PRIVATE_KEY'];
         $expectedBucketName = $SETTINGS['S3_BUCKET_NAME'];
         $type = 'transcript';
