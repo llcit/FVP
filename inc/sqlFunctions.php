@@ -260,6 +260,7 @@ function updatePresentationStatus($videoId,$status) {
 }
 function getExistingUser($emailId,$token=null) {
     global $pdo;
+    $tokenString = '';
     try { 
         if ($token) {
             $tokenString = "and `reset_link_token`='" . $token . "'";
@@ -289,7 +290,3 @@ function updatePassword($password,$emailId,$token=null,$expDate=null) {
       echo json_encode(array("error" => "$e"));
     }
 }
-
-$update = mysqli_query($dbcnx,"UPDATE users set  password='" . $password . "',  WHERE email='" . $emailId . "'");
-
-
