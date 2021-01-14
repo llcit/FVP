@@ -37,12 +37,12 @@
             }
          }
          else if($_GET['email'] && $_GET['token']) {
-            $email = $_GET['email'];
+            $emailId = $_GET['email'];
             $token = $_GET['token'];
             $userExists = getExistingUser($emailId,$token);
             $curDate = date("Y-m-d H:i:s");
             if ($userExists) {
-               if($row['exp_date'] >= $curDate){ 
+               if($userExists->exp_date >= $curDate){ 
                   $pageContent = "
                      <form action='' method='post'>
                         <input type='hidden' name='email' value='$email'>
