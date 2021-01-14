@@ -45,7 +45,7 @@
                if($userExists->exp_date >= $curDate){ 
                   $pageContent = "
                      <form action='' method='post'>
-                        <input type='hidden' name='email' value='$email'>
+                        <input type='hidden' name='email' value='$emailId'>
                         <input type='hidden' name='reset_link_token' value='$token'>
                         <div class='form-group'>
                            <label>Password</label>
