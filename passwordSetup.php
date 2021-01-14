@@ -6,6 +6,7 @@
         use PHPMailer\PHPMailer\PHPMailer;
         use PHPMailer\PHPMailer\Exception;
         include "./inc/db_pdo.php";
+        include "./inc/sqlFunctions.php";
         $userMsg = '';
         if (isset($_POST['password-reset']) && $_POST['email']) {
           $emailId = $_POST['email'];
