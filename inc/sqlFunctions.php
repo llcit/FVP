@@ -263,11 +263,11 @@ function getExistingUser($emailId,$token=null) {
     $tokenString = '';
     try { 
         if ($token) {
-            $tokenString = "and `reset_link_token`='" . $token . "'";
+            $tokenString = " and `reset_link_token`='$token'";
         }
         $sql = "
-           SELECT * FROM `users` 
-           WHERE `email`='" . $emailId . " $tokenString'
+           SELECT * FROM `users`
+           WHERE `email`='$emailId' $tokenString
         ";
         $stmt = $pdo->prepare($sql);
         $stmt->execute();

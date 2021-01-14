@@ -10,7 +10,9 @@
    </head>
    <body>
       <?php
+         include "./inc/dump.php";
          include "./inc/db_pdo.php";
+         include "./inc/sqlFunctions.php";
          $userMsg = '';
          if (isset($_POST['password']) || $_POST['reset_link_token'] || $_POST['email']) {
             $emailId  = $_POST['email'];
@@ -34,13 +36,12 @@
               $msgClass = " error";
             }
          }
-         else if($_GET['key'] && $_GET['token']) {
-            $email = $_GET['key'];
+         else if($_GET['email'] && $_GET['token']) {
+            $email = $_GET['email'];
             $token = $_GET['token'];
             $userExists = getExistingUser($emailId,$token);
             $curDate = date("Y-m-d H:i:s");
             if ($userExists) {
-               dump($userExists);
                if($row['exp_date'] >= $curDate){ 
                   $pageContent = "
                      <form action='' method='post'>

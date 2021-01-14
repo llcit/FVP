@@ -20,7 +20,7 @@
             $SETTINGS = parse_ini_file(__DIR__."/inc/settings.ini");
             $expDate = date("Y-m-d H:i:s",$expFormat);
             $success = updatePassword($password,$emailId,$token,$expDate); 
-            $link = "<p>Click or copy & paste the link below to set your password.</p> <a href='".$SETTINGS['password_reset_base_url']."/passwordSet.php?key=".$emailId."&token=".$token."'>".$SETTINGS['password_reset_base_url']."/passwordSet.php?key=".$emailId."&token=".$token."</a>";
+            $link = "<p>Click or copy & paste the link below to set your password.</p> <a href='".$SETTINGS['password_reset_base_url']."/passwordSet.php?email=".$emailId."&token=".$token."'>".$SETTINGS['password_reset_base_url']."/passwordSet.php?email=".$emailId."&token=".$token."</a>";
 
 
             $mailer = new PHPMailer();
