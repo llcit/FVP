@@ -2,11 +2,12 @@
 <html lang="en">
     <head>
       <?php
+        require 'vendor/autoload.php';
         use PHPMailer\PHPMailer\PHPMailer;
         use PHPMailer\PHPMailer\Exception;
+        include "./inc/db_pdo.php";
         $userMsg = '';
         if (isset($_POST['password-reset']) && $_POST['email']) {
-          include "./inc/db_pdo.php";
           $emailId = $_POST['email'];
           $userExists = getExistingUser($emailId,null);
           if($userExists){
@@ -19,7 +20,6 @@
             $success = updatePassword($password,$emailId,$token,$expDate); 
             $link = "<p>Click or copy & paste the link below to set your password.</p> <a href='".$SETTINGS['password_reset_base_url']."/passwordSet.php?key=".$emailId."&token=".$token."'>".$SETTINGS['password_reset_base_url']."/passwordSet.php?key=".$emailId."&token=".$token."</a>";
 
-            require 'vendor/autoload.php';
 
             $mailer = new PHPMailer();
             $recipient = $_POST['email'];
