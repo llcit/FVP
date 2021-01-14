@@ -16,9 +16,9 @@
             $emailId  = $_POST['email'];
             $token    = $_POST['reset_link_token'];
             $password=password_hash($_POST['password'], PASSWORD_DEFAULT);
-            $userExists = getExistingUser($token,$emailId);
+            $userExists = getExistingUser($emailId,$token);
             if ($userExists) {
-               $success = updatePassword($password,$emailId); 
+               $success = updatePassword($password,$emailId,null,null); 
                if ($success) {  
                   $userMsg = "<p>Congratulations! Your password has been updated successfully.</p>";
                   $msgClass = "success";
@@ -37,12 +37,10 @@
          else if($_GET['key'] && $_GET['token']) {
             $email = $_GET['key'];
             $token = $_GET['token'];
-            $query = mysqli_query($dbcnx,
-            "SELECT * FROM `FVP`.`users` WHERE `reset_link_token`='".$token."' and `email`='".$email."';"
-            );
+            $userExists = getExistingUser($emailId,$token);
             $curDate = date("Y-m-d H:i:s");
-            if (mysqli_num_rows($query) > 0) {
-               $row= mysqli_fetch_array($query);
+            if ($userExists) {
+               dump($userExists);
                if($row['exp_date'] >= $curDate){ 
                   $pageContent = "
                      <form action='' method='post'>

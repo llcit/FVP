@@ -258,12 +258,15 @@ function updatePresentationStatus($videoId,$status) {
       echo json_encode(array("error" => "$e"));
     }
 }
-function getExistingUser($token,$emailId) {
+function getExistingUser($emailId,$token=null) {
     global $pdo;
     try { 
+        if ($token) {
+            $tokenString = "and `reset_link_token`='" . $token . "'";
+        }
         $sql = "
            SELECT * FROM `users` 
-           WHERE `reset_link_token`='" . $token . "' and `email`='" . $emailId . "'
+           WHERE `email`='" . $emailId . " $tokenString'
         ";
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
@@ -277,13 +280,16 @@ function getExistingUser($token,$emailId) {
       echo json_encode(array("error" => "$e"));
     }
 }
-function updatePassword($password,$emailId) {
+function updatePassword($password,$emailId,$token=null,$expDate=null) {
     global $pdo; 
     try { 
-    $sql = "UPDATE users set  password='" . $password . "', reset_link_token='" . NULL . "' ,exp_date='" . NULL . "' WHERE email='" . $emailId . "'";
+    $sql = "UPDATE users set  password='" . $password . "', reset_link_token='" . $token . "' ,exp_date='" . $expDate . "' WHERE email='" . $emailId . "'";
     $stmt= $pdo->prepare($sql)->execute();  
     }catch (Exception $e) {
       echo json_encode(array("error" => "$e"));
     }
 }
+
+$update = mysqli_query($dbcnx,"UPDATE users set  password='" . $password . "',  WHERE email='" . $emailId . "'");
+
 

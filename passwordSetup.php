@@ -6,19 +6,17 @@
         use PHPMailer\PHPMailer\Exception;
         $userMsg = '';
         if (isset($_POST['password-reset']) && $_POST['email']) {
-          include "./inc/db.php";
+          include "./inc/db_pdo.php";
           $emailId = $_POST['email'];
-          $result = mysqli_query($dbcnx,"SELECT * FROM users WHERE email='" . $emailId . "'");
-          $row= mysqli_fetch_array($result);
-          if($row){
+          $userExists = getExistingUser($emailId,null);
+          if($userExists){
              $token = md5($emailId).rand(10,9999);
              $expFormat = mktime(
              date("H"), date("i"), date("s"), date("m") ,date("d")+1, date("Y")
              );
             $SETTINGS = parse_ini_file(__DIR__."/inc/settings.ini");
             $expDate = date("Y-m-d H:i:s",$expFormat);
-            $update = mysqli_query($dbcnx,"UPDATE users set  password='" . $password . "', reset_link_token='" . $token . "' ,exp_date='" . $expDate . "' WHERE email='" . $emailId . "'");
-
+            $success = updatePassword($password,$emailId,$token,$expDate); 
             $link = "<p>Click or copy & paste the link below to set your password.</p> <a href='".$SETTINGS['password_reset_base_url']."/passwordSet.php?key=".$emailId."&token=".$token."'>".$SETTINGS['password_reset_base_url']."/passwordSet.php?key=".$emailId."&token=".$token."</a>";
 
             require 'vendor/autoload.php';
