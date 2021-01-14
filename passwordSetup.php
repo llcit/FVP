@@ -5,6 +5,7 @@
         require 'vendor/autoload.php';
         use PHPMailer\PHPMailer\PHPMailer;
         use PHPMailer\PHPMailer\Exception;
+        include "./inc/dump.php";
         include "./inc/db_pdo.php";
         include "./inc/sqlFunctions.php";
         $userMsg = '';

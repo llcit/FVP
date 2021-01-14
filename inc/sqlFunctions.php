@@ -271,12 +271,7 @@ function getExistingUser($emailId,$token=null) {
         ";
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
-        if ($stmt->fetchObject()) {
-            return $stmt->fetchObject();
-        }
-        else {
-            return false;
-        } 
+        return $stmt->fetchObject();
     }catch (Exception $e) {
       echo json_encode(array("error" => "$e"));
     }
