@@ -776,7 +776,7 @@ div.able-chapters-div button::-moz-focus-inner {
     padding-left: 5%;
     padding-right: 5%;
     -background-color: #FFF;
-    background: repeating-linear-gradient(#000, #000 1px, #fff 1px, #fff 30px);
+    -background: repeating-linear-gradient(#000, #000 1px, #fff 1px, #fff 30px);
     height: 369px;
 }
 
