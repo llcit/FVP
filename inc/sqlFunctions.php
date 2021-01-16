@@ -280,7 +280,8 @@ function updatePassword($password,$emailId,$token=null,$expDate=null) {
     global $pdo; 
     try { 
     $sql = "UPDATE users set  password='" . $password . "', reset_link_token='" . $token . "' ,exp_date='" . $expDate . "' WHERE email='" . $emailId . "'";
-    $stmt= $pdo->prepare($sql)->execute();  
+    $stmt= $pdo->prepare($sql)->execute(); 
+    return true; 
     }catch (Exception $e) {
       echo json_encode(array("error" => "$e"));
     }

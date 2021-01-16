@@ -1,6 +1,6 @@
 function generateFile(type,id,ext,language) {
   var signed;
-  var url = "../inc/S3LinkGen.php?type=" + type + "&id=" + id + "&ext=" + ext;
+  var url = base_url + "/inc/S3LinkGen.php?type=" + type + "&id=" + id + "&ext=" + ext;
   console.log(url);
   var response = $.ajax({
     url: url,

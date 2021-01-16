@@ -14,6 +14,11 @@
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+	<script>
+    // set for S3FileGen
+    var base_url = '<?php echo($SETTINGS['base_url']); ?>';
+  </script>
+
 	<script src='../js/S3FileGen.js'></script>
 	<!-- Able Player CSS -->
 	<link rel="stylesheet" href="../ableplayer/build/ableplayer.css" type="text/css"/>

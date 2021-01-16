@@ -56,8 +56,6 @@
         <a href='../index.php'>Retun to Home</a>
     ";
   }
-
-
 	function buildPullDowns($filters){
 		$fullList = [
 			'programs' => getUniqueVals('programs','name'),
@@ -137,6 +135,8 @@
     		playVideo($(this).attr('id'),true);
     	});
     });
+    // set for S3FileGen
+    var base_url = '<?php echo($SETTINGS['base_url']); ?>';
   });
 </script>
 <script src='../js/S3FileGen.js'></script>

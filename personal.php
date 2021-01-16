@@ -50,8 +50,6 @@
       <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
       <link rel="stylesheet" href="./css/archive.css" type="text/css"/>
-      <script src='./js/S3FileGen.js'></script>
-      <script src='./js/main.js'></script>
       <script>
         $( document ).ready(function() {
           $('.videoPanel').each(function() {
@@ -60,7 +58,11 @@
             });
           });
         });
+        // set for S3FileGen
+        var base_url = '<?php echo($SETTINGS['base_url']); ?>';
       </script>
+      <script src='./js/S3FileGen.js'></script>
+      <script src='./js/main.js'></script>
     </head>
     <body>
       <div class="panel panel-default">
