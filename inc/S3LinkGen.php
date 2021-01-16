@@ -11,8 +11,15 @@ $type = $_GET['type'];
 $id = $_GET['id'];
 $ext = $_GET['ext'];
 $key =  $type . "s/".$id."." . $ext;
+$client = getS3Client();
 $link = getTempLink($expectedBucketName, $key);
-echo($link);  
+if ($type == 'transcript' || $type == 'translation') {
+    $content = outputContents($link);
+    echo($content);
+}
+else {
+    echo($link);  
+}
 
 function getS3Client() {
     global $clientPrivateKey, $serverPrivateKey;
@@ -22,7 +29,7 @@ function getS3Client() {
     ));
 }
 function getTempLink($bucket, $key) {
-    $client = getS3Client();
+    global $client;
     if (!$client) return null;
     try {
         $url = "{$bucket}/{$key}";
@@ -32,4 +39,16 @@ function getTempLink($bucket, $key) {
         $tmpLink = new Exception($e->getMessage());
     }
     return $tmpLink;
+}
+function outputContents($tmpLink) {
+    global $client;
+    $client->registerStreamWrapper();
+    $contents = '';
+    if ($stream = fopen("$tmpLink", 'r')) {
+        while (!feof($stream)) {
+            $contents .= fread($stream, 1024);
+        }
+        fclose($stream);
+    }
+    return $contents;
 }

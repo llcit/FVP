@@ -33,7 +33,8 @@ function generateFile(type,id,ext,language) {
         label = language;
       }
       var la = label.substr(0,2).toLowerCase();
-      $("#video1").append("<track kind='captions' src='"+signedUrl+"' srclang='"+la+"' label='"+label+"'/>");
+      $("#video1").append("<track kind='captions' src='"+ base_url + "/inc/S3LinkGen.php?type=" + type + "&id=" + id + "&ext=" + ext
+        + "' srclang='"+la+"' label='"+label+"'/>");
 
     }
   }
