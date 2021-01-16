@@ -13,6 +13,7 @@ $ext = $_GET['ext'];
 $key =  $type . "s/".$id."." . $ext;
 $client = getS3Client();
 $link = getTempLink($expectedBucketName, $key);
+// avoid CORS issues with captions
 if ($type == 'transcript' || $type == 'translation') {
     $content = outputContents($link);
     echo($content);
