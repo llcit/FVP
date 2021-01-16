@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<?php
+	  include "../inc/db_pdo.php";
+    include "../inc/dump.php";
+    include "../inc/sqlFunctions.php";
+		$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
+	?>
 	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 	<meta charset="UTF-8">
 	<title>Flagship Video Player</title>
@@ -25,10 +31,6 @@
 	<link rel="stylesheet" href="../css/main.css" type="text/css"/>
 
 	<?php
-	  include "../inc/db_pdo.php";
-    include "../inc/dump.php";
-    include "../inc/sqlFunctions.php";
-		$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
 		session_start();
 		$user = getUser($pdo,$_SESSION['username']);
 		$videoId = ($_GET['v']) ? $_GET['v'] : 86;
