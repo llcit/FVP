@@ -170,15 +170,7 @@
 		}
 		var annotations = '<?php echo($presentationData[0]['annotations']); ?>';
 		var videoFile = generateFile('video','<?php echo($_GET['v']); ?>','<?php echo($presentationData[0]['extension']); ?>','');
-		var showTranscriptArea = false;
-		if (hasTranscript == 1) {
-			var transcriptFile = generateFile('transcript','<?php echo($_GET['v']); ?>','vtt','<?php echo($presentationData[0]['language']); ?>');
-			showTranscriptArea = true;
-		}
-		if (hasTranslation == 1) {
-			var translationFile = generateFile('translation','<?php echo($_GET['v']); ?>','vtt','<?php echo($presentationData[0]['language']); ?>');
-			showTranscriptArea = true;
-		}
+		var showTranscriptArea = (hasTranscript == 1 || hasTranslation == 1) ? true : false;
 		// center the player
 		if (!showTranscriptArea) {
 			$('#player').css('float','none');
@@ -238,9 +230,12 @@
 		  <div id="player">
 			  <video id="video1" preload="auto" width="480" height="360" poster="../ableplayer/media/wwa.jpg" data-able-player data-transcript-div="transcript" playsinline <?php echo("$editCaptionTag"); ?> >
 					<?php
-						// put empty placeholder in for ableplayer onready function
-						if ($presentationData[0]['transcript_raw'] || $presentationData[0]['translation_raw']) {
-							echo("<track kind='captions' src='' srclang='' label=''/>");
+						// content for files generated in ableplayer.js:: loadTextTracks()
+						if ($presentationData[0]['transcript_raw']) {
+							echo("<track kind='captions' src='".$SETTINGS['base_url']. "/inc/S3LinkGen.php?type=transcript&id=".$_GET['v']."&ext=vtt' srclang='".$languages[$presentationData[0]['language']]."' label='".$presentationData[0]['language']."'/>");
+						} 
+						if ($presentationData[0]['translation_raw']) {
+							echo("<track kind='captions' src='".$SETTINGS['base_url']. "/inc/S3LinkGen.php?type=transcript&id=".$_GET['v']."&ext=vtt' srclang='en' label='English'/>");
 						}
 						if ($presentationData[0]['annotations'] != '') {
 							echo("$descriptionTracks");

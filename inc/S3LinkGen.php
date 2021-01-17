@@ -16,6 +16,7 @@ $link = getTempLink($expectedBucketName, $key);
 // avoid CORS issues with captions
 if ($type == 'transcript' || $type == 'translation') {
     $content = outputContents($link);
+    header("Content-Type:text/vtt;charset=utf-8");
     echo($content);
 }
 else {

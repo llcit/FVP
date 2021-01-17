@@ -27,19 +27,5 @@ function generateFile(type,id,ext,language) {
     else if (type == 'thumb') {
       $("#thumb_" + id).append("<img src = '"+signedUrl+"' class='thumb'>");
     }
-    else {
-      var label;
-      if (type == 'translation') {
-        label = 'English';
-      }
-      else if (type == 'transcript') {
-        label = language;
-      }
-      var la = label.substr(0,2).toLowerCase();
-      console.log("Add:",type);
-      $("#video1").append("<track kind='captions' src='"+ base_url + "/inc/S3LinkGen.php?type=" + type + "&id=" + id + "&ext=" + ext
-        + "' srclang='"+la+"' label='"+label+"'/>");
-
-    }
   }
 }
