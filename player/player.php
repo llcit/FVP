@@ -235,7 +235,7 @@
 							echo("<track kind='captions' src='".$SETTINGS['base_url']. "/inc/S3LinkGen.php?type=transcript&id=".$_GET['v']."&ext=vtt' srclang='".$languages[$presentationData[0]['language']]."' label='".$presentationData[0]['language']."'/>");
 						} 
 						if ($presentationData[0]['translation_raw']) {
-							echo("<track kind='captions' src='".$SETTINGS['base_url']. "/inc/S3LinkGen.php?type=transcript&id=".$_GET['v']."&ext=vtt' srclang='en' label='English'/>");
+							echo("<track kind='captions' src='".$SETTINGS['base_url']. "/inc/S3LinkGen.php?type=translation&id=".$_GET['v']."&ext=vtt' srclang='en' label='English'/>");
 						}
 						if ($presentationData[0]['annotations'] != '') {
 							echo("$descriptionTracks");
