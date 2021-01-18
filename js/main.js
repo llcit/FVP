@@ -1,8 +1,11 @@
+	var doDelete = false;
 	function playVideo(element_id,embedded) {
-		var id_parts = element_id.match(/(.+)\_(.+)/);
-	  var video_id = id_parts[2];
-	  var backTick = (embedded) ? '..' : '.';
-		window.location = backTick + "/player/index.php?v="+video_id ;
+		if (!doDelete) {
+			var id_parts = element_id.match(/(.+)\_(.+)/);
+		  var video_id = id_parts[2];
+		  var backTick = (embedded) ? '..' : '.';
+			window.location = backTick + "/player/index.php?v="+video_id ;
+		}
 	}
 	function writeDetails(data_str) {
 		var data = $.parseJSON(data_str);
@@ -19,6 +22,7 @@
 		$('.modal-title').append(details.join(''));
 	}
 	function deleteVideo(id) {
+		doDelete = true;
 		if (confirm("Are you sure you want to delete this video?")) {
 		  $('#deleteVideo').val(id);
 		  $("#deleteForm").submit();
