@@ -56,9 +56,57 @@
 	}
 
 	function buildVideoRow($video) {
+		global $user;
+		$hasTranscript = '';
+		$hasTranslation = '';
+		$languageLabel = strtoupper(substr($video['language'],0,2));
+		if ($video['transcript_final']) {
+			$hasTranscript = "<i class='fas fa-closed-captioning'></i> $languageLabel";
+		}
+		else if ($video['transcript_raw']) {
+			$hasTranscript = "<i class='far fa-closed-captioning'></i> $languageLabel";
+		}
+		if ($video['translation_final']) {
+			$hasTranslation = "<i class='fas fa-closed-captioning'></i> EN";
+		}
+		else if ($video['translation_raw']) {
+			$hasTranslation = "<i class='far fa-closed-captioning'></i> EN";
+		}
+		$allowDelete = false;
+		if (
+				 (
+				 $user->role == 'admin' || 
+				 $user->role == 'staff' || 
+				 $user->id == $video['user_id']
+				 ) &&
+				 (
+					$video['translation_final'] != 1 &&
+					$video['transcript_final'] != 1
+				 ) 
+				){
+					$allowDelete = true;
+				}
+		
+		if ($allowDelete) {
+			$deleteButton = "
+											<a href='javascript:deleteVideo(".$video['id'].")'>
+												<i class='fas fa-times-circle deleteButton pull-right'></i>
+											</a>
+			";
+		}
+		else {
+			$deleteButton = "&nbsp;";
+		}
+		$duration = gmdate("i:s", $video['duration']);
 		$row = "
 							<div class='videoPanel col-sm-4' id='videoPanel_".$video['id']."' name='videoPanel_".$video['id']."'>
-								<table>
+								<table border=0 cellpadding=0 cellspacing=0 width=100%>
+									<tr>
+										<td colspan=2>
+											<p class='studentName'>".$video['first_name']." ".$video['last_name']."</p>
+											$deleteButton
+										</td>
+									</tr>
 									<tr>
 										<td>
 											<div class = 'thumbWrapper' id = 'thumb_".$video['id']."'>
@@ -66,7 +114,6 @@
 										</td>
 										<td>
 											<div class = 'videoDetails'>
-											<p class='studentName'>".$video['first_name']." ".$video['last_name']."</p>
 											<p class='details'>".$video['progYrs']."</p>
 											<p class='details'>".$video['city'].", ".$video['country']."</p>
 											<p class='details'>".$video['type']."</p>
@@ -74,6 +121,19 @@
 											</div>
 											<input type=hidden id='videoData_".$video['id']."' name='videoData_".$video['id']."'
 											value='".json_encode($video)."'>
+										</td>
+									</tr>
+									<tr>
+										<td colspan=2>
+											<span class='extras'>
+												$hasTranscript
+											</span>
+											<span class='extras'>
+												$hasTranslation
+											</span>
+											<span class='extras pull-right' style='padding-top:3px;'>
+												$duration
+											</span>
 										</td>
 									</tr>
 								</table>

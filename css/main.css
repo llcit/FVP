@@ -349,5 +349,95 @@
     .eventListItem {
         padding:15px;
     }
+    .thumbWrapper{
+        border:solid 1px #000;
+        display: table;
+        white-space: nowrap;
+    }
+    .extras {
+        font-size:11px;
+    }
+    div.able-descriptions {
+        display: none !important;
+    }
+
+    div.videoPanel {
+      width:30%;
+      border: solid 1px #000;
+      border-radius:3px;
+      padding:0px 10px 0px 10px;
+      display:block;
+      margin:3px;
+      min-width:215px;
+    }
+    div.videoPanel:hover{
+      background-color: #CAF5D1;
+    }
+    img.thumb {
+        width:100px;
+    }
+    .btn  {
+        padding: 1px 2px!important;
+        font-size:12px!important;
+    }
+    .dropdown-menu>li>a {
+    padding: 1px 2px!important;
+    font-size:14px!important;
+    }
+    
+    .empty {
+        margin-top:50px;
+        font-size:18px;
+        font-weight:bold;
+        border:solid 1px #000;
+        border-radius:3px;
+        padding:25px;
+        text-align:center;
+    }
+    .modal-title {
+        width:75%;
+        list-style-type: none;
+        border:solid 1px #000;
+        border-radius:3px;
+        padding-bottom:10px;
+    }
+    .modal-title > :first-child {
+    font-size:18px;
+    font-weight:bold;
+    padding-bottom:10px;
+    }
+    .modal-title > :not(:first-child) {
+    font-size:12px;
+    margin-left: 20px;
+    line-height: 120%;
+    }
+    div.videoDetails {
+      font-size:12px;
+      padding-left:15px;
+      line-height: 95%;
+    }
+    div.videoListWrapper {
+        max-width:900px;
+        -border: solid 1px #000;
+    }
+    p.studentName {
+        font-weight:bold;
+        padding:0px 0px 5px 0px;
+        margin:0px;
+        display:inline;
+    }
+    p.details {
+        font-size:11px;
+        padding:0px 0px 0px 3px;
+        margin:0px;
+    }
+    .deleteButton {
+        color:#B2513C;
+        padding-top:3px;
+    }
+    .deleteButton:hover {
+        color:#911D03;
+    }
+    
 
 

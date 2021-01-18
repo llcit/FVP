@@ -18,3 +18,9 @@
 		$('.modal-title').empty();
 		$('.modal-title').append(details.join(''));
 	}
+	function deleteVideo(id) {
+		if (confirm("Are you sure you want to delete this video?")) {
+		  $('#deleteVideo').val(id);
+		  $("#deleteForm").submit();
+		} 
+	}

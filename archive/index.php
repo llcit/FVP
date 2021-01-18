@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
 <?php
-
 	include_once("../inc/dump.php");
 	include_once("../inc/db_pdo.php");
 	include_once("../inc/sqlFunctions.php");
@@ -10,6 +9,10 @@
 	include_once("../inc/htmlFunctions.php");
 	$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
 	session_start();
+	if ($_POST['deleteVideo'] > 0) {
+		include_once("../inc/S3DeleteObject.php");
+		deleteObject($_POST['deleteVideo']);
+	}
 	if (!isset($_SESSION['username'])) { 
     header('Location: ../login.php'); 
   } 
@@ -127,7 +130,6 @@
 
 <!-- Able Player CSS -->
 <link rel="stylesheet" href="../css/main.css" type="text/css"/>
-<link rel="stylesheet" href="../css/archive.css" type="text/css"/>
 <script>
 	$( document ).ready(function() {
     $('.videoPanel').each(function() {
@@ -136,8 +138,8 @@
     	});
     });
     // set for S3FileGen
-    var base_url = '<?php echo($SETTINGS['base_url']); ?>';
   });
+  var base_url = '<?php echo($SETTINGS['base_url']); ?>';
 </script>
 <script src='../js/S3FileGen.js'></script>
 <script src='../js/main.js'></script>
@@ -175,5 +177,8 @@
 	<div class="footer">
 	  <p> </p>
 	</div>
+	<form id='deleteForm' name='deleteForm' method='post'>
+		<input type='hidden' id='deleteVideo' name='deleteVideo' value='0'>
+	</form>
 </body>
 </html>

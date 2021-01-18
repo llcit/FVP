@@ -49,7 +49,6 @@
       <link rel="stylesheet" href="./css/main.css" type="text/css"/>
       <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-      <link rel="stylesheet" href="./css/archive.css" type="text/css"/>
       <script>
         $( document ).ready(function() {
           $('.videoPanel').each(function() {
@@ -99,5 +98,8 @@
           <p> </p>
         </div>
       </div>
+      <form id='deleteForm' name='deleteForm' method='post'>
+        <input type='hidden' id='deleteVideo' name='deleteVideo' value='0'>
+      </form>
     </body>
 </html>
