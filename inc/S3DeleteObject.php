@@ -11,7 +11,7 @@
 		try {
 			$video = 'videos/$id.mp4';
 			$videoResult = $client->deleteObject([
-				'Bucket' => $bucket,
+				'Bucket' => $expectedBucketName,
 				'Key'	=> $video
 			]);
 
@@ -27,7 +27,7 @@
 		try {
 			$thumb = 'thumbs/$id.jpg'; 
 			$thumbResult = $client->deleteObject([
-				'Bucket' => $bucket,
+				'Bucket' => $expectedBucketName,
 				'Key'	=> $thumb
 			]);
 
@@ -43,7 +43,7 @@
 		try {
 			$transcript = 'transcripts/$id.vtt'; 
 		$transcriptResult = $client->deleteObject([
-			'Bucket' => $bucket,
+			'Bucket' => $expectedBucketName,
 			'Key'	=> $transcript
 		]);
 
