@@ -1,9 +1,9 @@
 <?php
-	require '../upload/php-s3-server-master/vendor/autoload.php';
+	require './upload/php-s3-server-master/vendor/autoload.php';
 	use Aws\S3\S3Client;
 	use Aws\S3\Exception\S3Exception;
 	function deleteVideo($id) {
-		$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
+		$SETTINGS = parse_ini_file(__DIR__."/inc/settings.ini");
 		$clientPrivateKey = $SETTINGS['AWS_CLIENT_SECRET_KEY'];
 		$serverPrivateKey = $SETTINGS['AWS_SERVER_PRIVATE_KEY'];
 		$expectedBucketName = $SETTINGS['S3_BUCKET_NAME'];
