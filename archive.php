@@ -2,19 +2,19 @@
 <html lang="en">
 <head>
 <?php
-	include_once("../inc/dump.php");
-	include_once("../inc/db_pdo.php");
-	include_once("../inc/sqlFunctions.php");
-	include_once("../inc/htmlFunctions.php");
-	include_once("../inc/htmlFunctions.php");
-	$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
+	include_once("./inc/dump.php");
+	include_once("./inc/db_pdo.php");
+	include_once("./inc/sqlFunctions.php");
+	include_once("./inc/htmlFunctions.php");
+	include_once("./inc/htmlFunctions.php");
+	$SETTINGS = parse_ini_file(__DIR__."/./inc/settings.ini");
 	session_start();
 	if ($_POST['deleteVideo'] > 0) {
-		include_once("../inc/S3DeleteObject.php");
+		include_once("./inc/S3DeleteObject.php");
 		deleteObject($_POST['deleteVideo']);
 	}
 	if (!isset($_SESSION['username'])) { 
-    header('Location: ../login.php'); 
+    header('Location: ./login.php'); 
   } 
   $user = getUser($pdo,$_SESSION['username']);
   $navLinks = writeNavLinks($user->role,'header');
@@ -56,7 +56,7 @@
         Permission denied! You must be staff or admin to access this page.
       </div>
       <p style='width:100%;text-align:center;margin-top:30px;'>
-        <a href='../index.php'>Retun to Home</a>
+        <a href='./index.php'>Retun to Home</a>
     ";
   }
 	function buildPullDowns($filters){
@@ -119,9 +119,9 @@
 <title>Flagship Video Archive</title>
 
 <!-- Dependencies -->
-<script src="../ableplayer/thirdparty/modernizr.custom.js"></script>
+<script src="./ableplayer/thirdparty/modernizr.custom.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="../ableplayer/thirdparty/js.cookie.js"></script>
+<script src="./ableplayer/thirdparty/js.cookie.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
@@ -129,7 +129,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
 <!-- Able Player CSS -->
-<link rel="stylesheet" href="../css/main.css" type="text/css"/>
+<link rel="stylesheet" href="./css/main.css" type="text/css"/>
 <script>
 	$( document ).ready(function() {
     $('.videoPanel').each(function() {
@@ -141,18 +141,18 @@
   });
   var base_url = '<?php echo($SETTINGS['base_url']); ?>';
 </script>
-<script src='../js/S3FileGen.js'></script>
-<script src='../js/main.js'></script>
+<script src='./js/S3FileGen.js'></script>
+<script src='./js/main.js'></script>
 </head>
 
 <body>
 
 <div class="panel panel-default">
 	<div class="panel-heading fv_heading">
-		<img src='../img/logo_lf.png'>
+		<img src='./img/logo_lf.png'>
 		&nbsp;&nbsp;&nbsp;Flagship Video Archive 
 		<span class='pull-right'>
-			<img src='../img/logo_ac.png'>
+			<img src='./img/logo_ac.png'>
 		</span>
 	</div>
 	<div class='fv_subHeader'>
