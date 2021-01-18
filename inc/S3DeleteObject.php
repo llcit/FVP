@@ -10,7 +10,7 @@
 		$client = getS3Client($clientPrivateKey, $serverPrivateKey);
 		try {
 			$video = 'videos/$id.mp4';
-			$videoResult = $s3->deleteObject([
+			$videoResult = $client->deleteObject([
 				'Bucket' => $bucket,
 				'Key'	=> $video
 			]);
@@ -26,7 +26,7 @@
 		}
 		try {
 			$thumb = 'thumbs/$id.jpg'; 
-			$thumbResult = $s3->deleteObject([
+			$thumbResult = $client->deleteObject([
 				'Bucket' => $bucket,
 				'Key'	=> $thumb
 			]);
@@ -42,7 +42,7 @@
 		}		
 		try {
 			$transcript = 'transcripts/$id.vtt'; 
-		$transcriptResult = $s3->deleteObject([
+		$transcriptResult = $client->deleteObject([
 			'Bucket' => $bucket,
 			'Key'	=> $transcript
 		]);
