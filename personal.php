@@ -11,7 +11,7 @@
 				$subTitle = "Your Videos";
 				$titleText = "";
         if ($_POST['deleteVideo'] > 0) {
-          include_once("../inc/S3DeleteObject.php");
+          include_once("./inc/S3DeleteObject.php");
           deleteObject($_POST['deleteVideo']);
         }
 				session_start();
