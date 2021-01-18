@@ -10,6 +10,10 @@
 				$pageTitle = "Flagship Video Project";
 				$subTitle = "Your Videos";
 				$titleText = "";
+        if ($_POST['deleteVideo'] > 0) {
+          include_once("../inc/S3DeleteObject.php");
+          deleteObject($_POST['deleteVideo']);
+        }
 				session_start();
 				if (!isset($_SESSION['username'])) { 
 			    exit(header("location:./login.php"));

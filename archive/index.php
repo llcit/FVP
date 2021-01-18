@@ -134,9 +134,7 @@
 	$( document ).ready(function() {
     $('.videoPanel').each(function() {
     	$(this).click(function(){ 
-    		if (!deleteVideo) {
-    			playVideo($(this).attr('id'),true);
-    		}
+    		playVideo($(this).attr('id'),true);
     	});
     });
     // set for S3FileGen
