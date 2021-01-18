@@ -9,7 +9,7 @@
 		$expectedBucketName = $SETTINGS['S3_BUCKET_NAME'];
 		$client = getS3Client($clientPrivateKey, $serverPrivateKey);
 		try {
-			$video = 'videos/$id.mp4';
+			$video = "videos/$id.mp4";
 			$videoResult = $client->deleteObject([
 				'Bucket' => $expectedBucketName,
 				'Key'	=> $video
@@ -25,7 +25,7 @@
 			exit('Error: ' . $e->getAwsErrorMessage() . PHP_EOL);
 		}
 		try {
-			$thumb = 'thumbs/$id.jpg'; 
+			$thumb = "thumbs/$id.jpg"; 
 			$thumbResult = $client->deleteObject([
 				'Bucket' => $expectedBucketName,
 				'Key'	=> $thumb
@@ -41,7 +41,7 @@
 			exit('Error: ' . $e->getAwsErrorMessage() . PHP_EOL);
 		}		
 		try {
-			$transcript = 'transcripts/$id.vtt'; 
+			$transcript = "transcripts/$id.vtt"; 
 		$transcriptResult = $client->deleteObject([
 			'Bucket' => $expectedBucketName,
 			'Key'	=> $transcript
