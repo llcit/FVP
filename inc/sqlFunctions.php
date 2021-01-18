@@ -163,11 +163,10 @@ function getUserEvents($user_id) {
     global $pdo;
     $sql = "
         SELECT e.`id` AS `event_id`,prog.`id` AS `progId`, prog.`name` AS `progName`,prog.`progYrs`, 
-        e.`start_date`,e.`end_date`,e.`phase`,e.`city`,e.`country`,pres.`id` AS `presId`,pres.`type` AS `presType`
+        e.`start_date`,e.`end_date`,e.`phase`,e.`city`,e.`country`
         FROM `affiliations` a 
         JOIN `programs` prog ON prog.`id`=a.`program_id`
         JOIN `events` e ON e.`program_id` = prog.`id` 
-        LEFT JOIN `presentations` pres on pres.`user_id`=a.`user_id`
         WHERE a.`user_id` = '$user_id'
         GROUP BY e.`id`;
         ";
