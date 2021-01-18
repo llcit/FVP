@@ -3,7 +3,7 @@
 	use Aws\S3\S3Client;
 	use Aws\S3\Exception\S3Exception;
 	function deleteObject($id) {
-		$SETTINGS = parse_ini_file(__DIR__."/inc/settings.ini");
+		$SETTINGS = parse_ini_file(__DIR__."/settings.ini");
 		$clientPrivateKey = $SETTINGS['AWS_CLIENT_SECRET_KEY'];
 		$serverPrivateKey = $SETTINGS['AWS_SERVER_PRIVATE_KEY'];
 		$expectedBucketName = $SETTINGS['S3_BUCKET_NAME'];
