@@ -16,7 +16,7 @@
 			]);
 
 			if ($videoResult['DeleteMarker']){
-				echo $keyname . ' was deleted or does not exist.' . PHP_EOL;
+				echo $video . ' was deleted or does not exist.' . PHP_EOL;
 			} else {
 				exit('Error: ' . $video . ' was not deleted.' . PHP_EOL);
 			}
@@ -32,7 +32,7 @@
 			]);
 
 			if ($thumbResult['DeleteMarker']){
-				echo $keyname . ' was deleted or does not exist.' . PHP_EOL;
+				echo $thumb . ' was deleted or does not exist.' . PHP_EOL;
 			} else {
 				exit('Error: ' . $thumb . ' was not deleted.' . PHP_EOL);
 			}
@@ -48,7 +48,7 @@
 		]);
 
 		if ($transcriptResult['DeleteMarker']){
-			echo $keyname . ' was deleted or does not exist.' . PHP_EOL;
+			echo $transcript . ' was deleted or does not exist.' . PHP_EOL;
 		} else {
 			exit('Error: ' . $transcript . ' was not deleted.' . PHP_EOL);
 		}
