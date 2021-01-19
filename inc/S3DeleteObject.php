@@ -2,6 +2,9 @@
 	require './upload/php-s3-server-master/vendor/autoload.php';
 	use Aws\S3\S3Client;
 	use Aws\S3\Exception\S3Exception;
+	include "./inc/db_pdo.php";
+	include "./inc/dump.php";
+	include "./inc/sqlFunctions.php";
 	function deleteObject($id) {
 		$SETTINGS = parse_ini_file(__DIR__."/settings.ini");
 		$clientPrivateKey = $SETTINGS['AWS_CLIENT_SECRET_KEY'];
@@ -55,7 +58,8 @@
 		}
 		catch (S3Exception $e) {
 			exit('Error: ' . $e->getAwsErrorMessage() . PHP_EOL);
-		}		
+		}	
+		deleteObjectFromDB($id);	
 	}
 	function getS3Client($clientPrivateKey, $serverPrivateKey) {
 	return S3Client::factory(array(
@@ -63,4 +67,5 @@
 		'secret' => $clientPrivateKey
 	));
 }
+
 ?>

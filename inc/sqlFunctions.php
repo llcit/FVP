@@ -285,3 +285,16 @@ function updatePassword($password,$emailId,$token=null,$expDate=null) {
       echo json_encode(array("error" => "$e"));
     }
 }
+function deleteObjectFromDB($id) {
+    global $pdo;
+    try {
+        $sql = "
+            DELETE FROM `presentations` WHERE `id` = '$id';
+            ";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        return 'success';
+    } catch(PDOException $e) {
+        return $e->getMessage();
+    }  
+}
