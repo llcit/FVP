@@ -2,10 +2,10 @@
 <html lang="en">
     <head>
       <?php
-        include "./inc/db_pdo.php";
-        include "./inc/dump.php";
-        include "./inc/sqlFunctions.php";
-        include "./inc/htmlFunctions.php";
+        include_once("./inc/db_pdo.php");
+        include_once("./inc/dump.php");
+        include_once("./inc/sqlFunctions.php");
+        include_once("./inc/htmlFunctions.php");
         $SETTINGS = parse_ini_file(__DIR__."/inc/settings.ini");
 				$pageTitle = "Flagship Video Project";
 				$subTitle = "Your Videos";
