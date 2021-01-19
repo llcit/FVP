@@ -1,10 +1,7 @@
 <?php
 /* TO DO 12/20
 1. Finish FFMPeg progress
-2. Generate and upload thumb in ffmpeg 205x117
-3. Fix language and extension
-4. clean up tmp files
-5. Backfill durations
+2. Backfill durations
 */
     // blow open memory limit
     ini_set('memory_limit', '-1');
@@ -323,8 +320,6 @@
         else {
             $transcribeSuccess = transcribe_Google($audioFile,$language);
         }
-        
-        $ffprobe = FFMpeg\FFProbe::create();
         $ffprobe = FFMpeg\FFProbe::create();
         $duration =$ffprobe
             ->format($output_dir . $pid . "." . $audio_extension) // extracts file informations

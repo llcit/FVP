@@ -13,7 +13,7 @@ function generateFile(type,id,ext,language) {
              console.debug('error',error);
            }
   }).done(function(signedUrl) {
-    if (signedUrl.match(/https\:\/\/s3\.amazonaws\.com\//)) {
+     if (signedUrl.match(/s3\.amazonaws\.com\//)) {
       writeHTML(type,id,ext,signedUrl,language);
     }
     else {
