@@ -8,21 +8,17 @@ rip from xls
 4. Remove initial space		\r 0				-->		\r0
 5.         (\d*)\:(\d*)\-(\d*)\:(\d*)   --->  \r00:\1:\2.000 --> 00:\3:\4.999\r
 */
-require '../upload/php-s3-server-master/vendor/autoload.php';
-use Aws\S3\S3Client;
+	require '../upload/php-s3-server-master/vendor/autoload.php';
+	use Aws\S3\S3Client;
 
-$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
-$clientPrivateKey = $SETTINGS['AWS_CLIENT_SECRET_KEY'];
-$serverPrivateKey = $SETTINGS['AWS_SERVER_PRIVATE_KEY'];
-$expectedBucketName = $SETTINGS['S3_BUCKET_NAME']; 
-
-function getS3Client() {
-    global $clientPrivateKey, $serverPrivateKey;
-    return S3Client::factory(array(
-        'key' => $serverPrivateKey,
-        'secret' => $clientPrivateKey
-    ));
-}
+	$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
+	$expectedBucketName = $SETTINGS['S3_BUCKET_NAME']; 
+	$config = [
+	    'region' => 'us-east-1',
+	    'version' => 'latest'
+	];
+	$sdk = new Aws\Sdk($config);
+	$client = $sdk->createS3();
 	$client = getS3Client();
 	$client->registerStreamWrapper();
 	$id = $_GET['v'];
