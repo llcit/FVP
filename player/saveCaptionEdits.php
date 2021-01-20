@@ -24,11 +24,9 @@
     $sdk = new Aws\Sdk($config);
     $client = $sdk->createS3();
     try { 
-      $result = $client->getCommand('PutObject', array(
-              'Bucket' => $expectedBucketName,
-              'Key'    => "$key",
-              'Body'   => "$fileContent"
-      ));
+      $stream = fopen("s3://$expectedBucketName/$key", 'w');
+      fwrite($stream, $fileContent);
+      fclose($stream);
       return true;
     }catch (S3Exception $e) {
       echo $e->getMessage();
