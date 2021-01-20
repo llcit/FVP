@@ -1,6 +1,7 @@
 <?php
 	require '../upload/php-s3-server-master/vendor/autoload.php';
   use Aws\S3\S3Client;
+  use Aws\S3\Exception\S3Exception;
   $SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
   $expectedBucketName = $SETTINGS['S3_BUCKET_NAME'];
 
@@ -22,16 +23,16 @@
     ];
     $sdk = new Aws\Sdk($config);
     $client = $sdk->createS3();
-    $command = $client->getCommand('PutObject', array(
-            'Bucket' => $expectedBucketName,
-            'Key'    => "$key",
-            'Body'   => "$fileContent"
-    ));
-    $result = $command->getResult();
-    $response = $command->getResponse();
-    $code = $response->getStatusCode();
-    $success = ($code === 200) ? true : false ;
-    return $success;
+    try { 
+      $result = $client->getCommand('PutObject', array(
+              'Bucket' => $expectedBucketName,
+              'Key'    => "$key",
+              'Body'   => "$fileContent"
+      ));
+      return true;
+    }catch (S3Exception $e) {
+      echo $e->getMessage();
+    }
   }
   function time_format($rawTime) {
     if ($rawTime) {
