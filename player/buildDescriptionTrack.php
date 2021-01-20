@@ -10,7 +10,6 @@ rip from xls
 */
 	require '../upload/php-s3-server-master/vendor/autoload.php';
 	use Aws\S3\S3Client;
-
 	$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
 	$expectedBucketName = $SETTINGS['S3_BUCKET_NAME']; 
 	$config = [
@@ -19,7 +18,6 @@ rip from xls
 	];
 	$sdk = new Aws\Sdk($config);
 	$client = $sdk->createS3();
-	$client = getS3Client();
 	$client->registerStreamWrapper();
 	$id = $_GET['v'];
 	$type = 'annotation';
