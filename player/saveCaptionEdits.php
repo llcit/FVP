@@ -2,17 +2,8 @@
 	require '../upload/php-s3-server-master/vendor/autoload.php';
   use Aws\S3\S3Client;
   $SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
-  $clientPrivateKey = $SETTINGS['AWS_CLIENT_SECRET_KEY'];
-  $serverPrivateKey = $SETTINGS['AWS_SERVER_PRIVATE_KEY'];
   $expectedBucketName = $SETTINGS['S3_BUCKET_NAME'];
 
-  function getS3Client() {
-      global $clientPrivateKey, $serverPrivateKey;
-      return S3Client::factory(array(
-          'key' => $serverPrivateKey,
-          'secret' => $clientPrivateKey
-      ));
-  }
   function writeVTTFile($pid,$data,$language) {
     global $expectedBucketName;
     $fileContent = "WEBVTT\r\nKind: captions\r\nLanguage: ".$language."\r\n\r\n";
@@ -25,7 +16,12 @@
     }
     $captionType = ($language == 'en') ? 'translation' : 'transcript';
     $key = $captionType."s/".$pid.".vtt";
-    $client = getS3Client();
+    $config = [
+        'region' => 'us-east-1',
+        'version' => 'latest'
+    ];
+    $sdk = new Aws\Sdk($config);
+    $client = $sdk->createS3();
     $command = $client->getCommand('PutObject', array(
             'Bucket' => $expectedBucketName,
             'Key'    => "$key",
