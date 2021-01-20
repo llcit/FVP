@@ -23,11 +23,6 @@ if ($type == 'transcript' || $type == 'translation') {
     header("Content-Type:text/vtt;charset=utf-8");
     echo($content);
 }
-else if($type == 'video') {
-    $content = outputContents($link);
-    header("Content-Type:video/mp4");
-    echo($content);
-}
 else {
     echo($link);  
 }
