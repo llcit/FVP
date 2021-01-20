@@ -23,6 +23,7 @@
     ];
     $sdk = new Aws\Sdk($config);
     $client = $sdk->createS3();
+    $client->registerStreamWrapper();
     try { 
       $stream = fopen("s3://$expectedBucketName/$key", 'w');
       fwrite($stream, $fileContent);
