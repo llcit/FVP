@@ -93,7 +93,7 @@
 				if ($presentationData[0]['transcript_final'] == 1 && $presentationData[0]['translation_final'] != 1) {
 					$label = ($presentationData[0]['translation_raw'] == 1) ? 'Regenerate' : 'Generate';
 					$translateButton = "
-						<a style='display:inline;' class='btn btn-primary' href=\"javascript:translate();\">$label Translation</a>
+						<a class='btn btn-primary' href=\"javascript:translate();\">$label Translation</a>
 					";
 				}
 				$editControls = "
@@ -221,7 +221,7 @@
 	<script src="../ableplayer/build/ableplayer.js"></script>
 </head>
 	<body>
-		<div id='userMsg' name='userMsg' class='msg' style='display:none'></div>
+		<span id='userMsg' name='userMsg' class='msg' style='display:none;float:left;max-height:50px;'></span>
 		<form method='post' id='saveCaptionForm' name='saveCaptionForm'>
 			<input type='hidden' id='saveCaptions' name='saveCaptions' value = 0> 
 			<input type='hidden' id='captionData' name='captionData' value = ''>
