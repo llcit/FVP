@@ -69,7 +69,7 @@
 		}
 		else {
 			$descriptionTracks = "
-		    <track id='descriptionTrack' kind='descriptions' src='".$SETTINGS['base_url']."/buildDescriptionTrack.php?a=".$presentationData[0]['annotations']."&t=$includeTracks&v=$videoId' srclang='en'/> 
+		    <track id='descriptionTrack' kind='descriptions' src='".$SETTINGS['base_url']."/player/buildDescriptionTrack.php?a=".$presentationData[0]['annotations']."&t=$includeTracks&v=$videoId' srclang='en'/> 
 			";
 			$transcriptHeight = '400';
 		}
