@@ -357,10 +357,6 @@
     .extras {
         font-size:11px;
     }
-    div.able-descriptions {
-        display: none !important;
-    }
-
     div.videoPanel {
       width:30%;
       border: solid 1px #000;
@@ -375,10 +371,6 @@
     }
     img.thumb {
         width:100px;
-    }
-    .btn  {
-        padding: 1px 2px!important;
-        font-size:12px!important;
     }
     .dropdown-menu>li>a {
     padding: 1px 2px!important;
