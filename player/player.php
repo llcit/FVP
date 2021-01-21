@@ -135,7 +135,7 @@
 	  }
 
 	</style>
-
+	<script src='./js/main.js'></script>
 	<script>
 		var captionMode = '<?php echo($captionMode);?>';
 		var hasTranscript;
