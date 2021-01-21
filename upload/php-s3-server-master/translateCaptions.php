@@ -3,13 +3,16 @@
     use Aws\S3\S3Client;
     function translateVTTFile($pid) {
         $SETTINGS = parse_ini_file(__DIR__."/../../inc/settings.ini");
-        $clientPrivateKey = $SETTINGS['AWS_CLIENT_SECRET_KEY'];
-        $serverPrivateKey = $SETTINGS['AWS_SERVER_PRIVATE_KEY'];
         $expectedBucketName = $SETTINGS['S3_BUCKET_NAME'];
         $type = 'transcript';
         $ext = 'vtt';
         $key =  $type . "s/".$pid."." . $ext;
-        $client = getS3Client();
+        $config = [
+            'region' => 'us-east-1',
+            'version' => 'latest'
+        ];
+        $sdk = new Aws\Sdk($config);
+        $client = $sdk->createS3();
         $client->registerStreamWrapper();
         $transcriptContents = '';
         if ($stream = fopen("s3://$expectedBucketName/$key", 'r')) {
@@ -24,16 +27,15 @@
             $translatedContents .= $parsedCaptions[$i]['timeCodes'] . "\n";
             $translatedContents .= $parsedCaptions[$i]['translated_text']. "\n\n";
         }
-        $command = $client->getCommand('PutObject', array(
-                    'Bucket' => $expectedBucketName,
-                    'Key'    => "translations/$pid.vtt",
-                    'Body'   => "$translatedContents"
-            ));
-        $result = $command->getResult();
-        $response = $command->getResponse();
-        $code = $response->getStatusCode();
-        $success = ($code === 200) ? true : false ;
-        return $success;
+        try { 
+            $key = "translations/$pid.vtt";
+            $stream = fopen("s3://$expectedBucketName/$key", 'w');
+            fwrite($stream, $fileContent);
+            fclose($stream);
+        return true;
+        }catch (S3Exception $e) {
+            echo $e->getMessage();
+        }
     }
     function parseCaptions($transcriptContents){
         global $targetLanguage;
@@ -181,11 +183,4 @@
             $microseconds = '000';
             return gmdate("H:i:s", $seconds) . '.' . $microseconds;
         }
-    }
-    function getS3Client() {
-        global $clientPrivateKey, $serverPrivateKey;
-        return S3Client::factory(array(
-            'key' => $serverPrivateKey,
-            'secret' => $clientPrivateKey
-        ));
     }

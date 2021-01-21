@@ -24,7 +24,13 @@
 	function deleteVideo(id) {
 		doDelete = true;
 		if (confirm("Are you sure you want to delete this video?")) {
-		  $('#deleteVideo').val(id);
+		  $("#deleteVideo").val(id);
 		  $("#deleteForm").submit();
 		} 
+	}
+	function updateMessage() {
+		if($("#translateMsg")) {
+			$("#translateMsg").html("<p>Translation complete!</p>");
+			timerId=setTimeout($("#translateMsg").hide(),1500);
+		}
 	}
