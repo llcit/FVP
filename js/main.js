@@ -28,7 +28,7 @@
 		  $("#deleteForm").submit();
 		} 
 	}
-	function postMessage(msg) {
+	function displayMessage(msg) {
 		if($("#translateMsg")) {
 			$("#translateMsg").html("<p>"+msg+"</p>");
 			$("#translateMsg").show();
