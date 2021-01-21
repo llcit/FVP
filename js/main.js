@@ -29,8 +29,8 @@
 		} 
 	}
 	function displayMessage(msg) {
-		if($("#translateMsg")) {
-			$("#translateMsg").html("<p>"+msg+"</p>");
-			$("#translateMsg").show();
+		if($("#userMsg")) {
+			$("#userMsg").html("<p>"+msg+"</p>");
+			$("#userMsg").show();
 		}
 	}

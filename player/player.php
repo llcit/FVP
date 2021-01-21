@@ -135,7 +135,7 @@
 	  }
 
 	</style>
-	<script src='./js/main.js'></script>
+	<script src='../js/main.js'></script>
 	<script>
 		var captionMode = '<?php echo($captionMode);?>';
 		var hasTranscript;
@@ -221,7 +221,7 @@
 	<script src="../ableplayer/build/ableplayer.js"></script>
 </head>
 	<body>
-		<div id='userMsg' name='usrMsg' class='msg' style='display:none'></div>
+		<div id='userMsg' name='userMsg' class='msg' style='display:none'></div>
 		<form method='post' id='saveCaptionForm' name='saveCaptionForm'>
 			<input type='hidden' id='saveCaptions' name='saveCaptions' value = 0> 
 			<input type='hidden' id='captionData' name='captionData' value = ''>
