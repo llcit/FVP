@@ -8,7 +8,7 @@
 			['label'=>'Upload Video','href'=>$SETTINGS['base_url'].'/upload/','req'=>['student','staff','admin']],
 			['label'=>'Manage Events','href'=>$SETTINGS['base_url'].'/manage/','req'=>['staff','admin']],
 			['label'=>'Video Showcase','href'=>$SETTINGS['base_url'].'/player/index.php?sc=1'],
-			['label'=>'Video Archive','href'=>$SETTINGS['base_url'].'/archive/','req'=>['staff','admin']],
+			['label'=>'Video Archive','href'=>$SETTINGS['base_url'].'/archive.php','req'=>['staff','admin']],
 			['label'=>'About This Site','href'=>$SETTINGS['base_url'].'/about.php']
 	  ];
 	  if ($context == 'header') {
