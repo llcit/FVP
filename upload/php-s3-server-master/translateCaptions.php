@@ -30,7 +30,7 @@
         try { 
             $key = "translations/$pid.vtt";
             $stream = fopen("s3://$expectedBucketName/$key", 'w');
-            fwrite($stream, $fileContent);
+            fwrite($stream, $translatedContents);
             fclose($stream);
         return true;
         }catch (S3Exception $e) {

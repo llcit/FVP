@@ -53,14 +53,6 @@
 			$captionMode = $_GET['cm'];
 		}
 		if ($_POST['translateCaptions']) {
- 			echo("
-	          <div id='translateMsg' name='translateMsg' class='msg' style='margin:25px;'>
-              Generating translation... please wait.
-            </div>
-            <script language='javascript'>
-            	clearMessage();
-            </script>
-          ");
 			include "../upload/php-s3-server-master/translateCaptions.php";
 			translateVTTFile($videoId);
 			updatePresentationStatus($videoId,'translation_raw');
@@ -220,6 +212,7 @@
 			$('#saveCaptionForm').submit();
 		}		
 		function translate() {
+			displayMessage('Generating translation... please wait.');
 			$('#translateCaptions').val(1);
 			$('#saveCaptionForm').submit();
 		}
@@ -228,6 +221,7 @@
 	<script src="../ableplayer/build/ableplayer.js"></script>
 </head>
 	<body>
+		<div id='userMsg' name='usrMsg' class='msg' style='display:none'></div>
 		<form method='post' id='saveCaptionForm' name='saveCaptionForm'>
 			<input type='hidden' id='saveCaptions' name='saveCaptions' value = 0> 
 			<input type='hidden' id='captionData' name='captionData' value = ''>

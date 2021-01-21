@@ -28,9 +28,9 @@
 		  $("#deleteForm").submit();
 		} 
 	}
-	function updateMessage() {
+	function postMessage(msg) {
 		if($("#translateMsg")) {
-			$("#translateMsg").html("<p>Translation complete!</p>");
-			timerId=setTimeout($("#translateMsg").hide(),1500);
+			$("#translateMsg").html("<p>"+msg+"</p>");
+			$("#translateMsg").show();
 		}
 	}
