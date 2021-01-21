@@ -94,9 +94,9 @@
             }
         }
         for($i=0;$i<count($sentences);$i++) {
-            echo("Sentence in: " . $sentences[$i]['sentence'] . "<br>");
+            //echo("Sentence in: " . $sentences[$i]['sentence'] . "<br>");
             $translation = translate(trim($sentences[$i]['sentence']),$targetLanguage);
-            echo("Translation: " . $translation . "<br>");
+            //echo("Translation: " . $translation . "<br>");
             // if the entire sentence goes on one line, just add it to the line
             if (count($sentences[$i]['line_proportions'])<2) {
                 $lineNum = $sentences[$i]['line_proportions'][0]['lineNumber'];
