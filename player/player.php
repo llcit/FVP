@@ -158,7 +158,7 @@
 	<script>
 		var captionMode = '<?php echo($captionMode);?>';
 		var hasTranscript = '<?php echo($hasTranscript);?>';
-		var hasTranslation '<?php echo($hasTranslation);?>';
+		var hasTranslation = '<?php echo($hasTranslation);?>';
 		var annotations = '<?php echo($presentationData[0]['annotations']); ?>';
 		var DEFAULT_LANGUAGE = '<?php echo($languages[$presentationData[0]['language']]); ?>';
 		var SELECTED_LANGUAGE = '<?php echo($_GET['language']); ?>';
