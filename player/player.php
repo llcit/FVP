@@ -127,6 +127,10 @@
 				$hasTranscript = 1;				
 			}
 		}
+		else {
+	    $hasTrancript = $presentationData[0]['transcript_raw'];
+    	$hasTranlation = $presentationData[0]['translation_raw'];		
+		}
 	?>
 	<!-- Style for this example only -->
 	<style>
