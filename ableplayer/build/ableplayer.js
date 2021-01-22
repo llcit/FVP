@@ -9724,6 +9724,11 @@ AblePlayer.prototype.showDescription = function(now) {
     // set language for transcript container
     $main.attr('lang', this.transcriptLang);
 
+    // FVP: set direction for Arabic
+    if (this.transcriptLang == 'ar') {
+      $main.addClass('rightToLeft');
+    }    
+
     if (typeof this.transcriptTitle !== 'undefined') {
       transcriptTitle = this.transcriptTitle;
     }

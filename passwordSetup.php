@@ -31,29 +31,29 @@
                 <p>Click On This Link to Reset Password '.$link.'</p>';
             $mail = new PHPMailer(true);
             try {
-                $mail->CharSet =  "utf-8";
-                $mail->isSMTP();
-                $mail->setFrom($SETTINGS['sender'], $SETTINGS['senderName']);
-                $mail->Username   = $SETTINGS['usernameSmtp'];
-                $mail->Password   = $SETTINGS['passwordSmtp'];
-                $mail->Host       = $SETTINGS['hostSmtp'];
-                $mail->Port       = $SETTINGS['portSmtp'];
-                $mail->SMTPAuth   = true;
-                $mail->SMTPSecure = 'tls';
-                $mail->addCustomHeader('X-SES-CONFIGURATION-SET', $configurationSet);
+              $mail->CharSet =  "utf-8";
+              $mail->isSMTP();
+              $mail->setFrom($SETTINGS['sender'], $SETTINGS['senderName']);
+              $mail->Username   = $SETTINGS['usernameSmtp'];
+              $mail->Password   = $SETTINGS['passwordSmtp'];
+              $mail->Host       = $SETTINGS['hostSmtp'];
+              $mail->Port       = $SETTINGS['portSmtp'];
+              $mail->SMTPAuth   = true;
+              $mail->SMTPSecure = 'tls';
+              $mail->addCustomHeader('X-SES-CONFIGURATION-SET', $configurationSet);
 
-                // Specify the message recipients.
-                $mail->addAddress($recipient);
-                // You can also add CC, BCC, and additional To recipients here.
+              // Specify the message recipients.
+              $mail->addAddress($recipient);
+              // You can also add CC, BCC, and additional To recipients here.
 
-                // Specify the content of the message.
-                $mail->isHTML(true);
-                $mail->Subject    = $subject;
-                $mail->Body       = $bodyHtml;
-                $mail->AltBody    = $bodyText;
-                $mail->Send();
-                $userMsg =  "Check your email and click on the link to set your new password.";
-                $msgClass = "success";
+              // Specify the content of the message.
+              $mail->isHTML(true);
+              $mail->Subject    = $subject;
+              $mail->Body       = $bodyHtml;
+              $mail->AltBody    = $bodyText;
+              $mail->Send();
+              $userMsg =  "Check your email and click on the link to set your new password.";
+              $msgClass = "success";
             } catch (phpmailerException $e) {
                 $userMsg =  "An error occurred. {$e->errorMessage()}"; //Catch errors from PHPMailer.
                 $msgClass = "error";

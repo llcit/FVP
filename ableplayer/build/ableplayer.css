@@ -1153,3 +1153,7 @@ button svg {
 .icon-help:before {
     content: "\f128"
 }
+.rightToLeft {
+    text-align: right;
+    direction:rtl;
+}

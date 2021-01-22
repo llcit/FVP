@@ -112,6 +112,21 @@
         'Portuguese' => 'pt',
         'Russian' => 'ru'
     ];
+    $hasTrancript = '';
+    $hasTranlation = '';
+		// caption language for editing
+		if ($_GET['language'] && $editCaptions) {
+			// editing translation
+			if ($_GET['language'] == 'en') {
+				$hasTranslation = 1;
+				$hasTranscript = 0;
+			}
+			// editing transcript
+			else {
+				$hasTranslation = 0;
+				$hasTranscript = 1;				
+			}
+		}
 	?>
 	<!-- Style for this example only -->
 	<style>
@@ -138,38 +153,18 @@
 	<script src='../js/main.js'></script>
 	<script>
 		var captionMode = '<?php echo($captionMode);?>';
-		var hasTranscript;
-		var hasTranslation;
-		var annotations;
+		var hasTranscript = '<?php echo($hasTranscript);?>';
+		var hasTranslation '<?php echo($hasTranslation);?>';
+		var annotations = '<?php echo($presentationData[0]['annotations']); ?>';
 		var DEFAULT_LANGUAGE = '<?php echo($languages[$presentationData[0]['language']]); ?>';
 		var SELECTED_LANGUAGE = '<?php echo($_GET['language']); ?>';
-		// caption language for editing
-		if (SELECTED_LANGUAGE && captionMode == 'edit') {
-			// editing translation
-			if (SELECTED_LANGUAGE == 'en') {
-				hasTranslation = 1;
-				hasTranscript = 0;
-			}
-			// editing transcript
-			else {
-				hasTranslation = 0;
-				hasTranscript = 1;				
-			}
+		// after save, keep selected language
+		if (captionMode != 'edit' && SELECTED_LANGUAGE != '') {
+			timerID=setTimeout(function() {
+				$("#transcript-language-select").val(SELECTED_LANGUAGE);
+				$("#transcript-language-select").change();
+			},500);
 		}
-		else {
-			// after save, keep selected language
-			if (SELECTED_LANGUAGE != '') {
-				timerID=setTimeout(function() {
-					$("#transcript-language-select").val(SELECTED_LANGUAGE);
-					$("#transcript-language-select").change();
-				},500);
-				
-			}
-			hasTranscript = '<?php echo($presentationData[0]['transcript_raw']); ?>';
-			hasTranslation = '<?php echo($presentationData[0]['translation_raw']); ?>';
-			annotations = '<?php echo($presentationData[0]['annotations']); ?>';
-		}
-		var annotations = '<?php echo($presentationData[0]['annotations']); ?>';
 		var videoFile = generateFile('video','<?php echo($_GET['v']); ?>','<?php echo($presentationData[0]['extension']); ?>','');
 		var showTranscriptArea = (hasTranscript == 1 || hasTranslation == 1) ? true : false;
 		// center the player
@@ -234,10 +229,10 @@
 			  <video id="video1" preload="auto" width="480" height="360" poster="../ableplayer/media/wwa.jpg" data-able-player data-transcript-div="transcript" playsinline <?php echo("$editCaptionTag"); ?> >
 					<?php
 						// content for files generated in ableplayer.js:: loadTextTracks()
-						if ($presentationData[0]['transcript_raw']) {
+						if ($hasTranscript) {
 							echo("<track kind='captions' src='".$SETTINGS['base_url']. "/inc/S3LinkGen.php?type=transcript&id=".$_GET['v']."&ext=vtt' srclang='".$languages[$presentationData[0]['language']]."' label='".$presentationData[0]['language']."'/>");
 						} 
-						if ($presentationData[0]['translation_raw']) {
+						if ($hasTranslation) {
 							echo("<track kind='captions' src='".$SETTINGS['base_url']. "/inc/S3LinkGen.php?type=translation&id=".$_GET['v']."&ext=vtt' srclang='en' label='English'/>");
 						}
 						if ($presentationData[0]['annotations'] != '') {
