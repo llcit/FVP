@@ -174,19 +174,23 @@ function getUserEvents($user_id) {
     $stmt->execute();
     return $stmt->fetchAll();      
 }
-function getPresentationId($user_id,$event_id) {
+function getPresentationId($user_id,$event_id,$presentation_type) {
     global $pdo;
-    $sql ="SELECT id FROM presentations WHERE (user_id=? AND event_id=?)";
+    $data = [];
+    $sql ="
+        SELECT `id`,`grant_internal`,`grant_public` 
+        FROM presentations 
+        WHERE (user_id=? AND event_id=? AND type=?)";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([$user_id,$event_id]); 
+    $stmt->execute([$user_id,$event_id,$presentation_type]); 
     if($stmt->rowCount() > 0) {
         // presentation exists-- overwrite
         $result = $stmt->fetch(PDO::FETCH_OBJ);
-        $pid = $result->id;
-    } else {  
-        $pid = null;
-    }
-    return $pid;
+        $data['pid'] = $result->id;
+        $data['grant_internal'] = $result->grant_internal;
+        $data['grant_public'] = $result->grant_public;
+    } 
+    return $data;
 }
 function getLanguage($event_id) {
     global $pdo;

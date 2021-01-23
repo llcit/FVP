@@ -15,12 +15,18 @@
 
     $SETTINGS = parse_ini_file(__DIR__."/../../inc/settings.ini");
     putenv("GOOGLE_APPLICATION_CREDENTIALS=". $SETTINGS['GOOGLE_CREDS']);
-    $clientPrivateKey = $SETTINGS['AWS_CLIENT_SECRET_KEY'];
-    $serverPrivateKey = $SETTINGS['AWS_SERVER_PRIVATE_KEY'];
     $expectedBucketName = $SETTINGS['S3_BUCKET_NAME'];
     $expectedHostName = $SETTINGS['S3_HOST_NAME']; // v4-only
     $expectedMaxSize = (isset($SETTINGS['S3_MAX_FILE_SIZE']) ? $SETTINGS['S3_MAX_FILE_SIZE'] : null);
     $method = getRequestMethod();
+
+    $config = [
+        'region' => 'us-east-1',
+        'version' => 'latest'
+    ];
+    $sdk = new Aws\Sdk($config);
+    $client = $sdk->createS3();
+    $client->registerStreamWrapper();
 
     if ($method == 'OPTIONS') {
         handlePreflight();
@@ -129,7 +135,7 @@
         }
     }  
     function writeVTTFile($captionFile,$data,$language) {
-        global $expectedBucketName,$pid;
+        global $client,$expectedBucketName,$pid;
         $languages = [
             'Arabic' => 'ar',
             'Chinese' => 'zh',
@@ -152,17 +158,16 @@
             }
             
         }
-        $client = getS3Client();
-        $command = $client->getCommand('PutObject', array(
-                'Bucket' => $expectedBucketName,
-                'Key'    => "transcripts/$pid.vtt",
-                'Body'   => "$fileContent"
-        ));
-        $result = $command->getResult();
-        $response = $command->getResponse();
-        $code = $response->getStatusCode();
-        $success = ($code === 200) ? true : false ;
-        return $success;
+
+        try { 
+            $key = "transcripts/$pid.vtt";
+            $stream = fopen("s3://$expectedBucketName/$key", 'w');
+            fwrite($stream, $fileContent);
+            fclose($stream);
+            return true;
+        }catch (S3Exception $e) {
+            echo $e->getMessage();
+        }
     } 
 
     function transcribe_Google($audioFile,$language) {
@@ -261,7 +266,7 @@
         }
     }
     function generateTranscript($tmpLink,$pid,$language) {
-        global $SETTINGS,$expectedBucketName;
+        global $SETTINGS,$client,$expectedBucketName;
         $audio_extension = $SETTINGS['tmp_audio_extension'];
         echo ("\n\nRIP pid: $pid\n\n");
         $output_dir = './tmpAudio/';
@@ -281,17 +286,19 @@
         $original = imagecreatefromjpeg("./tmpThumbs/".$pid."_large.jpg");   
         $thumb = imagescale($original,205,117); 
         // save resized thumb  
-        imagejpeg($thumb,"./tmpThumbs/$pid.jpg");  
-        $client = getS3Client();
-        $command = $client->getCommand('PutObject', array(
+        imagejpeg($thumb,"./tmpThumbs/$pid.jpg"); 
+
+        try { 
+            $key = "thumbs/$pid.jpg";
+            $command = $client->getCommand('PutObject', array(
                 'Bucket' => $expectedBucketName,
                 'Key'    => "thumbs/$pid.jpg",
                 'SourceFile'   => "./tmpThumbs/$pid.jpg"
         ));
-        $result = $command->getResult();
-        $response = $command->getResponse();
-        $code = $response->getStatusCode();
-        $success = ($code === 200) ? true : false ;
+        return true;
+        }catch (S3Exception $e) {
+            echo $e->getMessage();
+        }
         if ($audio_extension == 'mp3') {
             $output_format = new FFMpeg\Format\Audio\Mp3(); 
             $output_format->setAudioCodec("libmp3lame");
@@ -349,15 +356,9 @@
         header('Access-Control-Allow-Methods: POST');
         header('Access-Control-Allow-Headers: Content-Type');
     }
-    function getS3Client() {
-        global $clientPrivateKey, $serverPrivateKey;
-        return S3Client::factory(array(
-            'key' => $serverPrivateKey,
-            'secret' => $clientPrivateKey
-        ));
-    }
     function deleteObject() {
-        getS3Client()->deleteObject(array(
+        global $client;
+        $client->deleteObject(array(
             'Bucket' => $_REQUEST['bucket'],
             'Key' => $_REQUEST['key']
         ));
@@ -479,16 +480,23 @@
         $signingKey = hash_hmac('sha256', 'aws4_request', $dateRegionServiceKey, true);
         return hash_hmac('sha256', $stringToSign, $signingKey);
     }
-
-
     // Provide a time-bombed public link to the file.
     function getTempLink($bucket, $key) {
-        $client = getS3Client();
-        $url = "{$bucket}/{$key}";
-        $request = $client->get($url);
-        return $client->createPresignedUrl($request, '+24 hours');
+        global $client;
+        $tmpLink = '';
+        if (!$client) return null;
+        try {
+            $cmd = $client->getCommand('GetObject', [
+                   'Bucket' => $bucket,
+                   'Key' => $key
+           ]);
+           $request = $client->createPresignedRequest($cmd, '+60 minutes');
+         } catch (S3Exception $e) {
+             $tmpLink = new Exception($e->getMessage());
+         }
+        $tmpLink = (string)$request->getUri();
+        return $tmpLink;
     }
-
     function getObjectSize($bucket, $key) {
         try {    
             $objInfo = getS3Client()->headObject(array(

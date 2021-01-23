@@ -32,6 +32,19 @@
 		  ";
 		return $linkList;
   }
+  function writeConsentForm() {
+  	$consentForm = "
+	  	<div class='fv_main'>
+	  		<h3>
+	  			Flagship Video Project Release Form
+	  		</h3>
+	  		<p>
+					I hereby grant permission to the American Councils for International Education and NSEP/DLNSEO to post the video recording of [target language] presentation at the end of the Capstone program, internally within the Flagship community of language programs organization for training purposes with future language students and instructors, US government employees or contracted employees on a need-to-know basis.  I understand that my name and a brief description of my program participation (name of program, year, home institution, host institution and host country) as well as a brief description of the topic of my presentation will be attached to this video. 
+	  		</p>
+	  	</div>
+  	";
+  	return $consentForm;
+  }
   function buildVideoList($videos) {
 		$count = 0;
 		$videoList = "<form id='videoData' name='videoData'>";

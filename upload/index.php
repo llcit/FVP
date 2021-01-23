@@ -2,10 +2,10 @@
 <html lang="en">
     <head>
       <?php
-        include "../inc/db_pdo.php";
-        include "../inc/dump.php";
-        include "../inc/sqlFunctions.php";
-        include "../inc/htmlFunctions.php";
+				include "../inc/db_pdo.php";
+				include "../inc/dump.php";
+				include "../inc/sqlFunctions.php";
+				include "../inc/htmlFunctions.php";
 				$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
 				$pageTitle = "Flagship Video Project";
 				$subTitle = "Upload Video";
@@ -18,12 +18,12 @@
 					$user = getUser($pdo,$_SESSION['username']);
 					$navLinks = writeNavLinks($user->role,'header');
 					$userName = "<h5 style='display:inline'>" . $user->first_name . " " . $user->last_name . "</h5>";
-          $welcomeMsg = "
-            $userName 
-            <a href='".$SETTINGS['base_url']."/logout.php' class='btn btn-xs btn-icon btn-danger'>
-              <i class='fa fa-sign-out-alt' aria-hidden='true'></i>
-            </a>
-          ";
+					$welcomeMsg = "
+						$userName 
+						<a href='".$SETTINGS['base_url']."/logout.php' class='btn btn-xs btn-icon btn-danger'>
+						  <i class='fa fa-sign-out-alt' aria-hidden='true'></i>
+						</a>
+					";
 				}
 				if (!$_GET['event_id']) {
 					$userEvents = getUserEvents($user->id);
@@ -36,15 +36,22 @@
 					// generate a unique code for public asccess
 					$salt = $user->id.$event_id.$presentation_type;
 					$access_code=md5(uniqid($salt, true));
-					$pid = getPresentationId($user->id,$event_id,$presentation_type);
-				  $pageContent = "
-				            <div id='fine-uploader-s3'></div>
-				  ";
+					$presentationData = getPresentationId($user->id,$event_id,$presentation_type);
+					$pid = $presentationData['pid'];
+					$grant_internal = $presentationData['grant_internal'];
+					$grant_public = $presentationData['grant_public'];
+					if ($grant_internal === null || $grant_public === null) {
+						$pageContent = writeConsentForm();
 					}
-
-				$videoExists = '';
+					else {
+					  $pageContent = "
+					            <div id='fine-uploader-s3'></div>
+					  ";
+					}
+				}
+				$videoExistsMsg = '';
 				if ($pid) {
-					$videoExists = "
+					$videoExistsMsg = "
 						<p class='card-text'>
 							You have previously uploaded a video uploaded for this event! If you upload a new video, it will overwrite the existing video!
 						</p>
@@ -341,7 +348,7 @@
                     <div class="card-body fv_card_body" style='border-bottom:solid 1px gray;'>
                        <h2 class="card-title"><?php echo($subTitle); ?></h2>
                        <p class="card-text"><?php echo($titleText); ?></p>
-                       <?php echo($videoExists); ?>
+                       <?php echo($videoExistsMsg); ?>
                     </div>
                     <?php echo($pageContent); ?>
                 </div>
