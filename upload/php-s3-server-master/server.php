@@ -17,6 +17,8 @@
     putenv("GOOGLE_APPLICATION_CREDENTIALS=". $SETTINGS['GOOGLE_CREDS']);
     $expectedBucketName = $SETTINGS['S3_BUCKET_NAME'];
     $expectedHostName = $SETTINGS['S3_HOST_NAME']; // v4-only
+    $clientPrivateKey = $SETTINGS['AWS_CLIENT_SECRET_KEY'];
+    $serverPrivateKey = $SETTINGS['AWS_SERVER_PRIVATE_KEY'];
     $expectedMaxSize = (isset($SETTINGS['S3_MAX_FILE_SIZE']) ? $SETTINGS['S3_MAX_FILE_SIZE'] : null);
     $method = getRequestMethod();
 
