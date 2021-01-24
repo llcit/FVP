@@ -236,6 +236,7 @@
                     }
                 }
             }
+        }
         try { 
             $client->getCommand('PutObject', array(
                 'Bucket' => $expectedBucketName,
@@ -500,7 +501,7 @@
             $objInfo = $client->headObject(array(
                     'Bucket' => $bucket,
                     'Key' => $key
-                ));
+            ));
         } catch (Exception $e) {
           echo json_encode(array("error" => "$e"));
         }
