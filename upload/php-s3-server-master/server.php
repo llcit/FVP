@@ -135,7 +135,6 @@
             $captionFile = preg_replace("/\.$audio_extension/",".vtt", $audioFile);
             $time_post = microtime(true);
             $timers['watson_exec_time'] = $time_post - $time_pre;
-            echo ("\n\nTime to generate transcript: " . $exec_time . "\n\n");
             return ['file'=> $captionFile, 'response'=>$response];
         } 
         else {
@@ -327,7 +326,6 @@
         file_put_contents('./progress/'. $pid . '.txt', '100'); 
         $time_post = microtime(true);
         $timers['ffmpeg_exec_time'] = $time_post - $time_pre;
-        echo ("\n\nTime to process audio: " . $exec_time . "-->" . $time_post . " - " . $time_pre . "\n\n");
         $audioFile = $pid . "." . $audio_extension;
         if ($language != 'Russian') {
             $response = transcribe_Watson($audioFile,$language);
