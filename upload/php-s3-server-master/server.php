@@ -237,11 +237,12 @@
             }
         }
         try { 
-            $client->getCommand('PutObject', array(
+            $command = $client->getCommand('PutObject', array(
                 'Bucket' => $expectedBucketName,
                 'Key'    => "transcripts/$pid.vtt",
                 'Body'   => "$fileContent"
             ));
+            echo ("Trans: " . $command['ObjectURL']);
         }catch (S3Exception $e) {
             echo $e->getMessage();
         }
@@ -292,9 +293,11 @@
                 'Key'    => $key,
                 'SourceFile'   => "./tmpThumbs/$pid.jpg"
             ));
+            echo ("S3 Thumb: " . $command['ObjectURL']);
         }catch (S3Exception $e) {
             echo $e->getMessage();
         }
+        
         if ($audio_extension == 'mp3') {
             $output_format = new FFMpeg\Format\Audio\Mp3(); 
             $output_format->setAudioCodec("libmp3lame");
@@ -325,7 +328,7 @@
             ->format($output_dir . $pid . "." . $audio_extension) // extracts file informations
             ->get('duration'); 
         // clean up tmp files
-        //unlink("./tmpThumbs/$pid.jpg");
+        unlink("./tmpThumbs/$pid.jpg");
         unlink("./tmpThumbs/".$pid."_large.jpg");
         unlink("./tmpAudio/$audioFile");
         return ['duration' => $duration, 'success' => $transcribeSuccess];
