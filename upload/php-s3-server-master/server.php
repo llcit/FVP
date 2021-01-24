@@ -42,17 +42,20 @@
         if (isset($_REQUEST["success"])) {
             include_once("../../inc/db_pdo.php"); 
             include_once("../../inc/sqlFunctions.php");
+            $timers = ['ffmpeg_exec_time'=>0,'watson_exec_time'=>0,'google_exec_time'=>0];
             preg_match("/(.*)\.(mov|mp4|m4a)/",$_REQUEST['key'],$matches);
             $file_name = $matches[1];
             $video_extension = $matches[2];
             $pid = ($_REQUEST['pid'] > 0) ? $_REQUEST['pid'] : registerVideo($_REQUEST['user_id'],$_REQUEST['event_id'],$_REQUEST['presentation_type'],$video_extension,$_REQUEST['access_code']);
-            echo($pid);
             if ($pid) {
                 $tmpLink = verifyFileInS3($_REQUEST['key']);
                 $language = $_REQUEST['language'];
                 $transcribeResult = generateTranscript($tmpLink,$pid,$language);
                 $confirmation = confirmUpload($pid,$transcribeResult['duration'],$transcribeResult['success'],$tmpLink,$video_extension);
                 renameFile($_REQUEST['key'],$pid,$video_extension);
+                echo('\nFFMPEG EXEC TIME: ' . $timers['ffmpeg_exec_time'] ."\n");
+                echo('WATSON EXEC TIME: ' . $timers['watson_exec_time'] ."\n");
+                echo('RATIO: ' . $timers['ffmpeg_exec_time']/$timers['watson_exec_time'] . "\n\n");
             }
             
         }
@@ -98,7 +101,7 @@
         return $response;
     }
     function transcribe_Watson($audioFile,$language) {
-        global $SETTINGS;
+        global $SETTINGS,$timers;
         $time_pre = microtime(true);
         $audio_extension = $SETTINGS['tmp_audio_extension'];
         $models = [
@@ -128,11 +131,11 @@
             throw new Exception("GOT $status_code FROM $url:\n$response");
         }
         if ($response) {
-            echo ("done!" . "<br>");
+            echo ("\n\ndone!\n\n");
             $captionFile = preg_replace("/\.$audio_extension/",".vtt", $audioFile);
             $time_post = microtime(true);
-            $exec_time = $time_post - $time_pre;
-            echo ("Time to generate transcript: " . $exec_time);
+            $timers['watson_exec_time'] = $time_post - $time_pre;
+            echo ("\n\nTime to generate transcript: " . $exec_time . "\n\n");
             return ['file'=> $captionFile, 'response'=>$response];
         } 
         else {
@@ -175,7 +178,8 @@
     } 
 
     function transcribe_Google($audioFile,$language) {
-        global $expectedBucketName,$client,$pid,$SETTINGS;
+        global $expectedBucketName,$client,$pid,$SETTINGS,$timers;
+        $time_pre = microtime(true);
         $source = "./tmpAudio/$audioFile";
         $objectName = "$audioFile";
         $storage = new StorageClient(['keyFilePath'=>$SETTINGS['GOOGLE_CREDS']]);
@@ -246,7 +250,7 @@
                 'Key'    => "transcripts/$pid.vtt",
                 'Body'   => "$fileContent"
             ));
-            echo ("Put Transcript: " . $command['ObjectURL']);
+            echo ("\n\nPut Transcript: " . $command['ObjectURL'] ."\n\n");
         }catch (S3Exception $e) {
             echo $e->getMessage();
         }
@@ -254,6 +258,8 @@
         $object = $bucket->object($objectName);
         $object->delete();
         $googleClient->close();
+        $time_post = microtime(true);
+        $timers['google_exec_time'] = $time_post - $time_pre;
         return $success;
     }
 
@@ -298,7 +304,7 @@
                 'Key' => $key,
                 'SourceFile' => "./tmpThumbs/$pid.jpg"
             ));
-            echo ("S3 Thumb: " . $command['ObjectURL']);
+            echo ("\n\nS3 Thumb: " . $command['ObjectURL'] . "\n\n");
         }catch (S3Exception $e) {
             echo $e->getMessage();
         }
@@ -320,8 +326,8 @@
         // onprogress stops before 100, so update for progress bar
         file_put_contents('./progress/'. $pid . '.txt', '100'); 
         $time_post = microtime(true);
-        $exec_time = $time_post - $time_pre;
-        echo ("Time to process audio: " . $exec_time . "-->" . $time_post . " - " . $time_pre);
+        $timers['ffmpeg_exec_time'] = $time_post - $time_pre;
+        echo ("\n\nTime to process audio: " . $exec_time . "-->" . $time_post . " - " . $time_pre . "\n\n");
         $audioFile = $pid . "." . $audio_extension;
         if ($language != 'Russian') {
             $response = transcribe_Watson($audioFile,$language);
