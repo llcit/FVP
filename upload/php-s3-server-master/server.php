@@ -291,10 +291,9 @@
             echo ("\n\nKEY: $key\n\n");
             $command = $client->getCommand('PutObject', array(
                 'Bucket' => $expectedBucketName,
-                'Key'    => "thumbs/$pid.jpg",
+                'Key'    => "$key",
                 'SourceFile'   => "./tmpThumbs/$pid.jpg"
-        ));
-        return true;
+            ));
         }catch (S3Exception $e) {
             echo $e->getMessage();
         }
