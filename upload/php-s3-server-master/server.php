@@ -289,7 +289,7 @@
             echo ("\n\nKEY: $key\n\n");
             $command = $client->getCommand('PutObject', array(
                 'Bucket' => $expectedBucketName,
-                'Key'    => "$key",
+                'Key'    => $key,
                 'SourceFile'   => "./tmpThumbs/$pid.jpg"
             ));
         }catch (S3Exception $e) {
@@ -312,9 +312,6 @@
         $video->save($output_format, $saveFile);
         // onprogress stops before 100, so update for progress bar
         file_put_contents('./progress/'. $pid . '.txt', '100'); 
-        // clean up tmp files
-        unlink("./tmpThumbs/$pid.jpg");
-        unlink("./tmpThumbs/".$pid."_large.jpg");
         $audioFile = $pid . "." . $audio_extension;
         if ($language != 'Russian') {
             $response = transcribe_Watson($audioFile,$language);
@@ -328,9 +325,9 @@
             ->format($output_dir . $pid . "." . $audio_extension) // extracts file informations
             ->get('duration'); 
         // clean up tmp files
-        unlink("./tmpAudio/$audioFile");
-        unlink("./tmpThumbs/$pid.jpg");
+        //unlink("./tmpThumbs/$pid.jpg");
         unlink("./tmpThumbs/".$pid."_large.jpg");
+        unlink("./tmpAudio/$audioFile");
         return ['duration' => $duration, 'success' => $transcribeSuccess];
     } 
     function getRequestMethod() {
