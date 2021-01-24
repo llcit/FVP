@@ -295,8 +295,8 @@
             echo ("\n\nKEY: $key\n\n");
             $command = $client->getCommand('PutObject', array(
                 'Bucket' => $expectedBucketName,
-                'Key'    => $key,
-                'SourceFile'   => "./tmpThumbs/$pid.jpg"
+                'Key' => $key,
+                'SourceFile' => "./tmpThumbs/$pid.jpg"
             ));
             echo ("S3 Thumb: " . $command['ObjectURL']);
         }catch (S3Exception $e) {
@@ -315,13 +315,13 @@
         $output_format->on('progress', function ($video, $format, $percentage) use($pid) {
             file_put_contents('./progress/'. $pid . '.txt', $percentage);
         }); 
-        $time_post = microtime(true);
-        $exec_time = $time_post - $time_pre;
-        echo ("Time to process audio: " . $exec_time);
         $saveFile = addslashes($output_dir . $pid . "." . $audio_extension);
         $video->save($output_format, $saveFile);
         // onprogress stops before 100, so update for progress bar
         file_put_contents('./progress/'. $pid . '.txt', '100'); 
+        $time_post = microtime(true);
+        $exec_time = $time_post - $time_pre;
+        echo ("Time to process audio: " . $exec_time . "-->" . $time_post . " - " . $time_pre);
         $audioFile = $pid . "." . $audio_extension;
         if ($language != 'Russian') {
             $response = transcribe_Watson($audioFile,$language);
