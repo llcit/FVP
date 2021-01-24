@@ -99,6 +99,7 @@
     }
     function transcribe_Watson($audioFile,$language) {
         global $SETTINGS;
+        $time_pre = microtime(true);
         $audio_extension = $SETTINGS['tmp_audio_extension'];
         $models = [
             'Arabic' => 'ar-AR_BroadbandModel',
@@ -129,6 +130,9 @@
         if ($response) {
             echo ("done!" . "<br>");
             $captionFile = preg_replace("/\.$audio_extension/",".vtt", $audioFile);
+            $time_post = microtime(true);
+            $exec_time = $time_post - $time_pre;
+            echo ("Time to generate transcript: " . $exec_time);
             return ['file'=> $captionFile, 'response'=>$response];
         } 
         else {
@@ -242,7 +246,7 @@
                 'Key'    => "transcripts/$pid.vtt",
                 'Body'   => "$fileContent"
             ));
-            echo ("Trans: " . $command['ObjectURL']);
+            echo ("Put Transcript: " . $command['ObjectURL']);
         }catch (S3Exception $e) {
             echo $e->getMessage();
         }
@@ -265,6 +269,7 @@
     }
     function generateTranscript($tmpLink,$pid,$language) {
         global $SETTINGS,$client,$expectedBucketName;
+        $time_pre = microtime(true);
         $audio_extension = $SETTINGS['tmp_audio_extension'];
         echo ("\n\nRIP pid: $pid\n\n");
         $output_dir = './tmpAudio/';
@@ -276,7 +281,7 @@
         ]);
         $ffmpeg->getFFMpegDriver()->listen(new \Alchemy\BinaryDriver\Listeners\DebugListener());
         $ffmpeg->getFFMpegDriver()->on('debug', function ($message) {       
-            echo "MSG: " . $message."\n";
+            //echo "MSG: " . $message."\n";
         }); 
         $video = $ffmpeg->open($tmpLink);
         $frame = $video->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(1))->save("./tmpThumbs/".$pid."_large.jpg");
@@ -310,7 +315,9 @@
         $output_format->on('progress', function ($video, $format, $percentage) use($pid) {
             file_put_contents('./progress/'. $pid . '.txt', $percentage);
         }); 
-
+        $time_post = microtime(true);
+        $exec_time = $time_post - $time_pre;
+        echo ("Time to process audio: " . $exec_time);
         $saveFile = addslashes($output_dir . $pid . "." . $audio_extension);
         $video->save($output_format, $saveFile);
         // onprogress stops before 100, so update for progress bar
