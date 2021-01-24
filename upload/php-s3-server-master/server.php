@@ -287,6 +287,7 @@
         // save resized thumb  
         imagejpeg($thumb,"./tmpThumbs/$pid.jpg"); 
         try { 
+            echo ("\n\nKEY: $key\n\n");
             $key = "thumbs/$pid.jpg";
             $command = $client->getCommand('PutObject', array(
                 'Bucket' => $expectedBucketName,
