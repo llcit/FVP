@@ -165,7 +165,6 @@
             $stream = fopen("s3://$expectedBucketName/$key", 'w');
             fwrite($stream, $fileContent);
             fclose($stream);
-            return true;
         }catch (S3Exception $e) {
             echo $e->getMessage();
         }
@@ -243,7 +242,6 @@
                 'Key'    => "transcripts/$pid.vtt",
                 'Body'   => "$fileContent"
             ));
-        return true;
         }catch (S3Exception $e) {
             echo $e->getMessage();
         }
