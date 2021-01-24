@@ -61,8 +61,7 @@
         }
     }
     function renameFile($key,$pid,$extension) {
-        global $expectedBucketName;
-        $client=getS3Client();
+        global $client,$expectedBucketName;
         // Ugh!  Only way to rename is to copy and delete-- gross!
         // FVP TO DO: kill once filenameParam in fineuploade client is working 
         $newKey = "videos/$pid".".".$extension;
