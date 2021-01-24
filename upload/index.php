@@ -40,7 +40,7 @@
 					$pid = $presentationData['pid'];
 					$grant_internal = $presentationData['grant_internal'];
 					$grant_public = $presentationData['grant_public'];
-					if ($grant_internal === null || $grant_public === null) {
+					if ($grant_internal !== null || $grant_public !== null) {
 						$pageContent = writeConsentForm();
 					}
 					else {

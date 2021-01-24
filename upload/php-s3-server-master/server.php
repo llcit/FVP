@@ -172,7 +172,7 @@
     } 
 
     function transcribe_Google($audioFile,$language) {
-        global $expectedBucketName,$pid,$SETTINGS;
+        global $expectedBucketName,$client,$pid,$SETTINGS;
         $source = "./tmpAudio/$audioFile";
         $objectName = "$audioFile";
         $storage = new StorageClient(['keyFilePath'=>$SETTINGS['GOOGLE_CREDS']]);
@@ -236,18 +236,15 @@
                     }
                 }
             }
-        $AWSClient = getS3Client();
-        $command = $AWSClient->getCommand('PutObject', array(
+        try { 
+            $client->getCommand('PutObject', array(
                 'Bucket' => $expectedBucketName,
                 'Key'    => "transcripts/$pid.vtt",
                 'Body'   => "$fileContent"
-        ));
-        $AWSResult = $command->getResult();
-        $AWSResponse = $command->getResponse();
-        $code = $AWSResponse->getStatusCode();
-        $success = ($code === 200) ? true : false ;
-        } else {
-            print_r($operation->getError());
+            ));
+        return true;
+        }catch (S3Exception $e) {
+            echo $e->getMessage();
         }
         // Clean up audio file when done
         $object = $bucket->object($objectName);
@@ -288,7 +285,6 @@
         $thumb = imagescale($original,205,117); 
         // save resized thumb  
         imagejpeg($thumb,"./tmpThumbs/$pid.jpg"); 
-
         try { 
             $key = "thumbs/$pid.jpg";
             $command = $client->getCommand('PutObject', array(
@@ -499,8 +495,9 @@
         return $tmpLink;
     }
     function getObjectSize($bucket, $key) {
+        global $client;
         try {    
-            $objInfo = getS3Client()->headObject(array(
+            $objInfo = $client->headObject(array(
                     'Bucket' => $bucket,
                     'Key' => $key
                 ));
