@@ -1,8 +1,4 @@
 <?php
-/* TO DO 12/20
-1. Finish FFMPeg progress
-2. Backfill durations
-*/
     // blow open memory limit
     ini_set('memory_limit', '-1');
     require './vendor/autoload.php';
@@ -51,8 +47,7 @@
                 $tmpLink = verifyFileInS3($_REQUEST['key']);
                 $language = $_REQUEST['language'];
                 $transcribeResult = generateTranscript($tmpLink,$pid,$language);
-                $confirmation = confirmUpload($pid,$transcribeResult['duration'],$transcribeResult['success'],$tmpLink,$video_extension);
-                renameFile($_REQUEST['key'],$pid,$video_extension);
+
                 echo('\nFFMPEG EXEC TIME: ' . $timers['ffmpeg_exec_time'] ."\n");
                 if ($language == 'Russian') {
                     echo('GOOGLE EXEC TIME: ' . $timers['google_exec_time'] ."\n");
@@ -63,6 +58,9 @@
                     $transcribeTime = $timers['watson_exec_time'];
                 }
                 echo('RATIO: ' . $timers['ffmpeg_exec_time']/$transcribeTime . "\n\n");
+
+                $confirmation = confirmUpload($pid,$transcribeResult['duration'],$transcribeResult['success'],$tmpLink,$video_extension);
+                renameFile($_REQUEST['key'],$pid,$video_extension);
             }
             
         }
@@ -178,7 +176,6 @@
             $stream = fopen("s3://$expectedBucketName/$key", 'w');
             fwrite($stream, $fileContent);
             fclose($stream);
-            echo ("\n\nPut Transcript (writeVTT): " . $command['ObjectURL'] ."\n\n");
         }catch (S3Exception $e) {
             echo $e->getMessage();
         }
@@ -255,12 +252,6 @@
             $stream = fopen("s3://$expectedBucketName/$key", 'w');
             fwrite($stream, $fileContent);
             fclose($stream);
-            /*$command = $client->getCommand('PutObject', array(
-                'Bucket' => $expectedBucketName,
-                'Key'    => "transcripts/$pid.vtt",
-                'Body'   => "$fileContent"
-            ));
-            echo ("\n\nPut Transcript: " . $command['ObjectURL'] ."\n\n");*/
         }catch (S3Exception $e) {
             echo $e->getMessage();
         }
@@ -313,12 +304,6 @@
             $stream = fopen("s3://$expectedBucketName/$key", 'w');
             fwrite($stream, $fileContent);
             fclose($stream);
-            /*$command = $client->getCommand('PutObject', array(
-                'Bucket' => $expectedBucketName,
-                'Key' => $key,
-                'SourceFile' => "./tmpThumbs/$pid.jpg"
-            ));
-            echo ("\n\nS3 Thumb: " . $command['ObjectURL'] . "\n\n");*/
         }catch (S3Exception $e) {
             echo $e->getMessage();
         }
