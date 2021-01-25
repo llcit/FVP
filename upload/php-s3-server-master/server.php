@@ -77,7 +77,6 @@
                 echo('RATIO: ' . $logData['ffmpeg_exec_time']/$transcribeTime . "\n\n");
                 $confirmation = confirmUpload($pid,$transcribeResult['duration'],$transcribeResult['success'],$tmpLink,$video_extension);
                 renameFile($_REQUEST['key'],$pid,$video_extension);
-                initLogging($pid);
             }
             
         }

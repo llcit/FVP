@@ -312,8 +312,8 @@ function initLogging($pid) {
     $stmt->bindValue(':presentation_id', $pid);
     $stmt->bindValue(':video_uploaded', 1);
     $stmt->execute();
-    $pid = $pdo->lastInsertId();
-    return $pid;
+    $lid = $pdo->lastInsertId();
+    return $lid;
 }
 function updateLog($log_id,$logData) {
     global $pdo; 
