@@ -155,7 +155,7 @@
             echo ("\n\ndone!\n\n");
             $captionFile = preg_replace("/\.$audio_extension/",".vtt", $audioFile);
             $time_post = microtime(true);
-            $logData['watson_exec_time'] = $time_post - $time_pre;
+            $logData['watson_exec_time'] = ($time_post - $time_pre)*1000;
             return ['file'=> $captionFile, 'response'=>$response];
         } 
         else {
@@ -276,7 +276,7 @@
         $object->delete();
         $googleClient->close();
         $time_post = microtime(true);
-        $logData['google_exec_time'] = $time_post - $time_pre;
+        $logData['google_exec_time'] = ($time_post - $time_pre)*1000;
         return $success;
     }
 
@@ -341,7 +341,7 @@
         // onprogress stops before 100, so update for progress bar
         file_put_contents('./progress/'. $pid . '.txt', '100'); 
         $time_post = microtime(true);
-        $logData['ffmpeg_exec_time'] = $time_post - $time_pre;
+        $logData['ffmpeg_exec_time'] = ($time_post - $time_pre)*1000;
         $audioFile = $pid . "." . $audio_extension;
         if ($language != 'Russian') {
             $response = transcribe_Watson($audioFile,$language);

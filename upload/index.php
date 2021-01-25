@@ -9,7 +9,7 @@
 				$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
 				$pageTitle = "Flagship Video Project";
 				$subTitle = "Upload Video";
-				$titleText = "Select one or more videos and press upload.";
+				$titleText = "Select a video from your computer and press upload. Note that you can either drag and drop the file onto the page or click the 'Upload a File' to use the file selector. ";
 				session_start();
 				if (!isset($_SESSION['username'])) { 
 					exit(header("location:../login.php"));
@@ -47,6 +47,7 @@
 						$grant_public = $_GET['grant_public'];
 					}
 					if (abs($grant_internal) != 1 || abs($grant_public) !=1 || $editConsent) {
+						$titleText = "Before you can upload a file, you must complete the consent form below and indicate whether or not to grant viewing access of your video to the Flagship Program's internal and/or public-facing site.";
 						$expectedUserName = $user->first_name . " " . $user->last_name;
 						$pageContent = writeConsentForm($expectedUserName,$grant_internal,$grant_public);
 						$pageContent .= "

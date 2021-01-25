@@ -307,8 +307,8 @@ function deleteObjectFromDB($id) {
 function initLogging($pid) {
     global $pdo;
     // new presentation
-    $sql = "INSERT INTO `upload_logs` (id,presentation_id,video_uploaded) 
-            VALUES (:id,:presentation_id,:video_uploaded)";
+    $sql = "INSERT INTO `upload_logs` (id,presentation_id,video_uploaded,log_time) 
+            VALUES (:id,:presentation_id,:video_uploaded,NOW())";
     $stmt= $pdo->prepare($sql);
     $stmt->bindValue(':id', null);
     $stmt->bindValue(':presentation_id', $pid);
@@ -326,6 +326,7 @@ function updateLog($log_id,$logData) {
             $updateString .= $comma . "`$key` = '$value'";
             $comma = ',';
         }
+        $updateString .= "`log_time`=NOW()";
         $sql = "UPDATE `upload_logs` SET " . $updateString . " WHERE `id`='" . $log_id ."'";
         $stmt= $pdo->prepare($sql)->execute();  
     }catch (Exception $e) {
