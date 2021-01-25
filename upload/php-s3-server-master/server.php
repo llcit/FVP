@@ -54,8 +54,15 @@
                 $confirmation = confirmUpload($pid,$transcribeResult['duration'],$transcribeResult['success'],$tmpLink,$video_extension);
                 renameFile($_REQUEST['key'],$pid,$video_extension);
                 echo('\nFFMPEG EXEC TIME: ' . $timers['ffmpeg_exec_time'] ."\n");
-                echo('WATSON EXEC TIME: ' . $timers['watson_exec_time'] ."\n");
-                echo('RATIO: ' . $timers['ffmpeg_exec_time']/$timers['watson_exec_time'] . "\n\n");
+                if ($language == 'Russian') {
+                    echo('GOOGLE EXEC TIME: ' . $timers['google_exec_time'] ."\n");
+                    $transcribeTime = $timers['google_exec_time'];
+                } 
+                else {
+                    echo('WATSON EXEC TIME: ' . $timers['watson_exec_time'] ."\n");
+                    $transcribeTime = $timers['watson_exec_time'];
+                }
+                echo('RATIO: ' . $timers['ffmpeg_exec_time']/$transcribeTime . "\n\n");
             }
             
         }
