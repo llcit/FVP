@@ -216,17 +216,19 @@ function getPid($uid,$eid,$presentation_type) {
     $stmt->execute();
     return $stmt->fetchObject();
 }
-function registerVideo($uid,$eid,$presentation_type,$extension,$access_code) {
+function registerVideo($request,$extension) {
     global $pdo;
     // new presentation
-    $sql = "INSERT INTO presentations (user_id,event_id,type,extension,access_code,date_added) 
-            VALUES (:user_id,:event_id,:presentation_type,:extension,:access_code,NOW())";
+    $sql = "INSERT INTO presentations (user_id,event_id,type,extension,access_code,grant_internal,grant_public,date_added) 
+            VALUES (:user_id,:event_id,:presentation_type,:extension,:access_code,:grant_internal,:grant_public,NOW())";
     $stmt= $pdo->prepare($sql);
-    $stmt->bindValue(':user_id', $uid);
-    $stmt->bindValue(':event_id', $eid);
-    $stmt->bindValue(':presentation_type', $presentation_type);
+    $stmt->bindValue(':user_id', $request['user_id']);
+    $stmt->bindValue(':event_id', $request['event_id']);
+    $stmt->bindValue(':presentation_type', $request['presentation_type']);
     $stmt->bindValue(':extension', $extension);
-    $stmt->bindValue(':access_code', $access_code);
+    $stmt->bindValue(':access_code', $request['access_code']);
+    $stmt->bindValue(':grant_internal', $request['grant_internal']);
+    $stmt->bindValue(':grant_public', $request['grant_public']);
     $stmt->execute();
     $pid = $pdo->lastInsertId();
     return $pid;

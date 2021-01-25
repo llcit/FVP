@@ -25,6 +25,10 @@
     .fv_pageContent {
         padding:20px;
     }
+    .fv_text_box {
+        border-radius: 4px;
+        -moz-border-radius: 4px;
+    }
     .fv_selects_wrapper {
         font-size:11px;
         font-weight:bold;
@@ -154,7 +158,7 @@
         background-color: #fff;
         border: thin solid #000;
         border-radius: 5px;
-        -moz-border-radius: 5px
+        -moz-border-radius: 5px;
     }
     .error {
         color: red;

@@ -53,7 +53,7 @@
             preg_match("/(.*)\.(mov|mp4|m4a)/",$_REQUEST['key'],$matches);
             $file_name = $matches[1];
             $video_extension = $matches[2];
-            $pid = ($_REQUEST['pid'] > 0) ? $_REQUEST['pid'] : registerVideo($_REQUEST['user_id'],$_REQUEST['event_id'],$_REQUEST['presentation_type'],$video_extension,$_REQUEST['access_code']);
+            $pid = ($_REQUEST['pid'] > 0) ? $_REQUEST['pid'] : registerVideo($_REQUEST,$video_extension);
             if ($pid) {
                 $log_id = initLogging($pid); 
                 $tmpLink = verifyFileInS3($_REQUEST['key']);

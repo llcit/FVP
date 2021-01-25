@@ -38,10 +38,21 @@
 					$access_code=md5(uniqid($salt, true));
 					$presentationData = getPresentationId($user->id,$event_id,$presentation_type);
 					$pid = $presentationData['pid'];
-					$grant_internal = $presentationData['grant_internal'];
-					$grant_public = $presentationData['grant_public'];
-					if ($grant_internal !== null || $grant_public !== null) {
-						$pageContent = writeConsentForm();
+					if (abs($presentationData[0]['grant_internal']) == 1) {
+						$grant_internal = $presentationData[0]['grant_internal'];
+						$grant_public = $presentationData[0]['grant_public'];
+					}
+					else if(abs($_GET['grant_internal']) == 1) {
+						$grant_internal = $_GET['grant_internal'];
+						$grant_public = $_GET['grant_public'];
+					}
+					if (abs($grant_internal) != 1 || abs($grant_public) !=1 || $editConsent) {
+						$expectedUserName = $user->first_name . " " . $user->last_name;
+						$pageContent = writeConsentForm($expectedUserName,$grant_internal,$grant_public);
+						$pageContent .= "
+							<input type=hidden name='event_id' id='event_id' value='".$_GET['event_id']."'>
+							<input type=hidden name='presentation_type' id='presentation_type' value='".$_GET['presentation_type']."'>
+						";
 					}
 					else {
 					  $pageContent = "
@@ -131,7 +142,7 @@
 			<script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 			<script src='<?php echo($SETTINGS['FINEUPLOADER_FRONTEND_PATH']); ?>/s3.jquery.fine-uploader.min.js'></script>
 	    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
-
+	    <script src='../js/main.js'></script>
  			<script type="text/template" id="qq-template-s3">
         <div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="Drop files here">
             <div class="qq-total-progress-bar-container-selector qq-total-progress-bar-container">
@@ -221,77 +232,82 @@
 
 			<script>
 				$(document).ready(function () {
-					var noFile = false;                                                                 
-					qq.isFileOrInput = function(maybeFileOrInput) {
-						'use strict';
-						if (window.File && Object.prototype.toString.call(maybeFileOrInput) === '[object File]') {
-							return true;
-						}
+					if (typeof qq !== "undefined") {
+						var noFile = false;                                                                 
+						qq.isFileOrInput = function(maybeFileOrInput) {
+							'use strict';
+							if (window.File && Object.prototype.toString.call(maybeFileOrInput) === '[object File]') {
+								return true;
+							}
 
-						return qq.isInput(maybeFileOrInput);
-					};
-					$('#fine-uploader-s3').fineUploaderS3({
-						template: 'qq-template-s3',
-						request: { 
-							endpoint: 'https://<?php echo($SETTINGS['S3_BUCKET_NAME']); ?>.s3.amazonaws.com',
-							accessKey: '<?php echo($SETTINGS['AWS_SERVER_PRIVATE_KEY']); ?>',  
-							params: {
-												pid:'<?php echo($pid); ?>',
-											 	user_id:'<?php echo($user->id); ?>', 
-											 	event_id:'<?php echo($event_id); ?>',
-											 	language:'<?php echo($language); ?>',
-											 	presentation_type:'<?php echo($presentation_type); ?>',
-											 	access_code:'<?php echo($access_code); ?>'
-											 }
-						},
-						signature: {
-							endpoint: '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']."/".$SETTINGS['FINEUPLOADER_BACKEND_SCRIPT']); ?>'
-						},
-						uploadSuccess: {
-							endpoint: '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']."/".$SETTINGS['FINEUPLOADER_BACKEND_SCRIPT']); ?>?success',
-							params: {
-								isBrowserPreviewCapable: qq.supportedFeatures.imagePreviews
-							}
-						},
-						iframeSupport: {
-							localBlankPagePath: '/server/success.html'
-						},
-						cors: {
-							expected: true
-						},
-						chunking: {
-							enabled: true
-						},
-						resume: {
-							enabled: true
-						},
-						deleteFile: {
-							enabled: true,
-							method: 'POST',
-							endpoint: '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']."/".$SETTINGS['FINEUPLOADER_BACKEND_SCRIPT']); ?>'
-						},
-						validation: {
-							itemLimit: 5,
-							sizeLimit: '<?php echo($SETTINGS['S3_MAX_FILE_SIZE']); ?>'
-							// FVP TO DO : Ad extesions (mp4, mov, m4a ,etc)
-						},
-						thumbnails: {
-							placeholders: {
-								notAvailablePath: '<?php echo($SETTINGS['FINEUPLOADER_FRONTEND_PATH']); ?>/placeholders/not_available-generic.png',
-								waitingPath: '<?php echo($SETTINGS['FINEUPLOADER_FRONTEND_PATH']); ?>/placeholders/waiting-generic.png'
-							}
-						},
-						callbacks: {
-							onProgress: function(id,name,uploadBytes,totalBytes) {
-								var percent = (uploadBytes/totalBytes)*100;
-								$('.progress_status_percent').html(Math.round(percent)+'%');
-								if (percent == 100) {
-									$('.progress_status_label').html('Creating Audio File:');
-									getFFMPEGProgress('<?php echo($user->id) ;?>','<?php echo($event_id) ;?>','<?php echo($presentation_type) ;?>');
+							return qq.isInput(maybeFileOrInput);
+						};
+						$('#fine-uploader-s3').fineUploaderS3({
+							template: 'qq-template-s3',
+							request: { 
+								endpoint: 'https://<?php echo($SETTINGS['S3_BUCKET_NAME']); ?>.s3.amazonaws.com',
+								accessKey: '<?php echo($SETTINGS['AWS_SERVER_PRIVATE_KEY']); ?>',  
+								params: {
+													pid:'<?php echo($pid); ?>',
+												 	user_id:'<?php echo($user->id); ?>', 
+												 	event_id:'<?php echo($event_id); ?>',
+												 	language:'<?php echo($language); ?>',
+												 	presentation_type:'<?php echo($presentation_type); ?>',
+												 	access_code:'<?php echo($access_code); ?>',
+												 	grant_internal:'<?php echo($grant_internal); ?>',
+												 	grant_public:'<?php echo($grant_public); ?>'
+												 }
+							},
+							signature: {
+								endpoint: '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']."/".$SETTINGS['FINEUPLOADER_BACKEND_SCRIPT']); ?>'
+							},
+							uploadSuccess: {
+								endpoint: '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']."/".$SETTINGS['FINEUPLOADER_BACKEND_SCRIPT']); ?>?success',
+								params: {
+									isBrowserPreviewCapable: qq.supportedFeatures.imagePreviews
+								}
+							},
+							iframeSupport: {
+								localBlankPagePath: '/server/success.html'
+							},
+							cors: {
+								expected: true
+							},
+							chunking: {
+								enabled: true
+							},
+							resume: {
+								enabled: true
+							},
+							deleteFile: {
+								enabled: true,
+								method: 'POST',
+								endpoint: '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']."/".$SETTINGS['FINEUPLOADER_BACKEND_SCRIPT']); ?>'
+							},
+							validation: {
+								itemLimit: 5,
+								sizeLimit: '<?php echo($SETTINGS['S3_MAX_FILE_SIZE']); ?>'
+								// FVP TO DO : Ad extesions (mp4, mov, m4a ,etc)
+							},
+							thumbnails: {
+								placeholders: {
+									notAvailablePath: '<?php echo($SETTINGS['FINEUPLOADER_FRONTEND_PATH']); ?>/placeholders/not_available-generic.png',
+									waitingPath: '<?php echo($SETTINGS['FINEUPLOADER_FRONTEND_PATH']); ?>/placeholders/waiting-generic.png'
+								}
+							},
+							callbacks: {
+								onProgress: function(id,name,uploadBytes,totalBytes) {
+									var percent = (uploadBytes/totalBytes)*100;
+									$('.progress_status_percent').html(Math.round(percent)+'%');
+									if (percent == 100) {
+										$('.progress_status_label').html('Creating Audio File:');
+										getFFMPEGProgress('<?php echo($user->id) ;?>','<?php echo($event_id) ;?>','<?php echo($presentation_type) ;?>');
+									}
 								}
 							}
-						}
-					});
+
+						});
+					}
 				});
 				function getFFMPEGProgress(uid,eid,presentation_type) {
 					var url = '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']); ?>/ffmpegProgress.php';

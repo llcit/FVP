@@ -34,3 +34,16 @@
 			$("#userMsg").show();
 		}
 	}
+	function enableSubmit() {
+		$("#submitConsent").prop('disabled', false);
+	}
+	function grantConsent(userName) {
+		if ($("#userName").val() == userName) {
+		  $("#uploadForm").submit();
+		}
+		else {
+			alert("The page is expecting '" + userName + "'.  You typed '" + $("#userName").val() + "' Please enter your name carefully to match this!");
+			return false;
+		}
+
+	}
