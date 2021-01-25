@@ -326,7 +326,7 @@ function updateLog($log_id,$logData) {
             $updateString .= $comma . "`$key` = '$value'";
             $comma = ',';
         }
-        $updateString .= "`log_time`=NOW()";
+        $updateString .= "$comma `log_time`=NOW()";
         $sql = "UPDATE `upload_logs` SET " . $updateString . " WHERE `id`='" . $log_id ."'";
         $stmt= $pdo->prepare($sql)->execute();  
     }catch (Exception $e) {
