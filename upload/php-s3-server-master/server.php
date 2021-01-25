@@ -178,6 +178,7 @@
             $stream = fopen("s3://$expectedBucketName/$key", 'w');
             fwrite($stream, $fileContent);
             fclose($stream);
+            echo ("\n\nPut Transcript (writeVTT): " . $command['ObjectURL'] ."\n\n");
         }catch (S3Exception $e) {
             echo $e->getMessage();
         }
@@ -251,12 +252,15 @@
             }
         }
         try { 
-            $command = $client->getCommand('PutObject', array(
+            $stream = fopen("s3://$expectedBucketName/$key", 'w');
+            fwrite($stream, $fileContent);
+            fclose($stream);
+            /*$command = $client->getCommand('PutObject', array(
                 'Bucket' => $expectedBucketName,
                 'Key'    => "transcripts/$pid.vtt",
                 'Body'   => "$fileContent"
             ));
-            echo ("\n\nPut Transcript: " . $command['ObjectURL'] ."\n\n");
+            echo ("\n\nPut Transcript: " . $command['ObjectURL'] ."\n\n");*/
         }catch (S3Exception $e) {
             echo $e->getMessage();
         }
@@ -280,7 +284,7 @@
         }
     }
     function generateTranscript($tmpLink,$pid,$language) {
-        global $SETTINGS,$client,$expectedBucketName;
+        global $SETTINGS,$client,$expectedBucketName,$timers;
         $time_pre = microtime(true);
         $audio_extension = $SETTINGS['tmp_audio_extension'];
         echo ("\n\nRIP pid: $pid\n\n");
@@ -305,12 +309,16 @@
         try { 
             $key = "thumbs/$pid.jpg";
             echo ("\n\nKEY: $key\n\n");
-            $command = $client->getCommand('PutObject', array(
+            $fileContent = file_get_contents("./tmpThumbs/$pid.jpg");
+            $stream = fopen("s3://$expectedBucketName/$key", 'w');
+            fwrite($stream, $fileContent);
+            fclose($stream);
+            /*$command = $client->getCommand('PutObject', array(
                 'Bucket' => $expectedBucketName,
                 'Key' => $key,
                 'SourceFile' => "./tmpThumbs/$pid.jpg"
             ));
-            echo ("\n\nS3 Thumb: " . $command['ObjectURL'] . "\n\n");
+            echo ("\n\nS3 Thumb: " . $command['ObjectURL'] . "\n\n");*/
         }catch (S3Exception $e) {
             echo $e->getMessage();
         }
