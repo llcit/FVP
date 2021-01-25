@@ -4,10 +4,13 @@
 	use Aws\S3\Exception\S3Exception;
 	function deleteObject($id) {
 		$SETTINGS = parse_ini_file(__DIR__."/settings.ini");
-		$clientPrivateKey = $SETTINGS['AWS_CLIENT_SECRET_KEY'];
-		$serverPrivateKey = $SETTINGS['AWS_SERVER_PRIVATE_KEY'];
 		$expectedBucketName = $SETTINGS['S3_BUCKET_NAME'];
-		$client = getS3Client($clientPrivateKey, $serverPrivateKey);
+      $config = [
+          'region' => 'us-east-1',
+          'version' => 'latest'
+      ];
+      $sdk = new Aws\Sdk($config);
+      $client = $sdk->createS3();
 		try {
 			$video = "videos/$id.mp4";
 			$videoResult = $client->deleteObject([
@@ -58,11 +61,5 @@
 		}	
 		deleteObjectFromDB($id);	
 	}
-	function getS3Client($clientPrivateKey, $serverPrivateKey) {
-	return S3Client::factory(array(
-		'key' => $serverPrivateKey,
-		'secret' => $clientPrivateKey
-	));
-}
 
 ?>
