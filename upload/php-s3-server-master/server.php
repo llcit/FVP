@@ -55,7 +55,7 @@
             $video_extension = $matches[2];
             $pid = ($_REQUEST['pid'] > 0) ? $_REQUEST['pid'] : registerVideo($_REQUEST['user_id'],$_REQUEST['event_id'],$_REQUEST['presentation_type'],$video_extension,$_REQUEST['access_code']);
             if ($pid) {
-                $log_id = addToLog($pid); 
+                $log_id = initLogging($pid); 
                 $tmpLink = verifyFileInS3($_REQUEST['key']);
                 $language = $_REQUEST['language'];
                 $transcribeResult = generateTranscript($tmpLink,$pid,$language);
