@@ -302,3 +302,31 @@ function deleteObjectFromDB($id) {
         return $e->getMessage();
     }  
 }
+function initLogging($pid) {
+    global $pdo;
+    // new presentation
+    $sql = "INSERT INTO `upload_logs` (id,presentation_id,video_uploaded) 
+            VALUES (:upload_id,:event_id,:presentation_id,:video_uploaded)";
+    $stmt= $pdo->prepare($sql);
+    $stmt->bindValue(':id', null);
+    $stmt->bindValue(':presentation_id', $eid);
+    $stmt->bindValue(':video_uploaded', 1);
+    $stmt->execute();
+    $pid = $pdo->lastInsertId();
+    return $pid;
+}
+function updateLog($log_id,$logData) {
+    global $pdo; 
+    try { 
+        $updateString = '';
+        $comma = '';
+        foreach($logData as $key=>$value) {
+            $updateString .= $comma . "`$key` = '$value'";
+            $comma = ',';
+        }
+        $sql = "UPDATE `upload_logs` SET " . $updateString . " WHERE `id`='" . $log_id ."'";
+        $stmt= $pdo->prepare($sql)->execute();  
+    }catch (Exception $e) {
+      echo json_encode(array("error" => "$e"));
+    }
+}
