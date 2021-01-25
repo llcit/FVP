@@ -38,9 +38,9 @@
 					$access_code=md5(uniqid($salt, true));
 					$presentationData = getPresentationId($user->id,$event_id,$presentation_type);
 					$pid = $presentationData['pid'];
-					if (abs($presentationData[0]['grant_internal']) == 1) {
-						$grant_internal = $presentationData[0]['grant_internal'];
-						$grant_public = $presentationData[0]['grant_public'];
+					if (abs($presentationData['grant_internal']) == 1) {
+						$grant_internal = $presentationData['grant_internal'];
+						$grant_public = $presentationData['grant_public'];
 					}
 					else if(abs($_GET['grant_internal']) == 1) {
 						$grant_internal = $_GET['grant_internal'];
