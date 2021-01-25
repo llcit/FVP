@@ -306,10 +306,10 @@ function initLogging($pid) {
     global $pdo;
     // new presentation
     $sql = "INSERT INTO `upload_logs` (id,presentation_id,video_uploaded) 
-            VALUES (:upload_id,:event_id,:presentation_id,:video_uploaded)";
+            VALUES (:id,:presentation_id,:video_uploaded)";
     $stmt= $pdo->prepare($sql);
     $stmt->bindValue(':id', null);
-    $stmt->bindValue(':presentation_id', $eid);
+    $stmt->bindValue(':presentation_id', $pid);
     $stmt->bindValue(':video_uploaded', 1);
     $stmt->execute();
     $pid = $pdo->lastInsertId();
