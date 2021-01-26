@@ -346,7 +346,7 @@
 					});
 				}
 				function updateThumb(access_code) {
-					var url = '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']); ?>/../../generateThumb.php';
+					var url = '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']); ?>/generateThumb.php';
 					var thumb = $.ajax({
 					    url: url,
 					    type: 'GET',
