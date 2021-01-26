@@ -28,6 +28,7 @@
     .fv_text_box {
         border-radius: 4px;
         -moz-border-radius: 4px;
+        max-width:250px;
     }
     .fv_selects_wrapper {
         font-size:11px;
@@ -443,25 +444,12 @@
         height:210px!important;
     }
     .qq-upload-spinner {
-        background: url(loading.gif);
-
-element.style {
-}
-.qq-gallery .qq-hide {
-    display: none;
-}
-.qq-gallery .qq-upload-spinner {
-    display: inline-block;
-    background: url("../img/loading.gif");
-    position: absolute;
-    left: 50%;
-    margin-left: -7px;
-    top: 53px;
-    width: 100px;
-    height: 100px;
-    vertical-align: text-bottom;
-}
+        display: inline-block;
+        background: url("../img/loading.gif");
+        position: absolute;
+        left: 50%;
+        margin-left: -50px;
+        top: 53px;
+        width: 100px;
+        height: 100px;
     }
-    
-
-
