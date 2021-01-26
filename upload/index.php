@@ -33,9 +33,6 @@
 					$event_id = ($_GET['event_id']) ? $_GET['event_id']:0;
 					$language = getLanguage($_GET['event_id']);
 					$presentation_type = $_GET['presentation_type'];
-					// generate a unique code for public asccess
-					$salt = $user->id.$event_id.$presentation_type;
-					$access_code=md5(uniqid($salt, true));
 					$presentationData = getPresentationId($user->id,$event_id,$presentation_type);
 					$pid = $presentationData['pid'];
 					if (abs($presentationData['grant_internal']) == 1) {
@@ -56,6 +53,11 @@
 						";
 					}
 					else {
+						// generate a unique code for public asccess
+						$salt = $user->id.$event_id.$presentation_type;
+						$access_code=md5(uniqid($salt, true));
+						// get time offset for estimating transcription time based on past ratios to ffmpeg_exec
+						$execOffset = getExecOffset($language);
 						$pageContent = "
 											<div id='fine-uploader-s3'></div>
 						";
@@ -181,9 +183,9 @@
 												<div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-progress-bar-selector qq-progress-bar"></div>
 										</div>
 										<span class="qq-upload-spinner-selector qq-upload-spinner"></span>
-										<div class="qq-thumbnail-wrapper">
+										<div class="qq-thumbnail-wrapper fv_thumb_wrapper">
 												<a class="preview-link" target="_blank">
-														<img class="qq-thumbnail-selector" qq-max-size="120" qq-server-scale>
+														<img class="qq-thumbnail-selector" qq-max-size="205" qq-server-scale>
 												</a>
 										</div>
 										<button type="button" class="qq-upload-cancel-selector qq-upload-cancel">X</button>

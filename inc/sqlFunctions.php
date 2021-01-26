@@ -333,3 +333,19 @@ function updateLog($log_id,$logData) {
       echo json_encode(array("error" => "$e"));
     }
 }
+function getExecOffset($language) {
+    global $pdo;
+    $transcriptField = ($language == 'Russian') ? 'google_exec_time' : 'watson_exec_time';
+    try { 
+        $sql = "
+           SELECT AVG(`ffmpeg_exec_time`/`$transcriptField`) AS `offset` 
+           FROM `upload_logs`
+           WHERE `$transcriptField`>0
+        ";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchObject();
+    }catch (Exception $e) {
+      echo json_encode(array("error" => "$e"));
+    }
+}

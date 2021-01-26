@@ -434,6 +434,14 @@
     .deleteButton:hover {
         color:#911D03;
     }
+    .qq-thumbnail-wrapper {
+        height: 150px!important;
+        width: 215px!important;
+    }
+    .qq-upload-list li {
+        max-width:205px!important;
+        height:210px!important;
+    }
     
 
 
