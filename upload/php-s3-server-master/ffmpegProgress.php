@@ -1,8 +1,13 @@
 <?php
   include "../../inc/db_pdo.php";
   include "../../inc/sqlFunctions.php";
-	$pres = getPid($_GET['access_code']);
-	$pid = $pres->id;
+  if ($_GET['findBy'] == 'id') {
+  	$pid = $_GET['key'];
+  }
+  else {
+		$pres = getPid($_GET['key'],$_GET['findBy']);
+		$pid = $pres->id;
+  }
 	if (file_exists('./progress/'.$pid.'.txt')) {
 		$progress = file_get_contents('./progress/'.$pid.'.txt');
 		if ($progress == 100) {

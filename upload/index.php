@@ -62,6 +62,10 @@
 					}
 				}
 				$videoExistsMsg = '';
+				// used for ajax progress and thumb preview
+				// if we know the presentation id (i.e. on a reupload), we use it
+				// otherwise, use the unique access_code that we generated above
+				$findBy = 'access_code';
 				if ($pid) {
 					$videoExistsMsg = "
 						<p class='card-text'>
@@ -72,9 +76,8 @@
 								View saved video
 							</a>
 						</p>
-
 					";
-
+					$findBy = 'id';
 				}
 				function buildPresentatonSelect($events) {
 					if (count($events)==0) {
@@ -307,9 +310,16 @@
 										// video is done uploading
 										// move progress to ripping audio
 										$('.progress_status_label').html('Creating Audio File:');
-										var access_code = '<?php echo($access_code);?>';
-										updateThumb(access_code);
-										getFFMPEGProgress(access_code);
+										var key = '';
+										var findBy = '<?php echo($findBy);?>';
+										if (findBy == 'id') {
+											key = '<?php echo($pid);?>';
+										}
+										else {
+											key = '<?php echo($access_code);?>';
+										}
+										updateThumb(key,findBy);
+										getFFMPEGProgress(key,findBy);
 									}
 								}
 							}
@@ -317,12 +327,12 @@
 						});
 					}
 				});
-				function getFFMPEGProgress(access_code) {
+				function getFFMPEGProgress(key,findBy) {
 					var url = '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']); ?>/ffmpegProgress.php';
 					var request = $.ajax({
 					    url: url,
 					    type: 'GET',
-					    data: { access_code:access_code} ,
+					    data: { key:key,findBy,findBy} ,
 					    contentType: 'application/json; charset=utf-8'
 					});
 					request.done(function(progress) {
@@ -345,12 +355,12 @@
 					  console.log('Error in getting audio progress',textStatus);
 					});
 				}
-				function updateThumb(access_code) {
+				function updateThumb(key,findBy) {
 					var url = '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']); ?>/generateThumb.php';
 					var request = $.ajax({
 					    url: url,
 					    type: 'GET',
-					    data: { access_code:access_code} ,
+					    data: { key:key,findBy,findBy} ,
 					    contentType: 'application/json; charset=utf-8'
 					});
 					request.done(function(thumb) {
