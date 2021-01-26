@@ -374,26 +374,27 @@
 						console.log('Error in getting thumb',textStatus);
 					});
 				}
+				var transcibeProgress = 0;
 				var secondsToTranscribe = 0;
 				function transcribeProgress(ffmpeg_exec_time) {
 					var execOffset = '<?php echo($execOffset); ?>';
 					console.log("ffmpeg_exec_time: ",ffmpeg_exec_time);
 					console.log("execOffset: ",execOffset);
 					var estimatedSeconds = Math.ceil((ffmpeg_exec_time*execOffset));
+					console.log("estimatedSeconds: ",estimatedSeconds);
 					$('.progress_status_label').html('Generating transcript:');
-					var progress=0;
 					$('.qq-progress-bar-container-selector').show();
-					progress = Math.ceil((secondsToTranscribe/estimatedSeconds) * 100);
-					if (progress < 100) {
-						$('.qq-progress-bar-selector').css('width',progress+'%');
-						$('.progress_status_percent').html(progress+'%');
+					transcibeProgress = Math.ceil((secondsToTranscribe/estimatedSeconds) * 100);
+					if (transcibeProgress < 100) {
+						$('.qq-progress-bar-selector').css('width',transcibeProgress+'%');
+						$('.progress_status_percent').html(transcibeProgress+'%');
 					}
 					else {
 						$('.qq-progress-bar-selector').css('width','0%');
 						$('.qq-progress-bar-container-selector').hide();
 						secondsToTranscribe++;
 						setTimeout(function() {
-							transcribeProgress();
+							transcribeProgress(ffmpeg_exec_time);
 						},1000);
 
 					}
