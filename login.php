@@ -71,7 +71,7 @@
                                               <?php echo($msg); ?>
                                               <div>
                                                  <label for="username">Username:</label>
-                                                 <input type="text" class="textbox" id="username" name="username" placeholder="Username" />
+                                                 <input type="text" class="textbox fv_text_box" id="username" name="username" placeholder="Username" />
                                               </div>
                                               <div>
                                                  <label for="password">Password:</label>

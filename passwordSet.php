@@ -49,12 +49,12 @@
                         <input type='hidden' name='reset_link_token' value='$token'>
                         <div class='form-group'>
                            <label>Password</label>
-                           <input type='password' name='password' id='password' class='form-control'>
+                           <input type='password' name='password' id='password' class='form-control fv_text_box'>
                         </div>
                         <div class='rating'></div>
                         <div class='form-group'>
                            <label>Confirm Password</label>
-                           <input type='password' name='cpassword' id='cpassword' class='form-control'>
+                           <input type='password' name='cpassword' id='cpassword' class='form-control fv_text_box'>
                         </div>
                         <input type='submit' name='new-password' id='new-password' class='btn btn-primary fv_button' disabled>
                      </form>

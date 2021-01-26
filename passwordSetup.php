@@ -119,7 +119,7 @@
                                       <div class="form-group">
                                         <div>
                                            <label for="username">Email:</label>
-                                           <input type="text" class="textbox" id="email" name="email" placeholder="Email" / onkeyup="enableSend();">
+                                           <input type="text" class="textbox fv_text_box" id="email" name="email" placeholder="Email" / onkeyup="enableSend();">
                                         </div>
 
                                         <div>
