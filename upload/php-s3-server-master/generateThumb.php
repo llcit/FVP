@@ -12,7 +12,8 @@
 	$pres = getPid($_GET['access_code']);
 	$pid = $pres->id;
 	$key =  "thumbs/".$pid.".jpg";
-
+	echo("\naccess code:" . $_GET['access_code'] . "\n");
+	echo("\npid:" . $pid . "\n");
 	$config = [
 	    'region' => 'us-east-1',
 	    'version' => 'latest'
