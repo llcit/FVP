@@ -392,6 +392,7 @@
 							$('.qq-progress-bar-selector').css('width','0%');
 							$('.qq-progress-bar-container-selector').hide();
 						}
+					}
 				}
 				function setUploadVals() {
 					$('#uploadForm').submit();
