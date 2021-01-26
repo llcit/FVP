@@ -332,7 +332,7 @@
 					var request = $.ajax({
 					    url: url,
 					    type: 'GET',
-					    data: { key:key,findBy,findBy} ,
+					    data: { key:key,findBy:findBy} ,
 					    contentType: 'application/json; charset=utf-8'
 					});
 					request.done(function(progress) {
@@ -360,7 +360,7 @@
 					var request = $.ajax({
 					    url: url,
 					    type: 'GET',
-					    data: { key:key,findBy,findBy} ,
+					    data: { key:key,findBy:findBy} ,
 					    contentType: 'application/json; charset=utf-8'
 					});
 					request.done(function(thumb) {
