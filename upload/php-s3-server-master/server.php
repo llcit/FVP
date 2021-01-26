@@ -355,6 +355,7 @@
             ->format($output_dir . $pid . "." . $audio_extension) // extracts file informations
             ->get('duration'); 
         // clean up tmp files
+        unlink("./progress/$pid.txt");
         unlink("./tmpThumbs/$pid.jpg");
         unlink("./tmpThumbs/".$pid."_large.jpg");
         unlink("./tmpAudio/$audioFile");
