@@ -306,6 +306,9 @@
 							},
 							callbacks: {
 								onProgress: function(id,name,uploadBytes,totalBytes) {
+									if ($('.qq-thumbnail-selector').attr('src') != '../img/thumb_placeholder.png') {
+										$('.qq-thumbnail-selector').attr('src','../img/thumb_placeholder.png');
+									}
 									var percent = (uploadBytes/totalBytes)*100;
 									$('.progress_status_percent').html(Math.round(percent)+'%');
 									if (percent == 100) {
