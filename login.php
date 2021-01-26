@@ -75,7 +75,7 @@
                                               </div>
                                               <div>
                                                  <label for="password">Password:</label>
-                                                 <input type="password" class="textbox" id="password" name="password" placeholder="Password"/>
+                                                 <input type="password" class="textbox fv_text_box" id="password" name="password" placeholder="Password"/>
                                               </div>
                                               <div>
                                                  <input type="submit" class='btn btn-primary fv_button'value="Submit" name="login" id="login" />
