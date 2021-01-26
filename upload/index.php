@@ -349,7 +349,6 @@
 							},500);
 						}
 						else {
-							$('.qq-progress-bar-container-selector').hide();
 							$('.qq-progress-bar-selector').css('width','0%');
 							var endTime = new Date();
 							var ffmpeg_exec_time = endTime - startTime;
@@ -379,8 +378,20 @@
 					var execOffset = '<?php echo($execOffset); ?>';
 					console.log("ffmpeg_exec_time: ",ffmpeg_exec_time);
 					console.log("execOffset: ",execOffset);
-					var estimatedSeconds = Math.ceil((ffmpeg_exec_time*execOffset)/1000);
-					console.log("estimatedSeconds: ",estimatedSeconds);
+					var estimatedSeconds = Math.ceil((ffmpeg_exec_time*execOffset));
+					$('.progress_status_label').html('Generating transcript:');
+					var progress=0;
+					$('.qq-progress-bar-container-selector').show();
+					for (var i=0;i<=estimatedSeconds;i++) {
+						progress = Math.ceil((i/estimatedSeconds) * 100);
+						if (progress < 100) {
+							$('.qq-progress-bar-selector').css('width',progress+'%');
+							$('.progress_status_percent').html(progress+'%');
+						}
+						else {
+							$('.qq-progress-bar-selector').css('width','0%');
+							$('.qq-progress-bar-container-selector').hide();
+						}
 				}
 				function setUploadVals() {
 					$('#uploadForm').submit();
