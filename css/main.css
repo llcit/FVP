@@ -28,7 +28,6 @@
     .fv_text_box {
         border-radius: 4px;
         -moz-border-radius: 4px;
-        max-width:250px;
     }
     .fv_selects_wrapper {
         font-size:11px;
