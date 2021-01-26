@@ -330,6 +330,7 @@
 					}
 				});
 				function getFFMPEGProgress(key,findBy) {
+					if (typeof startTime == 'undefined') var startTime = new Date();
 					var url = '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']); ?>/ffmpegProgress.php';
 					var request = $.ajax({
 							url: url,
@@ -350,7 +351,9 @@
 						else {
 							$('.qq-progress-bar-container-selector').hide();
 							$('.qq-progress-bar-selector').css('width','0%');
-							console.log("DONE!");
+							var endTime = new Date();
+							var ffmpeg_exec_time = endTime - startTime;
+							transcribeProgress(ffmpeg_exec_time);
 						}
 					});
 					request.fail(function(jqXHR, textStatus) {
@@ -371,6 +374,13 @@
 					request.fail(function(jqXHR, textStatus) {
 						console.log('Error in getting thumb',textStatus);
 					});
+				}
+				function transcribeProgress(ffmpeg_exec_time) {
+					var execOffset = '<?php echo($execOffset); ?>';
+					console.log("ffmpeg_exec_time: ",ffmpeg_exec_time);
+					console.log("execOffset: ",execOffset);
+					var estimatedSeconds = Math.ceil((ffmpeg_exec_time*execOffset)/1000);
+					console.log("estimatedSeconds: ",estimatedSeconds);
 				}
 				function setUploadVals() {
 					$('#uploadForm').submit();

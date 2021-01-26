@@ -338,13 +338,13 @@ function getExecOffset($language) {
     $transcriptField = ($language == 'Russian') ? 'google_exec_time' : 'watson_exec_time';
     try { 
         $sql = "
-           SELECT AVG(`ffmpeg_exec_time`/`$transcriptField`) AS `offset` 
+           SELECT AVG(`$transcriptField`/`ffmpeg_exec_time`) AS `offset` 
            FROM `upload_logs`
            WHERE `$transcriptField`>0
         ";
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
-        return $stmt->fetchObject();
+        return $stmt->fetchObject()->offset;
     }catch (Exception $e) {
       echo json_encode(array("error" => "$e"));
     }
