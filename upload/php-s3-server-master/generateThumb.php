@@ -22,4 +22,21 @@
 
 	$link = getTempLink($expectedBucketName, $key);
 	echo($link);
+
+	function getTempLink($bucket, $key) {
+    global $client;
+    $tmpLink = '';
+    if (!$client) return null;
+    try {
+        $cmd = $client->getCommand('GetObject', [
+               'Bucket' => $bucket,
+               'Key' => $key
+       ]);
+       $request = $client->createPresignedRequest($cmd, '+60 minutes');
+     } catch (S3Exception $e) {
+         $tmpLink = new Exception($e->getMessage());
+     }
+    $tmpLink = (string)$request->getUri();
+    return $tmpLink;
+	}
 ?>
