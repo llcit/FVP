@@ -374,6 +374,7 @@
 						console.log('Error in getting thumb',textStatus);
 					});
 				}
+				var secondsToTranscribe = 0;
 				function transcribeProgress(ffmpeg_exec_time) {
 					var execOffset = '<?php echo($execOffset); ?>';
 					console.log("ffmpeg_exec_time: ",ffmpeg_exec_time);
@@ -382,16 +383,19 @@
 					$('.progress_status_label').html('Generating transcript:');
 					var progress=0;
 					$('.qq-progress-bar-container-selector').show();
-					for (var i=0;i<=estimatedSeconds;i++) {
-						progress = Math.ceil((i/estimatedSeconds) * 100);
-						if (progress < 100) {
-							$('.qq-progress-bar-selector').css('width',progress+'%');
-							$('.progress_status_percent').html(progress+'%');
-						}
-						else {
-							$('.qq-progress-bar-selector').css('width','0%');
-							$('.qq-progress-bar-container-selector').hide();
-						}
+					progress = Math.ceil((secondsToTranscribe/estimatedSeconds) * 100);
+					if (progress < 100) {
+						$('.qq-progress-bar-selector').css('width',progress+'%');
+						$('.progress_status_percent').html(progress+'%');
+					}
+					else {
+						$('.qq-progress-bar-selector').css('width','0%');
+						$('.qq-progress-bar-container-selector').hide();
+						secondsToTranscribe++;
+						setTimeout(function() {
+							transcribeProgress();
+						},1000);
+
 					}
 				}
 				function setUploadVals() {
