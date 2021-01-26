@@ -332,7 +332,7 @@
               $('.qq-progress-bar-selector').css('width',progress+'%');
               $('.progress_status_percent').html(progress+'%');
 				    	setTimeout(function() {
-				    		getFFMPEGProgress(uid,eid,presentation_type)
+				    		getFFMPEGProgress(access_code)
 				    	},500);
 				    }
 				    else {
