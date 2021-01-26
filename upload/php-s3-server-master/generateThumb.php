@@ -8,7 +8,7 @@
 
   include "../../inc/db_pdo.php";
   include "../../inc/sqlFunctions.php";
-  include "../../inc/S3LinkGen.php";
+
 	$pres = getPid($_GET['access_code']);
 	$pid = $pres->id;
 	$key =  "thumbs/".$pid.".jpg";
