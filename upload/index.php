@@ -306,6 +306,7 @@
 							},
 							callbacks: {
 								onProgress: function(id,name,uploadBytes,totalBytes) {
+									console.log('SRC: '. $('.qq-thumbnail-selector').attr('src'));
 									if ($('.qq-thumbnail-selector').attr('src') != '../img/thumb_placeholder.png') {
 										$('.qq-thumbnail-selector').attr('src','../img/thumb_placeholder.png');
 									}
