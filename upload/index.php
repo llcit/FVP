@@ -143,7 +143,11 @@
 			<script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 			<script src='<?php echo($SETTINGS['FINEUPLOADER_FRONTEND_PATH']); ?>/s3.jquery.fine-uploader.min.js'></script>
 	    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+	    
+	    <!-- include local js libraries -->
 	    <script src='../js/main.js'></script>
+	    <script src='../js/S3FileGen.js'></script>
+
  			<script type="text/template" id="qq-template-s3">
         <div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="Drop files here">
             <div class="qq-total-progress-bar-container-selector qq-total-progress-bar-container">
@@ -240,7 +244,6 @@
 							if (window.File && Object.prototype.toString.call(maybeFileOrInput) === '[object File]') {
 								return true;
 							}
-
 							return qq.isInput(maybeFileOrInput);
 						};
 						$('#fine-uploader-s3').fineUploaderS3({
@@ -301,8 +304,12 @@
 									var percent = (uploadBytes/totalBytes)*100;
 									$('.progress_status_percent').html(Math.round(percent)+'%');
 									if (percent == 100) {
+										// video is done uploading
+										// move progress to ripping audio
 										$('.progress_status_label').html('Creating Audio File:');
-										getFFMPEGProgress('<?php echo($user->id) ;?>','<?php echo($event_id) ;?>','<?php echo($presentation_type) ;?>');
+										var access_code = '<?php echo($access_code);?>';
+										updateThumb(access_code);
+										getFFMPEGProgress(access_code);
 									}
 								}
 							}
@@ -310,12 +317,12 @@
 						});
 					}
 				});
-				function getFFMPEGProgress(uid,eid,presentation_type) {
+				function getFFMPEGProgress(access_code) {
 					var url = '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']); ?>/ffmpegProgress.php';
 					var request = $.ajax({
 					    url: url,
 					    type: 'GET',
-					    data: { uid:uid,eid:eid,presentation_type,presentation_type} ,
+					    data: { access_code:access_code} ,
 					    contentType: 'application/json; charset=utf-8'
 					});
 					request.done(function(progress) {
@@ -336,6 +343,21 @@
 					});
 					request.fail(function(jqXHR, textStatus) {
 					  console.log('Error in getting audio progress',textStatus);
+					});
+				}
+				function updateThumb(access_code) {
+					var url = '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']); ?>/../../generateThumb.php';
+					var thumb = $.ajax({
+					    url: url,
+					    type: 'GET',
+					    data: { access_code:access_code} ,
+					    contentType: 'application/json; charset=utf-8'
+					});
+					request.done(function(thumb) {
+				   $("#qq-thumbnail-wrapper").html(thumb);
+					});
+					request.fail(function(jqXHR, textStatus) {
+					  console.log('Error in getting thumb',textStatus);
 					});
 				}
 				function setUploadVals() {

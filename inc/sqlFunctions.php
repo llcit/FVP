@@ -205,12 +205,12 @@ function getLanguage($event_id) {
     $row = $stmt->fetchObject();
     return $row->language;  
 }
-function getPid($uid,$eid,$presentation_type) {
+function getPid($access_code) {
     global $pdo;
     $sql = "
         SELECT p.`id`
         FROM `presentations` p 
-        WHERE p.`user_id`='$uid' AND p.`event_id`='$eid' AND p.`type`='$presentation_type'
+        WHERE p.`access_code`='$access_code'
         ";
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
