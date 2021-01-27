@@ -444,7 +444,8 @@
     }
     .qq-upload-spinner {
         background: url("../img/loading.gif")!important;
-        top: 53px!important;
+        top: 9px!important;
+        left: 53px!important;
         width: 100px!important;
         height: 100px!important;
     }
