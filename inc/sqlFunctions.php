@@ -249,7 +249,7 @@ function finalizePresentation($data) {
             }
         }
         $sql = "UPDATE presentations SET $setString WHERE $whereString";
-        $stmt= $pdo->prepare($sql)->execute($data);  
+        $stmt= $pdo->prepare($sql)->execute();  
     }catch (Exception $e) {
       echo json_encode(array("error" => "$e"));
     }
