@@ -307,10 +307,12 @@
 							callbacks: {
 								onProgress: function(id,name,uploadBytes,totalBytes) {
 									var base_url = '<?php echo($SETTINGS['base_url']); ?>';
-									console.log('SRC: ', $('.qq-thumbnail-selector').attr('src'));
-									if ($('.qq-thumbnail-selector').attr('src') != base_url + '/img/thumb_placeholder.png') {
-										$('.qq-thumbnail-selector').attr('src',base_url + '/img/thumb_placeholder.png');
+									if ($('.qq-thumbnail-selector').attr('src') != base_url + '/img/thumb_placeholder.gif') {
+										console.log('SRC before: ', $('.qq-thumbnail-selector').attr('src'));
+										$('.qq-thumbnail-selector').attr('src',base_url + '/img/thumb_placeholder.gif');
+										console.log('SRC after: ', $('.qq-thumbnail-selector').attr('src'));
 									}
+
 									var percent = (uploadBytes/totalBytes)*100;
 									$('.progress_status_percent').html(Math.round(percent)+'%');
 									if (percent == 100) {
