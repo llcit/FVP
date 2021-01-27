@@ -308,9 +308,8 @@
 								onProgress: function(id,name,uploadBytes,totalBytes) {
 									var base_url = '<?php echo($SETTINGS['base_url']); ?>';
 									if ($('.qq-thumbnail-selector').attr('src') != base_url + '/img/thumb_placeholder.gif') {
-										console.log('SRC before: ', $('.qq-thumbnail-selector').attr('src'));
 										$('.qq-thumbnail-selector').attr('src',base_url + '/img/thumb_placeholder.gif');
-										console.log('SRC after: ', $('.qq-thumbnail-selector').attr('src'));
+										$('.qq-thumbnail-selector').attr('src',base_url + '/img/thumb_placeholder.gif');
 									}
 
 									var percent = (uploadBytes/totalBytes)*100;

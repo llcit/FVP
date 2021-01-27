@@ -443,12 +443,8 @@
         height:210px!important;
     }
     .qq-upload-spinner {
-        display: inline-block;
-        background: url("../img/loading.gif");
-        position: absolute;
-        left: 50%;
-        margin-left: -50px;
-        top: 53px;
-        width: 100px;
-        height: 100px;
+        background: url("../img/loading.gif")!important;
+        top: 53px!important;
+        width: 100px!important;
+        height: 100px!important;
     }
