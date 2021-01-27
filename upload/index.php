@@ -306,9 +306,10 @@
 							},
 							callbacks: {
 								onProgress: function(id,name,uploadBytes,totalBytes) {
-									console.log('SRC: '. $('.qq-thumbnail-selector').attr('src'));
-									if ($('.qq-thumbnail-selector').attr('src') != '../img/thumb_placeholder.png') {
-										$('.qq-thumbnail-selector').attr('src','../img/thumb_placeholder.png');
+									var base_url = '<?php echo($SETTINGS['base_url']); ?>';
+									console.log('SRC: ', $('.qq-thumbnail-selector').attr('src'));
+									if ($('.qq-thumbnail-selector').attr('src') != base_url + '/img/thumb_placeholder.png') {
+										$('.qq-thumbnail-selector').attr('src',base_url + '/img/thumb_placeholder.png');
 									}
 									var percent = (uploadBytes/totalBytes)*100;
 									$('.progress_status_percent').html(Math.round(percent)+'%');
@@ -381,7 +382,6 @@
 				var transcibeProgress = 0;
 				var secondsToTranscribe = 0;
 				function transcribeProgress(ffmpeg_exec_time) {
-					var execOffset = '<?php echo($execOffset); ?>';
 					console.log("ffmpeg_exec_time: ",ffmpeg_exec_time);
 					console.log("execOffset: ",execOffset);
 					var estimatedSeconds = Math.ceil((ffmpeg_exec_time*execOffset));
@@ -392,15 +392,14 @@
 					if (transcibeProgress < 100) {
 						$('.qq-progress-bar-selector').css('width',transcibeProgress+'%');
 						$('.progress_status_percent').html(transcibeProgress+'%');
-					}
-					else {
-						$('.qq-progress-bar-selector').css('width','0%');
-						$('.qq-progress-bar-container-selector').hide();
 						secondsToTranscribe++;
 						setTimeout(function() {
 							transcribeProgress(ffmpeg_exec_time);
 						},1000);
-
+					}
+					else {
+						$('.qq-progress-bar-selector').css('width','0%');
+						$('.qq-progress-bar-container-selector').hide();
 					}
 				}
 				function setUploadVals() {
