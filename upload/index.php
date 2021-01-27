@@ -384,6 +384,7 @@
 				var transcibeProgress = 0;
 				var secondsToTranscribe = 0;
 				function transcribeProgress(ffmpeg_exec_time) {
+					var execOffset = '<?php echo($execOffset); ?>';
 					console.log("ffmpeg_exec_time: ",ffmpeg_exec_time);
 					console.log("execOffset: ",execOffset);
 					var estimatedSeconds = Math.ceil((ffmpeg_exec_time*execOffset));
