@@ -164,6 +164,7 @@
     }  
     function writeVTTFile($captionFile,$data,$language) {
         global $client,$expectedBucketName,$pid;
+        $success = 0;
         $languages = [
             'Arabic' => 'ar',
             'Chinese' => 'zh',
@@ -192,13 +193,16 @@
             $stream = fopen("s3://$expectedBucketName/$key", 'w');
             fwrite($stream, $fileContent);
             fclose($stream);
+            $success = 1;
         }catch (S3Exception $e) {
             echo $e->getMessage();
         }
+        return $success;
     } 
 
     function transcribe_Google($audioFile,$language) {
         global $expectedBucketName,$client,$pid,$SETTINGS,$logData;
+        $success = 0;
         $time_pre = microtime(true);
         $source = "./tmpAudio/$audioFile";
         $objectName = "$audioFile";
@@ -268,6 +272,7 @@
             $stream = fopen("s3://$expectedBucketName/$key", 'w');
             fwrite($stream, $fileContent);
             fclose($stream);
+            $success = 1;
         }catch (S3Exception $e) {
             echo $e->getMessage();
         }
@@ -355,7 +360,6 @@
             ->format($output_dir . $pid . "." . $audio_extension) // extracts file informations
             ->get('duration'); 
         // clean up tmp files
-        unlink("./progress/$pid.txt");
         unlink("./tmpThumbs/$pid.jpg");
         unlink("./tmpThumbs/".$pid."_large.jpg");
         unlink("./tmpAudio/$audioFile");

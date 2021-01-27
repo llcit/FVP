@@ -241,10 +241,10 @@ function finalizePresentation($data) {
         $comma = '';
         foreach($data as $key=>$value) {
             if($key == 'id') {
-                $whereString = "$key=:$key";
+                $whereString = "`$key`='$value'";
             }
             else {
-                $setString .= $comma . "$key=:$key";
+                $setString .= $comma . "`$key`='$value'";
                 $comma = ',';
             }
         }

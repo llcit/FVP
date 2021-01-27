@@ -444,14 +444,9 @@
     }
     .qq-upload-spinner {
         background: url("../img/loading.gif")!important;
-        top: 12px!important;
-        left: 53px!important;
-        width: 128px!important;
-        height: 128px!important;
-
-
-            background: url(../img/loading.gif)!important;
-    
-    width: 128px!important;
-    height: 128px!important;
+        top: 60px!important;
+        left: 63px!important;
+        width: 100px!important;
+        height: 100px!important;
+        background: url(../img/loading.gif)!important;
     }
