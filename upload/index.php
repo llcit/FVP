@@ -326,7 +326,7 @@
 										else {
 											key = '<?php echo($access_code);?>';
 										}
-										timerID=setTimeout(updateThumb(key,findBy),2000);
+										timerID=setTimeout(updateThumb(key,findBy),5000);
 										getFFMPEGProgress(key,findBy);
 									}
 								}
@@ -366,6 +366,7 @@
 					});
 				}
 				function updateThumb(key,findBy) {
+					console.log('Getting thumb...');
 					var url = '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']); ?>/generateThumb.php';
 					var request = $.ajax({
 							url: url,
