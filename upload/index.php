@@ -326,7 +326,7 @@
 										else {
 											key = '<?php echo($access_code);?>';
 										}
-										updateThumb(key,findBy);
+										timerID=setTimeout(updateThumb(key,findBy),2000);
 										getFFMPEGProgress(key,findBy);
 									}
 								}
