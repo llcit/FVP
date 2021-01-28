@@ -59,7 +59,17 @@
 						// get time offset for estimating transcription time based on past ratios to ffmpeg_exec
 						$execOffset = getExecOffset($language);
 						$pageContent = "
-											<div id='fine-uploader-s3'></div>
+										<div class='fv_upload_wrapper'>
+											<div id='fine-uploader-s3' class='fv_fu_S3_wrapper'></div>
+											<div class='fv-total-progress-container'>
+												<h4>Progress</h4>
+													<div class='progress_status' id='ps_upload' name='ps_upload'>Upload Video</div>
+													<div class='progress_status' id='ps_audio' name='ps_audio'>Extract Audio</div>
+													<div class='progress_status' id='ps_transcribe' name='ps_transcribe'>Creat Transcript</div>
+													<div class='progress_status' id='ps_cleanup' name='ps_cleanup'>Cleanup</div>
+													<a class='btn btn-primary ps_finished' id='ps_finished' name='ps_finished'>View Video</a>
+											</div>
+										</div>
 						";
 					}
 				}
@@ -154,9 +164,10 @@
 			<script src='../js/S3FileGen.js'></script>
 
  			<script type="text/template" id="qq-template-s3">
+
 				<div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="Drop files here">
-						<div class="qq-total-progress-bar-container-selector qq-total-progress-bar-container">
-								<div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-total-progress-bar-selector qq-progress-bar qq-total-progress-bar"></div>
+			 			<div class="loading animated fadeIn">Loading
+						   <div class="bg"></div>
 						</div>
 						<div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
 								<span class="qq-upload-drop-area-text-selector"></span>
@@ -306,6 +317,7 @@
 							},
 							callbacks: {
 								onProgress: function(id,name,uploadBytes,totalBytes) {
+									updateGlobalProgress('upload','active');
 									var base_url = '<?php echo($SETTINGS['base_url']); ?>';
 									if ($('.qq-thumbnail-selector').attr('src') != base_url + '/img/thumb_placeholder.gif') {
 										$('.qq-thumbnail-selector').attr('src',base_url + '/img/thumb_placeholder.gif');
@@ -317,6 +329,7 @@
 									if (percent == 100) {
 										// video is done uploading
 										// move progress to ripping audio
+										updateGlobalProgress('upload','success')
 										$('.progress_status_label').html('Creating Audio File:');
 										var key = '';
 										var findBy = '<?php echo($findBy);?>';
@@ -337,6 +350,39 @@
 						});
 					}
 				});
+				function updateGlobalProgress(stage,state) {
+					var stages = [
+						'upload',
+						'audio',
+						'transcribe',
+						'cleanup',
+						'finished'
+					];
+					$(".ps_finished").hide();
+					$('.fv_fu_S3_wrapper').show();
+					var progressStageId = "#ps_" + stage;
+					var progressStateId = "progress_" + state;
+					$(progressStageId).addClass(progressStateId);
+					var currentIndex = stages.indexOf(stage);
+					console.log("currentIndex: ",currentIndex);
+					if (currentIndex < stages.length-1) {
+						if (state != 'active') {
+							$(progressStageId).removeClass("progress_active");
+							// penultimate stage prompts finish
+							if(currentIndex == stages.length-2) {
+								console.log("stages.length: ",stages.length);
+								$(".ps_finished").show();
+							}
+							else {
+								var nextIndex = currentIndex + 1;
+								var nextStage = stages[nextIndex];
+								console.log("nextStage: ",nextStage);
+								$("#ps_" + nextStage).addClass("progress_active");
+							}
+						}
+					}
+
+				}
 				function getFFMPEGProgress(key,findBy) {
 					if (typeof startTime == 'undefined') var startTime = new Date();
 					var url = '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']); ?>/ffmpegProgress.php';
@@ -357,6 +403,7 @@
 							},500);
 						}
 						else {
+							updateGlobalProgress('audio','success');
 							$('.qq-progress-bar-selector').css('width','0%');
 							var endTime = new Date();
 							var ffmpeg_exec_time = endTime - startTime;
@@ -403,8 +450,12 @@
 						},1000);
 					}
 					else {
+						updateGlobalProgress('transcribe','success');
 						$('.qq-progress-bar-selector').css('width','0%');
 						$('.qq-progress-bar-container-selector').hide();
+						setTimeout(function() {
+							updateGlobalProgress('cleanup','success')
+						},1000);
 					}
 				}
 				function setUploadVals() {
