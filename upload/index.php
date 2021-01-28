@@ -61,7 +61,7 @@
 						$pageContent = "
 										<div class='fv_upload_wrapper'>
 											<div id='fine-uploader-s3' class='fv_fu_S3_wrapper'></div>
-											<div class='fv-total-progress-container'>
+											<div class='fv_total-progress-container'>
 												<h4>Progress</h4>
 													<div class='progress_status' id='ps_upload' name='ps_upload'>Upload Video</div>
 													<div class='progress_status' id='ps_audio' name='ps_audio'>Extract Audio</div>
@@ -253,6 +253,7 @@
 
 			<script>
 				$(document).ready(function () {
+					$('.fv_total-progress-container').hide();
 					if (typeof qq !== "undefined") {
 						var noFile = false;																																 
 						qq.isFileOrInput = function(maybeFileOrInput) {

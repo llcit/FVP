@@ -450,7 +450,7 @@
         height: 100px!important;
         background: url(../img/loading.gif)!important;
     }
-    .fv-total-progress-container {
+    .fv_total-progress-container {
         -display:none;
         display:inline-block;
         width:25%;
