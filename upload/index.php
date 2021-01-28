@@ -367,7 +367,8 @@
 							// penultimate stage prompts finish
 							if(currentIndex == stages.length-2) {
 								var regex = /([0-9]*)\.jpg/;
-								var vid = $('.qq-thumbnail-selector').prop('src').match(regex);
+								var match = $('.qq-thumbnail-selector').prop('src').match(regex);
+								var vid = match[1];
 								console.log("vid: ",vid);
 								$("#ps_finished").attr("href", '../player/index.php?v=' + vid);
 								$("#ps_finished").show();
