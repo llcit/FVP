@@ -438,9 +438,8 @@
         height: 150px!important;
         width: 215px!important;
     }
-    .qq-upload-list {
-        margin-left:auto!important;
-        margin-right:auto!important;
+    .qq-uploader {
+        text-align:center!important;
     }
     .qq-upload-list li {
         max-width:215px!important;

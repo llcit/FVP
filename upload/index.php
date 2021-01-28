@@ -315,6 +315,7 @@
 							},
 							callbacks: {
 								onProgress: function(id,name,uploadBytes,totalBytes) {
+									$('#qqfile').hide();
 									updateGlobalProgress('upload','active');
 									var base_url = '<?php echo($SETTINGS['base_url']); ?>';
 									if ($('.qq-thumbnail-selector').attr('src') != base_url + '/img/thumb_placeholder.gif') {
