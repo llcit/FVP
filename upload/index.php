@@ -360,7 +360,7 @@
 						'finished'
 					];
 					$(".ps_finished").hide();
-					$('.fv_fu_S3_wrapper').show();
+					$('.fv_total-progress-container').show();
 					var progressStageId = "#ps_" + stage;
 					var progressStateId = "progress_" + state;
 					$(progressStageId).addClass(progressStateId);
