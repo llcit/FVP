@@ -166,9 +166,6 @@
  			<script type="text/template" id="qq-template-s3">
 
 				<div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="Drop files here">
-			 			<div class="loading animated fadeIn">Loading
-						   <div class="bg"></div>
-						</div>
 						<div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
 								<span class="qq-upload-drop-area-text-selector"></span>
 						</div>
@@ -306,9 +303,9 @@
 								endpoint: '<?php echo($SETTINGS['FINEUPLOADER_BACKEND_PATH']."/".$SETTINGS['FINEUPLOADER_BACKEND_SCRIPT']); ?>'
 							},
 							validation: {
-								itemLimit: 5,
-								sizeLimit: '<?php echo($SETTINGS['S3_MAX_FILE_SIZE']); ?>'
-								// FVP TO DO : Ad extesions (mp4, mov, m4a ,etc)
+								itemLimit: 1,
+								sizeLimit: '<?php echo($SETTINGS['S3_MAX_FILE_SIZE']); ?>',
+								allowedExtensions: ['mp4']
 							},
 							thumbnails: {
 								placeholders: {
@@ -347,7 +344,6 @@
 									}
 								}
 							}
-
 						});
 					}
 				});
@@ -359,25 +355,26 @@
 						'cleanup',
 						'finished'
 					];
-					$(".ps_finished").hide();
+					$("#ps_finished").hide();
 					$('.fv_total-progress-container').show();
 					var progressStageId = "#ps_" + stage;
 					var progressStateId = "progress_" + state;
 					$(progressStageId).addClass(progressStateId);
 					var currentIndex = stages.indexOf(stage);
-					console.log("currentIndex: ",currentIndex);
 					if (currentIndex < stages.length-1) {
 						if (state != 'active') {
 							$(progressStageId).removeClass("progress_active");
 							// penultimate stage prompts finish
 							if(currentIndex == stages.length-2) {
-								console.log("stages.length: ",stages.length);
-								$(".ps_finished").show();
+								var regex = /([0-9]*)\.jpg/;
+								var vid = $('.qq-thumbnail-selector').prop('src').match(regex);
+								console.log("vid: ",vid);
+								$("#ps_finished").attr("href", '../player/index.php?v=' + vid);
+								$("#ps_finished").show();
 							}
 							else {
 								var nextIndex = currentIndex + 1;
 								var nextStage = stages[nextIndex];
-								console.log("nextStage: ",nextStage);
 								$("#ps_" + nextStage).addClass("progress_active");
 							}
 						}
