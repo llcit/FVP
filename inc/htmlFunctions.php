@@ -158,6 +158,23 @@
 		else {
 			$deleteButton = "&nbsp;";
 		}
+		if (abs($video['grant_public']) == 1)  {
+			$consent_pub_color = ($video['grant_public'] == 1) ? '#2EAE32' : '#BA3D40';
+		}
+		else {
+			$consent_pub_color = '#ccc';
+		}
+		if (abs($video['grant_internal']) == 1)  {
+			$consent_int_color = ($video['grant_internal'] == 1) ? '#2EAE32' : '#BA3D40';
+		}
+		else {
+			$consent_int_color = '#ccc';
+		}
+		$privacy = "  <span style='color:$consent_pub_color'>Public</span> - 
+									<span style='color:$consent_int_color'>Internal</span>
+							 ";
+
+
 		$duration = gmdate("i:s", $video['duration']);
 		$row = "
 							<div class='videoPanel col-sm-4' id='videoPanel_".$video['id']."' name='videoPanel_".$video['id']."'>
@@ -191,6 +208,9 @@
 											</span>
 											<span class='extras'>
 												$hasTranslation
+											</span>
+											<span class='extras' style='padding-left:15px;'>
+												$privacy
 											</span>
 											<span class='extras pull-right' style='padding-top:3px;'>
 												$duration
