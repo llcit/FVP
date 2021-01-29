@@ -520,3 +520,10 @@
         margin-left:15px;
         margin-right:15px;
     }
+    .fv_linkWrapper {
+        border: 1px solid gray;
+        border-radius: 3px;
+        padding:5px;
+        width:40%;
+
+    }

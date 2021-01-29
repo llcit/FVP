@@ -93,7 +93,7 @@
   	";
   	return $consentForm;
   }
-  function buildVideoList($videos) {
+  function buildVideoList($videos,$displayPublicLink=null) {
 		$count = 0;
 		$videoList = "<form id='videoData' name='videoData'>";
 		if ($videos) {
@@ -104,7 +104,7 @@
 					}
 					$videoList .= "<div class='row'>";
 				}
-				$videoList .= buildVideoRow($video);
+				$videoList .= buildVideoRow($video,$displayPublicLink);
 				$count++;
 			}
 			$videoList .= "</div>";
@@ -116,7 +116,7 @@
 		return $videoList;
 	}
 
-	function buildVideoRow($video) {
+	function buildVideoRow($video,$displayPublicLink=null) {
 		global $user;
 		$hasTranscript = '';
 		$hasTranslation = '';
@@ -175,51 +175,60 @@
 							 ";
 		$duration = gmdate("i:s", $video['duration']);
 		$row = "
-							<div class='videoPanel col-sm-4' id='videoPanel_".$video['id']."' name='videoPanel_".$video['id']."'>
-								<table border=0 cellpadding=0 cellspacing=0 width=100%>
-									<tr>
-										<td colspan=2>
-											<p class='studentName'>".$video['first_name']." ".$video['last_name']."</p>
-											$deleteButton
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class = 'thumbWrapper' id = 'thumb_".$video['id']."'>
-											</div>
-										</td>
-										<td>
-											<div class = 'videoDetails'>
-											<p class='details'>".$video['progYrs']."</p>
-											<p class='details'>".$video['city'].", ".$video['country']."</p>
-											<p class='details'>".$video['type']."</p>
-											<p class='details'>".$video['phase']."</p>
-											</div>
-											<input type=hidden id='videoData_".$video['id']."' name='videoData_".$video['id']."'
-											value='".json_encode($video)."'>
-										</td>
-									</tr>
-									<tr>
-										<td colspan=2>
-											<span class='extras'>
-												$hasTranscript
-											</span>
-											<span class='extras'>
-												$hasTranslation
-											</span>
-											<span class='extras' style='padding-left:15px;'>
-												$privacy
-											</span>
-											<span class='extras pull-right' style='padding-top:3px;'>
-												$duration
-											</span>
-										</td>
-									</tr>
-								</table>
-							</div>
-							<script>
-									var thumb = generateFile('thumb','".$video['id']."','jpg','');
-							</script>
-					 ";
+					<div class='videoPanel col-sm-4' id='videoPanel_".$video['id']."' name='videoPanel_".$video['id']."'>
+						<table border=0 cellpadding=0 cellspacing=0 width=100%>
+							<tr>
+								<td colspan=2>
+									<p class='studentName'>".$video['first_name']." ".$video['last_name']."</p>
+									$deleteButton
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class = 'thumbWrapper' id = 'thumb_".$video['id']."'>
+									</div>
+								</td>
+								<td>
+									<div class = 'videoDetails'>
+									<p class='details'>".$video['progYrs']."</p>
+									<p class='details'>".$video['city'].", ".$video['country']."</p>
+									<p class='details'>".$video['type']."</p>
+									<p class='details'>".$video['phase']."</p>
+									</div>
+									<input type=hidden id='videoData_".$video['id']."' name='videoData_".$video['id']."'
+									value='".json_encode($video)."'>
+								</td>
+							</tr>
+							<tr>
+								<td colspan=2>
+									<span class='extras'>
+										$hasTranscript
+									</span>
+									<span class='extras'>
+										$hasTranslation
+									</span>
+									<span class='extras' style='padding-left:15px;'>
+										$privacy
+									</span>
+									<span class='extras pull-right' style='padding-top:3px;'>
+										$duration
+									</span>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<script>
+							var thumb = generateFile('thumb','".$video['id']."','jpg','');
+					</script>
+					";
+		if ($displayPublicLink) {
+			$row .= "
+					<div class='fv_linkWrapper'>
+						<span class='extras'>
+							<b>Public Link:</b> http://video.thelanguageflagship.tech/player/index.php?v=".$video['id']."&ac=".$video['access_code']."
+						</span>
+					</div>
+			";
+		}
 		return $row;
 	}
