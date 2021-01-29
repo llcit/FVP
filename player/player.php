@@ -169,7 +169,7 @@
 				<div class='container'>
 	         <div class='row fv_main'>
 	            <div class='card fv_card'>
-	                <div class='card-body fv_card_body' style='border-bottom:solid 1px gray;'>
+	                <div class='card-body fv_card_body' style='border-bottom:solid 1px gray;max-height:65px;'>
 	                   <h2 class='card-title'>Access Denied</h2>
 	                   <p class='card-text'></p>
 	                </div>
