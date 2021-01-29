@@ -76,6 +76,19 @@
 		}
 		$isOwner = ($user->id == $presentationData[0]['user_id']) ? true : false;
 		$isShowcase = ($presentationData[0]['is_showcase']==1) ? true : false;
+		$displayVideo;
+		if (
+				!$isOwner && $user->role != 'admin' && 
+				$user->role != 'staff' && (
+					$presentationData[0]['grant_public'] != 1 &&
+					$_GET['ac'] != $presentationData[0]['access_code']
+				)
+			) {
+			$displayVideo = false;
+		}
+		else {
+			$displayVideo = true;
+		}
 		if($isOwner && !$isShowcase) {
 			if ($editCaptions) {
 				$editControls = "
@@ -130,6 +143,47 @@
 		else {
 			$hasTranscript = $presentationData[0]['transcript_raw'];
 			$hasTranslation = $presentationData[0]['translation_raw'];		
+		}
+		if ($displayVideo) {
+			$pageContent = "
+			  <div id='player'>
+				  <video id='video1' preload='auto' width='480' height='360' poster='../ableplayer/media/wwa.jpg' data-able-player data-transcript-div='transcript' playsinline $editCaptionTag>
+			";
+			if ($hasTranscript) {
+				$pageContent .= "<track kind='captions' src='".$SETTINGS['base_url']. "/inc/S3LinkGen.php?type=transcript&id=".$_GET['v']."&ext=vtt' srclang='".$languages[$presentationData[0]['language']]."' label='".$presentationData[0]['language']."'/>";
+			} 
+			if ($hasTranslation) {
+				$pageContent .= "<track kind='captions' src='".$SETTINGS['base_url']. "/inc/S3LinkGen.php?type=translation&id=".$_GET['v']."&ext=vtt' srclang='en' label='English'/>";
+			}
+			if ($presentationData[0]['annotations'] != '') {
+				$pageContent .= "$descriptionTracks";
+			}
+			$pageContent .= "
+				  </video>
+				</div>
+				<div id='transcript'></div>
+			";
+		}
+		else {
+			$pageContent = "
+				<div class='container'>
+	         <div class='row fv_main'>
+	            <div class='card fv_card'>
+	                <div class='card-body fv_card_body' style='border-bottom:solid 1px gray;'>
+	                   <h2 class='card-title'>Access Denied</h2>
+	                   <p class='card-text'></p>
+	                </div>
+	                <div class='fv_pageContent'>
+					          <p>
+					  					You do not have sufficient permissions to view this video.  
+					  					Because it is not marked as public, you would need to obtain a 
+					  					public link from the owner of the video.
+					          </p>
+	   	            </div>
+	            </div>
+	          </div>
+	      </div>
+	     ";
 		}
 	?>
 	<!-- Style for this example only -->
@@ -229,23 +283,7 @@
 			<?php echo($editControls); ?>
 		</form>
 		<main role="main">
-		  <div id="player">
-			  <video id="video1" preload="auto" width="480" height="360" poster="../ableplayer/media/wwa.jpg" data-able-player data-transcript-div="transcript" playsinline <?php echo("$editCaptionTag"); ?> >
-					<?php
-						// content for files generated in ableplayer.js:: loadTextTracks()
-						if ($hasTranscript) {
-							echo("<track kind='captions' src='".$SETTINGS['base_url']. "/inc/S3LinkGen.php?type=transcript&id=".$_GET['v']."&ext=vtt' srclang='".$languages[$presentationData[0]['language']]."' label='".$presentationData[0]['language']."'/>");
-						} 
-						if ($hasTranslation) {
-							echo("<track kind='captions' src='".$SETTINGS['base_url']. "/inc/S3LinkGen.php?type=translation&id=".$_GET['v']."&ext=vtt' srclang='en' label='English'/>");
-						}
-						if ($presentationData[0]['annotations'] != '') {
-							echo("$descriptionTracks");
-						}
-					?>
-			  </video>
-			</div>
-			<div id="transcript"></div>
+			<?php echo($pageContent); ?>
 		</main>
 	</body>
 </html>

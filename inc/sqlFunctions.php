@@ -45,8 +45,10 @@
     }
     if ($where == '') $where = '1';
     $sql = "
-        SELECT pres.`id`,pres.`extension`,pres.`description`,pres.`duration`,pres.`transcript_raw`,pres.`transcript_final`,pres.`grant_internal`,pres.`grant_public`,
-               pres.`translation_raw`,pres.`translation_final`,pres.`annotations`,u.`first_name`,u.`last_name`,
+        SELECT pres.`id`,pres.`extension`,pres.`description`,pres.`duration`,pres.`transcript_raw`,
+               pres.`transcript_final`,pres.`translation_raw`,pres.`translation_final`,pres.`annotations`,
+               pres.`grant_internal`,pres.`grant_public`,pres.`access_code`,
+               u.`first_name`,u.`last_name`,
                pres.`user_id`,i.`name` as `institution`,prog.`name` as `program`,prog.`progYrs`,prog.`language`,
                DATE_FORMAT(e.`start_date`,'%M %Y') as `date`, pres.`type`,e.`phase`,e.`city`,e.`country`,pres.`is_showcase`
         FROM `presentations` pres 

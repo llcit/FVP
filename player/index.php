@@ -188,7 +188,7 @@
 				<?php echo($userControls); ?>
 			</form>
 		</div>
-		<iframe class='playerFrame' src='./player.php?v=<?php echo($videoId); ?>&t=<?php echo(implode(',',$includeTracks)); ?>&cm=<?php echo($captionMode);?>&language=<?php echo($_GET['language']); ?>' allowfullscreen>
+		<iframe class='playerFrame' src='./player.php?v=<?php echo($videoId); ?>&t=<?php echo(implode(',',$includeTracks)); ?>&cm=<?php echo($captionMode);?>&language=<?php echo($_GET['language']); ?>&ac=<?php echo($_GET['ac']); ?>' allowfullscreen>
 		</iframe>
   	</div>
 

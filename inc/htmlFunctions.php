@@ -5,7 +5,7 @@
 	  $links = [
 			['label'=>'Login','href'=>$SETTINGS['base_url'].'/login.php','req'=>['anonymous']],
 			['label'=> 'Your Videos','href'=>$SETTINGS['base_url'].'/personal.php','req'=>['student']],
-			['label'=>'Upload Video','href'=>$SETTINGS['base_url'].'/upload/','req'=>['student','staff','admin']],
+			['label'=>'Upload Video','href'=>$SETTINGS['base_url'].'/upload/','req'=>['student']],
 			['label'=>'Manage Events','href'=>$SETTINGS['base_url'].'/manage/','req'=>['staff','admin']],
 			['label'=>'Video Showcase','href'=>$SETTINGS['base_url'].'/player/index.php?sc=1','req'=>[]],
 			['label'=>'Video Archive','href'=>$SETTINGS['base_url'].'/archive.php','req'=>['staff','admin']],
