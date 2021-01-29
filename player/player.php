@@ -78,7 +78,7 @@
 		$isShowcase = ($presentationData[0]['is_showcase']==1) ? true : false;
 		$displayVideo;
 		if (
-				!$isOwner && $user->role != 'admin' && 
+				!$isOwner && !$isShowcase && $user->role != 'admin' && 
 				$user->role != 'staff' && (
 					$presentationData[0]['grant_public'] != 1 &&
 					$_GET['ac'] != $presentationData[0]['access_code']
