@@ -173,8 +173,6 @@
 		$privacy = "  <span style='color:$consent_pub_color'>Public</span> - 
 									<span style='color:$consent_int_color'>Internal</span>
 							 ";
-
-
 		$duration = gmdate("i:s", $video['duration']);
 		$row = "
 							<div class='videoPanel col-sm-4' id='videoPanel_".$video['id']."' name='videoPanel_".$video['id']."'>
