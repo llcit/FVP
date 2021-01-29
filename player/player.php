@@ -61,7 +61,7 @@
 		$presentationData = getVideos($videoId,'id');
 		$allTracks = 'linguistic,professional,cutural';
 		$includeTracks = ($_GET['t']) ? $_GET['t'] : $allTracks;
-		$editCaptions = ($_GET['cm'] == 'edit' && $_POST['saveCaptions'] != 1)? true : false;
+		$editCaptions = ($_GET['cm'] == 'edit' && $_POST['saveCaptions'] != 1 && $_POST['translateCaptions'] != 1)? true : false;
 		if ($editCaptions) {
 			$editCaptionTag = 'editCaptions';
 			echo("<script src='../js/captionEditor.js'></script>");

@@ -61,8 +61,8 @@
         padding-top:25px;
     }
     .fv_filterButton {
-        padding:15px;
-        margin:20px,;
+        -padding:15px;
+        -margin:20px,;
     }
     .footer {
         position: fixed;
