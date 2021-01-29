@@ -54,7 +54,7 @@
 					</label>
 				</span>
 				<span class='form-check card_text fv_pageContent' style='white-space: nowrap;'>
-					<input class='form-check-input' type='radio' name='grant_internal' id='grant_internal' value='0' ".$isChecked_internal[-1].">
+					<input class='form-check-input' type='radio' name='grant_internal' id='grant_internal' value='-1' ".$isChecked_internal[-1].">
 					<label class='form-check-label' for='grant_internal'>
 						I do grant not permission to post this video on the internal website for the Flagship community.
 					</label>
@@ -70,7 +70,7 @@
 					</label>
 				</span>
 				<span class='form-check card_text fv_pageContent' style='white-space: nowrap;'>
-					<input class='form-check-input' type='radio' name='grant_public' id='grant_public' value='0' ".$isChecked_public[-1].">
+					<input class='form-check-input' type='radio' name='grant_public' id='grant_public' value='-1' ".$isChecked_public[-1].">
 					<label class='form-check-label' for='grant_public'>
 						I do grant not permission to post this video 
 						on the public website for the Flagship community.
