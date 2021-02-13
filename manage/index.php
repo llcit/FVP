@@ -10,13 +10,13 @@
       // highight active pill for context
       $active = [];
       $active[$context] = 'active';
-      include "../inc/db_pdo.php";
-      include "../inc/dump.php";
-      include "../inc/sqlFunctions.php";
-      include "../inc/htmlFunctions.php";
-      include "./inc/".$context.".php";
+      include_once "../inc/db_pdo.php";
+      include_once "../inc/dump.php";
+      include_once "../inc/sqlFunctions.php";
+      include_once "../inc/htmlFunctions.php";
+      include_once "./inc/".$context.".php";
       $SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
-      include "../inc/SESMailer.php";
+      include_once "../inc/SESMailer.php";
       require '../vendor/autoload.php';
       use PHPMailer\PHPMailer\PHPMailer;
       use PHPMailer\PHPMailer\Exception;
@@ -94,7 +94,6 @@
           }
           if ($_POST['send'] == 1) {
             $mailer = new PHPMailer(true);
-            include "../inc/SESMailer.php";
             $emailUser = getSavedUser($_POST['post_id']);
             $url = $SETTINGS['base_url']."/passwordSetup.php?email=".$emailUser->email;
             $link = "<a href='$url'>$url</a>";
