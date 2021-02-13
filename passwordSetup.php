@@ -3,6 +3,9 @@
     <head>
       <?php
         $SETTINGS = parse_ini_file(__DIR__."/inc/settings.ini");
+        require '/vendor/autoload.php';
+        use PHPMailer\PHPMailer\PHPMailer;
+        use PHPMailer\PHPMailer\Exception;
         include "./inc/dump.php";
         include "./inc/SESMailer.php";
         include "./inc/db_pdo.php";
