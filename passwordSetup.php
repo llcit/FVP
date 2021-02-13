@@ -2,9 +2,6 @@
 <html lang="en">
     <head>
       <?php
-        require 'vendor/autoload.php';
-        use PHPMailer\PHPMailer\PHPMailer;
-        use PHPMailer\PHPMailer\Exception;
         $SETTINGS = parse_ini_file(__DIR__."/inc/settings.ini");
         require '/vendor/autoload.php';
         use PHPMailer\PHPMailer\PHPMailer;
