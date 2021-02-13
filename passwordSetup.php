@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
       <?php
+        $SETTINGS = parse_ini_file(__DIR__."/inc/settings.ini");
         include "./inc/dump.php";
         include "./inc/SESMailer.php";
         include "./inc/db_pdo.php";
@@ -15,7 +16,6 @@
              $expFormat = mktime(
              date("H"), date("i"), date("s"), date("m") ,date("d")+1, date("Y")
              );
-            $SETTINGS = parse_ini_file(__DIR__."/inc/settings.ini");
             $expDate = date("Y-m-d H:i:s",$expFormat);
             $success = updatePassword($password,$emailId,$token,$expDate); 
             $link = "<p>Click or copy & paste the link below to set your password.</p> <a href='".$SETTINGS['password_reset_base_url']."/passwordSet.php?email=".$emailId."&token=".$token."'>".$SETTINGS['password_reset_base_url']."/passwordSet.php?email=".$emailId."&token=".$token."</a>";
