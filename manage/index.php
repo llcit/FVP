@@ -16,6 +16,9 @@
       include "../inc/htmlFunctions.php";
       include "./inc/".$context.".php";
       $SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
+      require '../vendor/autoload.php';
+      use PHPMailer\PHPMailer\PHPMailer;
+      use PHPMailer\PHPMailer\Exception;
 			$pageTitle = "Flagship Video Project";
 			$subTitle = "Manage $contextLabel"."s";
 			$titleText = "You may select an existing $context to edit or add a new $context. ";
@@ -89,9 +92,6 @@
             }
           }
           if ($_POST['send'] == 1) {
-            require '../vendor/autoload.php';
-            use PHPMailer\PHPMailer\PHPMailer;
-            use PHPMailer\PHPMailer\Exception;
             $mailer = new PHPMailer(true);
             include "../inc/SESMailer.php";
             $emailUser = getSavedUser($_POST['post_id']);
