@@ -52,6 +52,7 @@
                                   </div>
           ";
         }
+        $disabled = ($_GET['email']) ? "" : "disabled";
       ?>
       <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
       <!-- Able Player CSS -->
@@ -98,7 +99,7 @@
                                         </div>
 
                                         <div>
-                                           <input type="submit" value="Send Link" name="password-reset" id="password-reset" class='btn btn-primary fv_button' disabled/>
+                                           <input type="submit" value="Send Link" name="password-reset" id="password-reset" class='btn btn-primary fv_button' <?php echo($disabled); ?>/>
                                         </div>
                                      </div>
                                   </div>
