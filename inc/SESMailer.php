@@ -1,11 +1,6 @@
 <?php
-  require '/vendor/autoload.php';
-  use PHPMailer\PHPMailer\PHPMailer;
-  use PHPMailer\PHPMailer\Exception;
-	function sendMail($vars) {
+	function sendMail($mailer,$vars) {
 		global $SETTINGS;
-		$mailer = new PHPMailer();
-		$mail = new PHPMailer(true);
 		$recipient = $vars['recipient'];
 		$subject = $vars['subject'];
 		$bodyText = $vars['bodyText'];

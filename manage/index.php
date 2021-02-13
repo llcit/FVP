@@ -89,6 +89,10 @@
             }
           }
           if ($_POST['send'] == 1) {
+            require '../vendor/autoload.php';
+            use PHPMailer\PHPMailer\PHPMailer;
+            use PHPMailer\PHPMailer\Exception;
+            $mailer = new PHPMailer(true);
             include "../inc/SESMailer.php";
             $emailUser = getSavedUser($_POST['post_id']);
             $url = $SETTINGS['base_url']."/passwordSetup.php?email=".$emailUser->email;
@@ -101,7 +105,7 @@
               'bodyHtml' => "<p>You have been added to the system with $role privileges. 
                              To set up your password, click the following link :</p><p>$link</p>"
             ];
-            $response = sendMail($emailVars);
+            $response = sendMail($mailer,$emailVars);
             if ($response == 'success') {
               $userMsg =  "Email sent.";
               $msgClass = "success";
@@ -303,6 +307,7 @@
         <input type='hidden' id='manage' name='manage' value =0>
         <input type='hidden' id='save' name='save' value =0>
         <input type='hidden' id='remove' name='remove' value =0>
+        <input type='hidden' id='save' name='save' value =0>
       </form>
       <div class="footer">
         <p> </p>

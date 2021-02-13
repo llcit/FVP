@@ -9,6 +9,10 @@
         include "./inc/sqlFunctions.php";
         $userMsg = '';
         if (isset($_POST['password-reset']) && $_POST['email']) {
+          require '/vendor/autoload.php';
+          use PHPMailer\PHPMailer\PHPMailer;
+          use PHPMailer\PHPMailer\Exception;
+          $mailer = new PHPMailer(true);
           $emailId = $_POST['email'];
           $userExists = getExistingUser($emailId,null);
           if($userExists){
@@ -26,7 +30,7 @@
               'bodyHtml' => "<h1>Password Reset for the Flagship Video Project</h1>
                              <p>Click On This Link to Reset Your Password:  ".$link."</p>"
             ];
-            $response = sendMail($emailVars);
+            $response = sendMail($mailer,$emailVars);
             if ($response == 'success') {
               $userMsg =  "Check your email and click on the link to set your new password.";
               $msgClass = "success";
