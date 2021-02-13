@@ -1,4 +1,7 @@
 <?php
+  require '../vendor/autoload.php';
+  use PHPMailer\PHPMailer\PHPMailer;
+  use PHPMailer\PHPMailer\Exception;
 	function sendMail($vars) {
 		$mailer = new PHPMailer();
 		$mail = new PHPMailer(true);
