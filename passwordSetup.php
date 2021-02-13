@@ -6,6 +6,7 @@
         use PHPMailer\PHPMailer\PHPMailer;
         use PHPMailer\PHPMailer\Exception;
         include "./inc/dump.php";
+        include "./inc/SESMailer.php";
         include "./inc/db_pdo.php";
         include "./inc/sqlFunctions.php";
         $userMsg = '';
@@ -21,45 +22,21 @@
             $expDate = date("Y-m-d H:i:s",$expFormat);
             $success = updatePassword($password,$emailId,$token,$expDate); 
             $link = "<p>Click or copy & paste the link below to set your password.</p> <a href='".$SETTINGS['password_reset_base_url']."/passwordSet.php?email=".$emailId."&token=".$token."'>".$SETTINGS['password_reset_base_url']."/passwordSet.php?email=".$emailId."&token=".$token."</a>";
-
-
-            $mailer = new PHPMailer();
-            $recipient = $_POST['email'];
-            $subject = 'Flagship Video: Reset Password';
-            $bodyText =  "Click On This Link to Reset Password '.$link.'";
-            $bodyHtml = '<h1>Password Reset for the Flagship Video Project</h1>
-                <p>Click On This Link to Reset Password '.$link.'</p>';
-            $mail = new PHPMailer(true);
-            try {
-              $mail->CharSet =  "utf-8";
-              $mail->isSMTP();
-              $mail->setFrom($SETTINGS['sender'], $SETTINGS['senderName']);
-              $mail->Username   = $SETTINGS['usernameSmtp'];
-              $mail->Password   = $SETTINGS['passwordSmtp'];
-              $mail->Host       = $SETTINGS['hostSmtp'];
-              $mail->Port       = $SETTINGS['portSmtp'];
-              $mail->SMTPAuth   = true;
-              $mail->SMTPSecure = 'tls';
-              $mail->addCustomHeader('X-SES-CONFIGURATION-SET', $configurationSet);
-
-              // Specify the message recipients.
-              $mail->addAddress($recipient);
-              // You can also add CC, BCC, and additional To recipients here.
-
-              // Specify the content of the message.
-              $mail->isHTML(true);
-              $mail->Subject    = $subject;
-              $mail->Body       = $bodyHtml;
-              $mail->AltBody    = $bodyText;
-              $mail->Send();
+            $emailVars = [
+              'recipient' => $_POST['email'],
+              'subject' => "Flagship Video: Reset Password",
+              'bodyText' => "Click On This Link to Reset Your Password: ".$link,
+              'bodyHtml' => "<h1>Password Reset for the Flagship Video Project</h1>
+                             <p>Click On This Link to Reset Your Password:  ".$link."</p>"
+            ];
+            $response = sendMail($emailVars);
+            if ($response == 'success') {
               $userMsg =  "Check your email and click on the link to set your new password.";
               $msgClass = "success";
-            } catch (phpmailerException $e) {
-                $userMsg =  "An error occurred. {$e->errorMessage()}"; //Catch errors from PHPMailer.
-                $msgClass = "error";
-            } catch (Exception $e) {
-                $userMsg =  "Email not sent. {$mail->ErrorInfo}"; //Catch errors from Amazon SES.
-                $msgClass = " error";
+            }
+            else {
+              $userMsg =  $response;
+              $msgClass = " error";
             }
           }
           else {
@@ -78,6 +55,7 @@
       <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
       <!-- Able Player CSS -->
       <link rel="stylesheet" href="./css/main.css" type="text/css"/>
+      <script src='./js/main.js'></script>
 
       <script>
         function enableSend() {
@@ -86,10 +64,6 @@
             document.getElementById("password-reset").disabled = false;
           }
 
-        }
-        function isEmail(email) {
-          var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-          return regex.test(email);
         }
       </script>
     </head>

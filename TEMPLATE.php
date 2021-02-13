@@ -27,7 +27,7 @@
 			    exit(header("location:./login.php"));
 			  } 
 			  else {
-			  	$user = getUser($pdo,$_SESSION['username']);
+			  	$user = getUser($_SESSION['username']);
           $navLinks = writeNavLinks($user->role,'header');
 			  	$userName = "<h5 style='display:inline'>" . $user->first_name . " " . $user->last_name . "</h5>";
 			  }

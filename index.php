@@ -15,7 +15,7 @@
 			    $role = 'anonymous'; 
 			  } 
 			  else {
-			  	$user = getUser($pdo,$_SESSION['username']);
+			  	$user = getUser($_SESSION['username']);
 			  	$role =  $user->role;
 			  	$userName = "<h5 style='display:inline'>" . $user->first_name . " " . $user->last_name . "</h5>";
           if ($user) {

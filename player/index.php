@@ -9,7 +9,7 @@
 	$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
 	session_start();
 	$videoId = ($_GET['v']) ? $_GET['v'] : 204;
-	$user = getUser($pdo,$_SESSION['username']);
+	$user = getUser($_SESSION['username']);
 	if (!isset($_SESSION['username'])) { 
     $role = 'anonymous'; 
   } 

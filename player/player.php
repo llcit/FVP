@@ -32,7 +32,7 @@
 
 	<?php
 		session_start();
-		$user = getUser($pdo,$_SESSION['username']);
+		$user = getUser($_SESSION['username']);
 		$videoId = ($_GET['v']) ? $_GET['v'] : 86;
 		if ($_POST['saveCaptions']) {
 			include "./saveCaptionEdits.php";
