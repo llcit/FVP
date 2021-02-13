@@ -88,6 +88,34 @@
               ";
             }
           }
+          if ($_POST['send'] == 1) {
+            include "../inc/SESMailer.php";
+            $emailUser = getSavedUser($_POST['post_id']);
+            $url = $SETTINGS['base_url']."/passwordSetup.php?email=".$emailUser->email;
+            $link = "<a href='$url'>$url</a>";
+            $emailVars = [
+              'recipient' => $emailUser->email,
+              'subject' => "Welcome to the Flagship Video Project",
+              'bodyText' => "You have been added to the system with $role privileges. 
+                             To set up your password, click the following link : $url",
+              'bodyHtml' => "<p>You have been added to the system with $role privileges. 
+                             To set up your password, click the following link :</p><p>$link</p>"
+            ];
+            $response = sendMail($emailVars);
+            if ($response == 'success') {
+              $userMsg =  "Email sent.";
+              $msgClass = "success";
+            }
+            else {
+              $userMsg =  "There was a problem sending the email to " . 
+                          $emailUser->email . ": <p>" . $response ."</p>";
+              $msgClass = "error";
+            }
+
+
+
+
+          }
           $existing = getExisting();
           $displayList = formatList($existing);
           if ($user->role == 'admin' || $user->role == 'staff') {
@@ -153,6 +181,11 @@
         $('#remove').val(0);
         $('#post_id').val(0);
         $('#manageForm').submit();        
+      }
+      function sendInvite(user_id) {
+        $('#send').val(1);
+        $('#post_id').val(user_id);
+        $('#manageForm').submit(); 
       }
       $( document ).ready(function() {
         $( function() {

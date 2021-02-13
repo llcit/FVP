@@ -11,7 +11,7 @@
 	        JOIN `affiliations` a on a.`user_id`=u.`id`
 	        LEFT JOIN `presentations` pres on pres.`user_id`=u.`id`
 	        WHERE a.`role` = 'admin' OR a.`role` = 'staff'  
-	        GROUP BY u.`id` 
+	        GROUP BY u.`id`,a.`role` 
 	        ORDER BY u.`last_name`,u.`first_name` DESC
 	        ";
 	    $stmt = $pdo->prepare($sql);
@@ -108,7 +108,7 @@
         $deleteButton = "";
       }
     	$inviteButton = "
-                        <a href='#' data-href='javascript:remove(".$thisUser['id'].")' class='btn btn-sm btn-success fv_mng_btn' data-toggle='tooltip' data-placement='top' title='Send Invite'>
+                        <a href='sendInvite(".$thisUser['id'].")' data-href='javascript:remove(".$thisUser['id'].")' class='btn btn-sm btn-success fv_mng_btn' data-toggle='tooltip' data-placement='top' title='Send Invite'>
                           <i class='fa fa-paper-plane' aria-hidden='true'></i>
                         </a>
       	";
