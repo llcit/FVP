@@ -16,6 +16,7 @@
       include "../inc/htmlFunctions.php";
       include "./inc/".$context.".php";
       $SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
+      include "../inc/SESMailer.php";
       require '../vendor/autoload.php';
       use PHPMailer\PHPMailer\PHPMailer;
       use PHPMailer\PHPMailer\Exception;
@@ -108,12 +109,20 @@
             $response = sendMail($mailer,$emailVars);
             if ($response == 'success') {
               $userMsg =  "Email sent.";
-              $msgClass = "success";
+              $msg = "
+                <div class='msg success'>
+                  Email sent to " . 
+                  $emailUser->email . "
+                </div>
+              ";
             }
             else {
-              $userMsg =  "There was a problem sending the email to " . 
-                          $emailUser->email . ": <p>" . $response ."</p>";
-              $msgClass = "error";
+              $msg = "
+                <div class='msg error'>
+                  There was a problem sending the email to " . 
+                  $emailUser->email . ": <p>" . $response ."</p>
+                </div>
+              ";
             }
 
 
@@ -307,7 +316,7 @@
         <input type='hidden' id='manage' name='manage' value =0>
         <input type='hidden' id='save' name='save' value =0>
         <input type='hidden' id='remove' name='remove' value =0>
-        <input type='hidden' id='save' name='save' value =0>
+        <input type='hidden' id='send' name='send' value =0>
       </form>
       <div class="footer">
         <p> </p>
