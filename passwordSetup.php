@@ -2,6 +2,9 @@
 <html lang="en">
     <head>
       <?php
+        require 'vendor/autoload.php';
+        use PHPMailer\PHPMailer\PHPMailer;
+        use PHPMailer\PHPMailer\Exception;
         $SETTINGS = parse_ini_file(__DIR__."/inc/settings.ini");
         require '/vendor/autoload.php';
         use PHPMailer\PHPMailer\PHPMailer;
@@ -12,9 +15,6 @@
         include "./inc/sqlFunctions.php";
         $userMsg = '';
         if (isset($_POST['password-reset']) && $_POST['email']) {
-          require '/vendor/autoload.php';
-          use PHPMailer\PHPMailer\PHPMailer;
-          use PHPMailer\PHPMailer\Exception;
           $mailer = new PHPMailer(true);
           $emailId = $_POST['email'];
           $userExists = getExistingUser($emailId,null);
