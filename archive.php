@@ -107,7 +107,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Flagship Video Archive</title>
-<!-- Able Player CSS -->
 <link rel="stylesheet" href="./css/main.css" type="text/css"/>
 <script>
   var base_url = '<?php echo($SETTINGS['base_url']); ?>';

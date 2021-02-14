@@ -192,7 +192,7 @@
 		if ($allowDelete) {
 			$deleteButton = "
 											<a href='javascript:deleteVideo(".$video['id'].")'>
-												<i class='fas fa-times-circle deleteButton pull-right'></i>
+												<i class='fas fa-times-circle deleteButton float-right'></i>
 											</a>
 			";
 		}

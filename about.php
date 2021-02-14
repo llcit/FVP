@@ -15,8 +15,6 @@
 			  } 
 			  else {
 			  	$user = getUser($_SESSION['username']);
-          $navLinks = writeNavLinks($user->role,'header');
-			  	$userName = "<h5 style='display:inline'>" . $user->first_name . " " . $user->last_name . "</h5>";
 			  }
 
        	$pageContent = "
@@ -28,30 +26,15 @@
           </p>
        	";
       ?>
-      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-      <!-- Able Player CSS -->
       <link rel="stylesheet" href="./css/main.css" type="text/css"/>
-      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
-      <script>
-
-      </script>
     </head>
     <body>
       <div class="panel panel-default">
-        <div class="panel-heading fv_heading">
-          <img src='./img/logo_lf.png' class='logo'>
-          <span class='pageTitle'>
-          		<?php echo($pageTitle); ?>
-          </span>
-          <span class='pull-right'>
-            <img src='./img/logo_ac.png' class='logo'>
-          </span>
-        </div>
-        <div class='fv_subHeader'>
-          <?php echo($navLinks); ?>
-          <?php echo($welcomeMsg); ?>
-        </div>
-        <form method="post" action="">
+        <?php 
+          $header = writePageHeader($SETTINGS['base_url'],$user,$pageTitle);
+          echo($header); 
+        ?>
+        <div class="panel-body" style='margin-top:30px;'>
           <div class="container">
              <div class="row fv_main">
                 <div class="card fv_card">
@@ -66,7 +49,7 @@
 
               </div>
           </div>
-        </form>
+        </div>
         <div class="footer">
           <p> </p>
         </div>

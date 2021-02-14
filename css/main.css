@@ -449,9 +449,8 @@
     }
     div.videoListWrapper {
         max-width:1000px;
-        text-align:center;
         padding-left: 10%;
-        -padding-right: auto;
+        margin-bottom: 30px;
     }
     p.studentName {
         font-weight:bold;

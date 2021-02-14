@@ -15,17 +15,7 @@
   else {
   	$user = getUser($_SESSION['username']);
   	$role =  $user->role;
-  	$userName = "<h5 style='display:inline'>" . $user->first_name . " " . $user->last_name . "</h5>";
-    if ($user) {
-      $welcomeMsg = "
-        $userName 
-        <a href='".$SETTINGS['base_url']."/logout.php' class='btn btn-xs btn-icon btn-danger'>
-          <i class='fa fa-sign-out-alt' aria-hidden='true'></i>
-        </a>
-      ";
-    }
   }
-  $navLinks = writeNavLinks($role,'header');
 	if ($_GET['sc']) {
 		$filters = [
 			'is_showcase'=>['1']
@@ -101,7 +91,6 @@
 	?>
 <meta charset="UTF-8">
 <title>Flagship Video Project</title>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <?php 
 	$captionMode = $_GET['cm'];
 	if ($captionMode == 'edit'){
@@ -127,8 +116,7 @@
   }
   .playerFrame {
 	  width:100%;
-	  height:<?php echo($playerHeight); ?>;
-	  
+	  height:<?php echo($playerHeight); ?>; 
 	  margin-top:20px;
 	  border:none;
 	
@@ -150,37 +138,19 @@
 	  padding:5px 10px !important; 
   }
 </style>
-
-<!-- Dependencies -->
-<script src="../ableplayer/thirdparty/modernizr.custom.js"></script>
-<script src="../ableplayer/thirdparty/js.cookie.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
-
 <!-- Able Player CSS -->
 <link rel="stylesheet" href="../ableplayer/build/ableplayer.css" type="text/css"/>
 <link rel="stylesheet" href="../css/main.css" type="text/css"/>
 <!-- Able Player JavaScript -->
 <script src="../ableplayer/build/ableplayer.js"></script>
-
 </head>
 
 <body>
   <div class="panel panel-default">
-  	<div class="panel-heading fv_heading">
-  		<img src='../img/logo_lf.png'>
-  		Flagship Video Showcase 
-  		<span class='pull-right'>
-				<img src='../img/logo_ac.png'>
-			</span>
-  	</div>
-    <div class='fv_subHeader'>
-      <?php echo($navLinks); ?>
-      <?php echo($welcomeMsg); ?>
-    </div>
+    <?php 
+      $header = writePageHeader($SETTINGS['base_url'],$user,$pageTitle);
+      echo($header); 
+    ?>
   	<div class="panel-body">
 		<div class="controlWrapper">
 			<form id='userControls'>
