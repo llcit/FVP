@@ -110,14 +110,6 @@
 <!-- Able Player CSS -->
 <link rel="stylesheet" href="./css/main.css" type="text/css"/>
 <script>
-	$( document ).ready(function() {
-    $('.videoPanel').each(function() {
-    	$(this).click(function(){ 
-    		playVideo($(this).attr('id'),false);
-    	});
-    });
-    // set for S3FileGen
-  });
   var base_url = '<?php echo($SETTINGS['base_url']); ?>';
 </script>
 <script src='./js/S3FileGen.js'></script>
@@ -144,6 +136,13 @@
 		function clearFilters() {
 			window.location.href='./archive.php';
 		}
+		$( document ).ready(function() {
+	    $('.videoPanel').each(function() {
+	    	$(this).click(function(){ 
+	    		playVideo($(this).attr('id'),false);
+	    	});
+	    });
+	  });
 	</script>
 	<form id='deleteForm' name='deleteForm' method='post'>
 		<input type='hidden' id='deleteVideo' name='deleteVideo' value='0'>

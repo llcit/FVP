@@ -1,5 +1,6 @@
 function generateFile(type,id,ext,language) {
   var signed;
+  console.log("base_url:",base_url);
   var url = base_url + "/inc/S3LinkGen.php?type=" + type + "&id=" + id + "&ext=" + ext;
   // avoid CORS issues with captions
   if (type == 'translation' || type == 'transcript') {
