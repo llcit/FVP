@@ -80,9 +80,8 @@
     foreach($existingEvents as $event) {
       if ($event['numVideos'] == 0) {
         $deleteButton = "
-
                           <a href='#' data-href='javascript:remove(".$event['id'].")' data-toggle='modal' data-target='#confirm-remove' class='btn btn-sm btn-danger' class='deleteButton'>
-                            <i class='far fa-times-circle' aria-hidden='true' data-toggle='tooltip' data-placement='top' title='Delete User'></i>
+                            <i class='far fa-times-circle' aria-hidden='true' data-toggle='tooltip' data-placement='top' title='Delete Event'></i>
                           </a>
         ";
       }
@@ -94,7 +93,7 @@
                         <td>".$event['date']."</td>
                         <td>".$event['city'].",".$event['country']."</td>
                         <td>
-                          <a href='javascript:manage(".$event['id'].")' class='btn btn-sm btn-primary'data-toggle='tooltip' data-placement='top' title='Edit User'>
+                          <a href='javascript:manage(".$event['id'].")' class='btn btn-sm btn-primary'data-toggle='tooltip' data-placement='top' title='Edit Event'>
                             <i class='fa fa-cog' aria-hidden='true'></i>
                           </a>
                           $deleteButton
@@ -194,38 +193,51 @@
     ";
     $eventManager .= $endDateSelect;    
     $locations = getLocations();
-    $citySelect = "
-        <div class='fv_inputWrapper'>
-          <label for='city' style='width:110px;'>City:</label>
-          <select class='form-control fv_inline_select' id='city' name='city'>
-            <option value=''>Select City</option>
-    ";
-    $countrySelect = "
-        <div class='fv_inputWrapper'>
-          <label for='country' style='width:110px;'>Country:</label>
-          <select class='form-control fv_inline_select' id='country' name='country'>
-            <option value=''>Select Country</option>
+    $locationSelect = "
+        <div id='location_select' class='fv_inputWrapper'>
+          <label for='location' style='width:110px;'>Location:</label>
+          <select class='form-control fv_inline_select' id='location' name='location'>
+            <option value=''>Select Location</option>
     ";
     foreach($locations as $location) {
-      $selected_city = ($location['city'] == $savedEvent->city) ? 'SELECTED' : '';
-      $selected_country = ($location['country'] == $savedEvent->country) ? 'SELECTED' : '';
-      $citySelect .= "
-          <option value='".$location['city']."' $selected_city>".$location['city']."</option>
-      ";
-      $countrySelect .= "
-          <option value='".$location['country']."' $selected_country>".$location['country']."</option>
+      $selected_location = ($location['city'] == $savedEvent->city && $location['country'] == $savedEvent->country) ? 'SELECTED' : '';
+      $locationSelect .= "
+          <option value='".$location['city'].",".$location['country']."' $selected_location>".$location['city'].", ".$location['country']."</option>
       ";
     }
-    $citySelect .= "
+    $locationSelect .= "
           </select>
         </div>
     ";
-    $countrySelect .= "
-          </select>
-        </div>
+    $eventManager .= $locationSelect;
+    $eventManager .= "
+    		<div class='new_location_wrapper' id='new_location_wrapper'>
+	    		<a id='location_action_button' href='javascript:showAddLocation();' class='btn btn-xs btn-icon btn-primary location_action_button'>
+	            <i id='location_action_icon' class='fa fa-plus'></i>
+	          </a>
+	    		<span>Add New Location</span>
+	    		<div id='location_addNew' class='location_addNew'>
+						<div class='float-right fv_buttonWrapper'>
+				      <span>
+				        <a href='javascript:addLocation();' class='btn btn-primary' id='addLocationButton'>
+				        <i class='fa fa-save' aria-hidden='true'></i>
+				          Add
+				        </a>
+				      </span>
+				    </div>
+
+		    	 <div class='fv_inputWrapper'>
+					   <label for='city' style='min-width:80px;'>City:</label>
+					   <input type='text' class='fv_text_box fv_inline_select' id='city' name='city' placeholder='City' value=''/>
+						</div>
+		    	 	<div class='fv_inputWrapper'>
+					   <label for='country' style='min-width:80px;'>Country:</label>
+					   <input type='text' class='fv_text_box fv_inline_select' id='country' name='country' placeholder='Country' value=''/>
+						</div>
+		    	</div>
+	    	</div>
+
     ";
-    $eventManager .= $citySelect;
-    $eventManager .= $countrySelect;
     $eventManager .= "
       </div>
     ";

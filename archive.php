@@ -17,15 +17,7 @@
     header('Location: ./login.php'); 
   } 
   $user = getUser($_SESSION['username']);
-  $navLinks = writeNavLinks($user->role,'header');
-  $userName = "<h5 style='display:inline'>" . $user->first_name . " " . $user->last_name . "</h5>";
-  $welcomeMsg = "
-    $userName 
-    <a href='".$SETTINGS['base_url']."/logout.php' class='btn btn-xs btn-icon btn-danger'>
-      <i class='fa fa-sign-out-alt' aria-hidden='true'></i>
-    </a>
-  ";
-    if ($user->role == 'admin' || $user->role == 'staff') {
+  if ($user->role == 'admin' || $user->role == 'staff') {
 		/*  ------------ READ IN POST VALS ------------- */
 		$filters = [
 			'programs'=>$_POST['programs'],
@@ -35,7 +27,6 @@
 			'types'=>$_POST['types'],
 			'periods'=>$_POST['periods'],
 		];
-		//vdump($filters);
 		/*  ------------ /READ IN POST VALS ------------- */
 		/* ---------- MAIN ---------- */
 		$videoData = getVideos(null,null,$filters);
@@ -47,7 +38,6 @@
 				$videoList
 			</div>
 			";
-
 		/* ---------- /MAIN ---------- */
 	}
 	else {
@@ -69,15 +59,15 @@
 			'periods'=>getUniqueVals('events','phase')
 		];
 		$pullDowns = "
+			<form id='userControls' method='post'>
 			<div class='fv_selects_wrapper'>
-				<form id='userControls' method='post'>
-				<div class='actionButtons pull-right'>
-					<div id='updateFilters' name='updateFilters'>
-						<button type='button' class='btn btn-primary fv_filterButton' id='update' name='update' onclick='updateUI()'>Update</button>	
-						<br><br><br>				
+			<h4 style='display:inline'>Filter Results: </h4>
+				<span class='actionButtons clearfix'>
+					<span id='updateFilters' name='updateFilters' class='float-right'>
 						<button type='button' class='btn btn-primary fv_filterButton' id='clear' name='clear' onclick='clearFilters()'>Clear Filters</button>
-					</div>
-				</div>
+						<button type='button' class='btn btn-primary fv_filterButton' id='update' name='update' onclick='updateUI()'>Update</button>				
+					</span>
+				</span>
 		";
 		$i=0;
 		foreach($fullList as $k=>$values) {
@@ -88,11 +78,11 @@
 				$pullDowns .= "<div class='row fv_select_row'>";
 			}
 			$i++;
-			$input = "<select id='".$k."[]' name='".$k."[]' class='selectpicker fv_select_wrapper' multiple>";
+			$input = "<select id='".$k."[]' name='".$k."[]' class='selectpicker' multiple data-width='100%'>";
 			foreach($values as $k2=>$val) {
 				foreach($val as $key=>$value) {
-					if ($filters[$key]) {
-						$selected = (in_array($value,$filters[$key])) ? "selected='selected'" : "";
+					if ($filters[$k]) {
+						$selected = (in_array($value,$filters[$k])) ? "selected='selected'" : "";
 					}
 					$input .= "<option value='$value' $selected>".ucfirst($value)."</option>";
 				}
@@ -117,17 +107,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Flagship Video Archive</title>
-
-<!-- Dependencies -->
-<script src="./ableplayer/thirdparty/modernizr.custom.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="./ableplayer/thirdparty/js.cookie.js"></script>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
 <!-- Able Player CSS -->
 <link rel="stylesheet" href="./css/main.css" type="text/css"/>
 <script>
@@ -144,39 +123,28 @@
 <script src='./js/S3FileGen.js'></script>
 <script src='./js/main.js'></script>
 </head>
-
 <body>
-
-<div class="panel panel-default">
-	<div class="panel-heading fv_heading">
-		<img src='./img/logo_lf.png'>
-		&nbsp;&nbsp;&nbsp;Flagship Video Archive 
-		<span class='pull-right'>
-			<img src='./img/logo_ac.png'>
-		</span>
+	<div class="panel panel-default">
+	  <?php 
+	    $header = writePageHeader($SETTINGS['base_url'],$user,$pageTitle);
+	    echo($header); 
+	  ?>
+		<div class="panel-body">
+			<?php echo($pageContent); ?>
+		</div>
+		<div class="footer">
+		  <p> </p>
+		</div>
 	</div>
-	<div class='fv_subHeader'>
-		<?php echo($navLinks); ?>
-    <?php echo($welcomeMsg); ?>
-  </div>
-	<div class="panel-body">
-		<?php echo($pageContent); ?>
-	</div>
-
-	<!-- to write transcript to an external div, pass id of an empty div via data-transcript-div -->
-
 	<script language='javascript'>
-			function updateUI() {
-				$("#userControls").submit();
-			};
+		function updateUI() {
+			$("#userControls").submit();
+		};
 
-			function clearFilters() {
-				window.location.href='index.php';
-			}
+		function clearFilters() {
+			window.location.href='./archive.php';
+		}
 	</script>
-	<div class="footer">
-	  <p> </p>
-	</div>
 	<form id='deleteForm' name='deleteForm' method='post'>
 		<input type='hidden' id='deleteVideo' name='deleteVideo' value='0'>
 	</form>

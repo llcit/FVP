@@ -88,7 +88,7 @@
       if ($program['numAffiliations'] == 0) {
         $deleteButton = "
                           <a href='#' data-href='javascript:remove(".$program['id'].")' data-toggle='modal' data-target='#confirm-remove' class='btn btn-sm btn-danger' class='deleteButton'>
-                            <i class='far fa-times-circle' aria-hidden='true' data-toggle='tooltip' data-placement='top' title='Delete User'></i>
+                            <i class='far fa-times-circle' aria-hidden='true' data-toggle='tooltip' data-placement='top' title='Delete Program'></i>
                           </a>
         ";
       }
@@ -101,7 +101,7 @@
                         <td>".$program['end']."</td>
                         <td>".$program['progYrs']."</td>
                         <td>
-                          <a href='javascript:manage(".$program['id'].")' class='btn btn-sm btn-primary' data-toggle='tooltip' data-placement='top' title='Edit User'>
+                          <a href='javascript:manage(".$program['id'].")' class='btn btn-sm btn-primary' data-toggle='tooltip' data-placement='top' title='Edit Program'>
                             <i class='fa fa-cog' aria-hidden='true'></i>
                           </a>
                           $deleteButton

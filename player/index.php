@@ -9,12 +9,11 @@
 	$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
 	session_start();
 	$videoId = ($_GET['v']) ? $_GET['v'] : 204;
-	$user = getUser($_SESSION['username']);
 	if (!isset($_SESSION['username'])) { 
     $role = 'anonymous'; 
   } 
   else {
-  	$user = getUser($pdo,$_SESSION['username']);
+  	$user = getUser($_SESSION['username']);
   	$role =  $user->role;
   	$userName = "<h5 style='display:inline'>" . $user->first_name . " " . $user->last_name . "</h5>";
     if ($user) {

@@ -69,9 +69,6 @@
         max-width:1200px;
         min-height:95vh;
     }
-    .fv-nav-container {
-        margin: 20px 0px;
-    }
     .fv_pageContent {
         padding:20px;
     }
@@ -87,15 +84,17 @@
         border-radius:3px;
         max-width:1000px;
         padding:10px;
-        margin-left:10px;
-        margin-bottom:20px;
+        margin: 10px 10px 20px 10px;
     }
     .fv_inputWrapper{
         margin-top:25px;
     }
     .fv_select_row {
-        max-width:700px;
-
+        -max-width:700px;
+    }
+    .fv_video_table_wrapper {
+        width:100%!important;
+        max-width: 1000px!important;        
     }
     .fv_inline_select {
         display:inline;
@@ -108,12 +107,15 @@
         margin-top:5px;
         margin-bottom:5px;
     }
+    .actionButtons {
+        width:100%;
+        -text-align:right;
+    }
     .fv_filterButton_wrapper {
         padding-top:25px;
     }
     .fv_filterButton {
-        -padding:15px;
-        -margin:20px,;
+        margin: 0px 10px;
     }
     .footer {
         position: fixed;
@@ -162,7 +164,12 @@
       min-height: 45px;
       overflow: auto;
     }
-    /* Login */
+    .fv-nav-container {
+        margin-top: 20px;
+        margin-bottom: 20px!important;
+        margin-left:0px;
+        max-width:800px;
+    }
     .fv_main{
         border: 1px solid gray;
         border-radius: 3px;
@@ -396,6 +403,7 @@
       display:block;
       margin:3px;
       min-width:215px;
+      max-width:250px;
     }
     div.videoPanel:hover{
       background-color: #CAF5D1;
@@ -440,8 +448,10 @@
       line-height: 95%;
     }
     div.videoListWrapper {
-        max-width:900px;
-        -border: solid 1px #000;
+        max-width:1000px;
+        text-align:center;
+        padding-left: 10%;
+        -padding-right: auto;
     }
     p.studentName {
         font-weight:bold;
@@ -561,6 +571,19 @@
     .fv_mng_btn {
         margin:2px;
     }
-
-
-
+    .new_location_wrapper{
+        margin-left:135px;
+        margin-top:25px; 
+        border:solid 1px #000;
+        border-radius:5px; 
+        background-color:#F8F8F8; 
+        padding:5px; 
+        width:60%;'
+    }
+    .location_action_button {
+        margin:2px 10px;
+    }
+    .location_addNew {
+        padding:25px; 
+        display:none;
+    }

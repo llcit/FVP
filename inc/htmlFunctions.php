@@ -1,12 +1,54 @@
 <?php
-
+	function writePageHeader($base_url,$user,$pageTitle) {
+		$navLinks = writeNavLinks($user->role,'header');
+		$pageTitle = "Flagship Video Project";
+		$userName = "<h5 style='display:inline'>" . $user->first_name . " " . $user->last_name . "</h5>";
+		$welcomeMsg = "
+          $userName 
+          <a href='".$base_url."/logout.php' class='btn btn-xs btn-icon btn-danger'>
+            <i class='fa fa-sign-out-alt' aria-hidden='true'></i>
+          </a>
+        ";
+		  $cdnDependencies = "
+        <link rel='stylesheet' href='https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css'>
+        <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
+        <script src='https://code.jquery.com/ui/1.12.1/jquery-ui.js'></script>
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js'></script>
+        <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'>
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js' integrity='sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q' crossorigin='anonymous'></script>
+        <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js' integrity='sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl' crossorigin='anonymous'></script>
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js' integrity='sha512-yDlE7vpGDP7o2eftkCiPZ+yuUyEcaBwoJoIhdXv71KZWugFqEphIS3PU60lEkFaz8RxaVsMpSvQxMBaKVwA5xg==' crossorigin='anonymous'></script>
+        <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css' integrity='sha512-ARJR74swou2y0Q2V9k0GbzQ/5vJ2RBSoCWokg4zkfM29Fb3vZEQyv0iWBMW/yvKgyHSR/7D64pFMmU8nYmbRkg=='' crossorigin='anonymous' />
+        <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.1.0/css/all.css' integrity='sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt' crossorigin='anonymous'>
+      ";
+      $html = "
+	      <div class='panel-heading fv_heading' style='overflow:none;'>
+	        <div class='row flex-nowrap'>
+	          <div class='col-3'>
+	            <img src='".$base_url."/img/logo_lf.png' class='logo-img-fluid'>
+	          </div>
+	          <div class='pageTitle col-6'>
+	          		$pageTitle
+	          </div>
+	          <div class='col-3'>
+	            <img src='".$base_url."/img/logo_ac.png' class='logo-img-fluid float-right'>
+	          </div>
+	        </div>
+	      </div>
+	      <div class='fv_subHeader'>
+	        $navLinks
+	        $welcomeMsg
+	      </div>
+      ";
+      return $cdnDependencies . $html;
+	}
 	function writeNavLinks($role,$context) {
 		$SETTINGS = parse_ini_file(__DIR__."/settings.ini");
 	  $links = [
 			['label'=>'Login','href'=>$SETTINGS['base_url'].'/login.php','req'=>['anonymous']],
 			['label'=> 'Your Videos','href'=>$SETTINGS['base_url'].'/personal.php','req'=>['student']],
 			['label'=>'Upload Video','href'=>$SETTINGS['base_url'].'/upload/','req'=>['student']],
-			['label'=>'Manage Events','href'=>$SETTINGS['base_url'].'/manage/','req'=>['staff','admin']],
+			['label'=>'Manage','href'=>$SETTINGS['base_url'].'/manage/','req'=>['admin']],
 			['label'=>'Video Showcase','href'=>$SETTINGS['base_url'].'/player/index.php?sc=1','req'=>[]],
 			['label'=>'Video Archive','href'=>$SETTINGS['base_url'].'/archive.php','req'=>['staff','admin']],
 			['label'=>'About This Site','href'=>$SETTINGS['base_url'].'/about.php','req'=>[]]
@@ -102,7 +144,7 @@
 					if ($count > 1) {
 						$videoList .= "</div>";
 					}
-					$videoList .= "<div class='row'>";
+					$videoList .= "<div class='row fv_video_table_wrapper'>";
 				}
 				$videoList .= buildVideoRow($video,$displayPublicLink);
 				$count++;
@@ -137,7 +179,6 @@
 		if (
 				 (
 				 $user->role == 'admin' || 
-				 $user->role == 'staff' || 
 				 $user->id == $video['user_id']
 				 ) &&
 				 (

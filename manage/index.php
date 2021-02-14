@@ -20,7 +20,6 @@
       require '../vendor/autoload.php';
       use PHPMailer\PHPMailer\PHPMailer;
       use PHPMailer\PHPMailer\Exception;
-			$pageTitle = "Flagship Video Project";
 			$subTitle = "Manage $contextLabel"."s";
 			$titleText = "You may select an existing $context to edit or add a new $context. ";
       if ($context == 'event') {
@@ -36,14 +35,6 @@
 		  } 
 		  else {
         $user = getUser($_SESSION['username']);
-        $navLinks = writeNavLinks($user->role,'header');
-        $userName = "<h5 style='display:inline'>" . $user->first_name . " " . $user->last_name . "</h5>";
-        $welcomeMsg = "
-          $userName 
-          <a href='".$SETTINGS['base_url']."/logout.php' class='btn btn-xs btn-icon btn-danger'>
-            <i class='fa fa-sign-out-alt' aria-hidden='true'></i>
-          </a>
-        ";
         if ($_POST['manage'] == 1) {
           $pageContent = buildManager($_POST['post_id']);
           if ($_POST['post_id']) {
@@ -107,7 +98,6 @@
             ];
             $response = sendMail($mailer,$emailVars);
             if ($response == 'success') {
-              $userMsg =  "Email sent.";
               $msg = "
                 <div class='msg success'>
                   Email sent to " . 
@@ -123,10 +113,6 @@
                 </div>
               ";
             }
-
-
-
-
           }
           $existing = getExisting();
           $displayList = formatList($existing);
@@ -155,19 +141,9 @@
           }
         }
 		  }
-
     ?>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
     <link rel="stylesheet" href="../css/main.css" type="text/css"/>
     <script src='../js/main.js'></script>
-    
     <script>
       function setContext(context) {
         $('#context').val(context);
@@ -219,7 +195,8 @@
         // activate tooltip
         $(function () {
           $('[data-toggle="tooltip"]').tooltip()
-        })
+        });
+        timerID=setTimeout(function(){$(".msg").hide();},2500);
       });
       function enableSave() {
         var enable = false;
@@ -263,27 +240,48 @@
           $('#saveButton').removeClass('disabled');
         }
       }
+      // toggle ui view for new/existing locations
+      // element starts off hidden, so initial action is to show the new location fields
+      var location_toggle = 'show';
+      function showAddLocation() {
+        if (location_toggle=='show') {
+          console.log('Show');
+          $('#location_action_icon').removeClass('fa-plus');
+          $('#location_action_icon').addClass('fa-times-circle');
+          $('#location_action_button').removeClass('btn-primary');
+          $('#location_action_button').addClass('btn-danger');
+          $('#location_addNew').show();
+          $('#location_select').hide();
+        }
+        else {
+          console.log('Hide');
+          $('#location_action_icon').removeClass('fa-times-circle');
+          $('#location_action_icon').addClass('fa-plus');
+          $('#location_action_button').removeClass('btn-danger');
+          $('#location_action_button').addClass('btn-primary');
+          $('#location_addNew').hide();
+          $('#location_select').show();
+        }
+        // switch toggle
+        location_toggle = (location_toggle=='show') ? 'hide' : 'show';
+      }
+      function addLocation() {
+        $('#new_location_wrapper').hide();
+        $('#location').append($('<option>', {
+            value: $('#city').val() + ', ' + $('#country').val(),
+            text: $('#city').val() + ', ' + $('#country').val()
+        }));
+        $("#location").val($('#city').val() + ', ' + $('#country').val());
+        $('#location_select').show();        
+      }
     </script>
   </head>
   <body>
     <div class="panel panel-default">
-      <div class="panel-heading fv_heading" style='overflow:none;'>
-        <div class='row flex-nowrap'>
-          <div class='col-3'>
-            <img src='../img/logo_lf.png' class='logo-img-fluid'>
-          </div>
-          <div class='pageTitle col-6'>
-          		<?php echo($pageTitle); ?>
-          </div>
-          <div class='col-3'>
-            <img src='../img/logo_ac.png' class='logo-img-fluid float-right'>
-          </div>
-        </div>
-      </div>
-      <div class='fv_subHeader'>
-        <?php echo($navLinks); ?>
-        <?php echo($welcomeMsg); ?>
-      </div>
+    <?php 
+      $header = writePageHeader($SETTINGS['base_url'],$user,$pageTitle);
+      echo($header); 
+    ?>
       <form method="post" id='manageForm' action=''>
         <div class="container">
           <?php if($msg) echo("<div style='width:100%;margin-top:30px;'>$msg</div>"); ?>
