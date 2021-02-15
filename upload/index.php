@@ -271,7 +271,7 @@
 					'findBy'=>$findBy
 				];
 			?>
-			<script src='./js/upload.js.php?data=<?php echo(json_encode($data)); ?>'></script>
+			<script src='./js/upload.js.php?data=<?php echo(urlencode(json_encode($data))) ?>'></script>
 			<script src='../js/main.js'></script>
 			<script src='../js/S3FileGen.js'></script>
 		</body>
