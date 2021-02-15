@@ -149,7 +149,7 @@
 						<div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
 								<span class="qq-upload-drop-area-text-selector"></span>
 						</div>
-						<div class="qq-upload-button-selector qq-upload-button">
+						<div class="qq-upload-button-selector qq-upload-button" style='width:150px;'>
 								<div>Upload a file</div>
 						</div>
 						<span class="qq-drop-processing-selector qq-drop-processing">
@@ -258,7 +258,19 @@
 			<link href="<?php echo($SETTINGS['FINEUPLOADER_FRONTEND_PATH']); ?>/fine-uploader-gallery.css" rel="stylesheet">
 			<script src='<?php echo($SETTINGS['FINEUPLOADER_FRONTEND_PATH']); ?>/s3.jquery.fine-uploader.min.js'></script>
 			<!-- include local js libraries -->
-			<script src='./js/upload.js.php'></script>
+			<?php
+				$data = [
+					'pid'=>$pid,
+					'user_id'=>$user->id,
+					'event_id'=>$event_id,
+					'language'=>$language,
+					'presentation_type'=>$presentation_type,
+					'access_code'=>$access_code,
+					'grant_internal'=>$grant_internal,
+					'grant_public'=>$grant_public
+				];
+			?>
+			<script src='./js/upload.js.php?data=<?php echo(json_encode($data)); ?>'></script>
 			<script src='../js/main.js'></script>
 			<script src='../js/S3FileGen.js'></script>
 		</body>

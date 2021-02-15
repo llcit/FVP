@@ -1,5 +1,6 @@
 	<?php
 		$SETTINGS = parse_ini_file(__DIR__."/../../inc/settings.ini");
+		$data = json_decode($_GET['data'],true);
 	?>
 	$(document).ready(function () {
 		$('.fv_total-progress-container').hide();
@@ -18,14 +19,14 @@
 					endpoint: 'https://<?php echo($SETTINGS['S3_BUCKET_NAME']); ?>.s3.amazonaws.com',
 					accessKey: '<?php echo($SETTINGS['AWS_SERVER_PRIVATE_KEY']); ?>',	
 					params: {
-										pid:'<?php echo($pid); ?>',
-									 	user_id:'<?php echo($user->id); ?>', 
-									 	event_id:'<?php echo($event_id); ?>',
-									 	language:'<?php echo($language); ?>',
-									 	presentation_type:'<?php echo($presentation_type); ?>',
-									 	access_code:'<?php echo($access_code); ?>',
-									 	grant_internal:'<?php echo($grant_internal); ?>',
-									 	grant_public:'<?php echo($grant_public); ?>'
+										pid:'<?php echo($data['pid']); ?>',
+									 	user_id:'<?php echo($data['user_id']); ?>', 
+									 	event_id:'<?php echo($data['event_id']); ?>',
+									 	language:'<?php echo($data['language']); ?>',
+									 	presentation_type:'<?php echo($data['presentation_type']); ?>',
+									 	access_code:'<?php echo($data['access_code']); ?>',
+									 	grant_internal:'<?php echo($data['grant_internal']); ?>',
+									 	grant_public:'<?php echo($data['grant_public']); ?>'
 									 }
 				},
 				signature: {
