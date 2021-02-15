@@ -1,3 +1,6 @@
+	<?php
+		$SETTINGS = parse_ini_file(__DIR__."/../../inc/settings.ini");
+	?>
 	$(document).ready(function () {
 		$('.fv_total-progress-container').hide();
 		if (typeof qq !== "undefined") {
