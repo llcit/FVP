@@ -122,7 +122,7 @@
 	      <span>
 	        <a href='javascript:save();' class='btn btn-primary disabled' id='saveButton'>
 	        <i class='fa fa-save' aria-hidden='true'></i>
-	          Save Program
+	          Save Event
 	        </a>
 	      </span>
 	    </div>
