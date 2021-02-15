@@ -96,7 +96,7 @@
 		max-width: 1000px!important;		
 	}
 	.fv_inline_select {
-		display:inline;
+		display:inline!important;
 		width:60%!important;
 		margin-left:20px;
 		min-width:285px;
