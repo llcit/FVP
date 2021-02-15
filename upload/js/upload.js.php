@@ -84,12 +84,12 @@
 							updateGlobalProgress('upload','success')
 							$('.progress_status_label').html('Creating Audio File:');
 							var key = '';
-							var findBy = '<?php echo($findBy);?>';
+							var findBy = '<?php echo($data['findBy']); ?>';
 							if (findBy == 'id') {
-								key = '<?php echo($pid);?>';
+								key = '<?php echo($data['pid']); ?>';
 							}
 							else {
-								key = '<?php echo($access_code);?>';
+								key = '<?php echo($data['access_code']); ?>';
 							}
 							timerID=setTimeout(function() {
 								updateThumb(key,findBy)
