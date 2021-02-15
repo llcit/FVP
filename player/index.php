@@ -43,13 +43,13 @@
 					<table class='controlsTable'>
 						<tr>
 							<td>
-								Select Video Presentation: 
+								Presentation: 
 							</td>
 							<td>
 								$userSelect
 							</td>
 							<td>
-								Select Description Tracks: 
+								Description Tracks: 
 							</td>
 							<td>
 								$trackSelect
@@ -69,7 +69,7 @@
 	function buildUserSelect($showcaseVideos,$videoId) {
 		global $audioDescription;
 		$isSelected[$videoId] = " SELECTED";
-		$userSelect = "<select id='v' name='v' class='selectpicker fv_block' onChange='updateUI();'>";
+		$userSelect = "<select id='v' name='v' class='selectpicker fv_block fv_showcase_select' onChange='updateUI();'>";
 		$userSelect .= "<option value='204'". $isSelected['204'].">About the Flagship Video Project</option>";
 		foreach($showcaseVideos as $video) {
 			$progYrs = preg_replace("/(A|C)Y\ /","",$video['progYrs']);
@@ -79,7 +79,7 @@
 		return $userSelect;
 	}
 	function buildTrackSelect($allTracks,$includeTracks) {	
-		$trackSelect = "<select id='t[]' name='t[]' class='selectpicker fv_block' multiple>";
+		$trackSelect = "<select id='t[]' name='t[]' class='selectpicker fv_block fv_showcase_select' multiple>";
 		foreach($allTracks as $track) {
 			$selected = (in_array($track,$includeTracks)) ? "selected='selected'" : "";
 			$trackSelect .= "<option value='$track' $selected>".ucfirst($track)."</option>";
@@ -94,55 +94,14 @@
 <?php 
 	$captionMode = $_GET['cm'];
 	if ($captionMode == 'edit'){
-		$playerHeight = '1800px';
+		$playerClass = 'playerFrame_tall';
 	}
 	else {
-		$playerHeight = '800px';
+		$playerClass = 'playerFrame_short';
 	}
 ?>
-<!-- Style for this example only -->
-<style>
-	.footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    background-color: #181b26;
-    color: white;
-    text-align: center;
-	}
-  .controlWrapper {
-	  width:100%;
-  }
-  .playerFrame {
-	  width:100%;
-	  height:<?php echo($playerHeight); ?>; 
-	  margin-top:20px;
-	  border:none;
-	
-  }
-  .fv_block {
-	  display:block !important;
-	  width:250px !important;
-  }
-  .controlsTable td {
-  padding:10px;	
-  font-size:14px;
-  font-weight:bold;
-  }
-  .fv_heading {
-	  background-color: #181b26 !important;
-	  color:#dfd8c9 !important;
-	  font-size:28px !important;
-	  margin:0px !important;
-	  padding:5px 10px !important; 
-  }
-</style>
-<!-- Able Player CSS -->
-<link rel="stylesheet" href="../ableplayer/build/ableplayer.css" type="text/css"/>
 <link rel="stylesheet" href="../css/main.css" type="text/css"/>
-<!-- Able Player JavaScript -->
-<script src="../ableplayer/build/ableplayer.js"></script>
+
 </head>
 
 <body>
@@ -157,7 +116,7 @@
 				<?php echo($userControls); ?>
 			</form>
 		</div>
-		<iframe class='playerFrame' src='./player.php?v=<?php echo($videoId); ?>&t=<?php echo(implode(',',$includeTracks)); ?>&cm=<?php echo($captionMode);?>&language=<?php echo($_GET['language']); ?>&ac=<?php echo($_GET['ac']); ?>' allowfullscreen>
+		<iframe class='<?php echo($playerClass); ?>' src='./player.php?v=<?php echo($videoId); ?>&t=<?php echo(implode(',',$includeTracks)); ?>&cm=<?php echo($captionMode);?>&language=<?php echo($_GET['language']); ?>&ac=<?php echo($_GET['ac']); ?>' allowfullscreen>
 		</iframe>
   	</div>
 

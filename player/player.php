@@ -5,31 +5,21 @@
 		include "../inc/db_pdo.php";
 		include "../inc/dump.php";
 		include "../inc/sqlFunctions.php";
+		include "../inc/HTMlFunctions.php";
 		$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
 	?>
-	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
 	<meta charset="UTF-8">
 	<title>Flagship Video Player</title>
 	<!-- Dependencies -->
-
-	<script src="../ableplayer/thirdparty/modernizr.custom.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script src="../ableplayer/thirdparty/js.cookie.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
-	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+	<?php
+		$cdnDependencies = writeCDNDepandencies();
+		echo($cdnDependencies);
+	?>
 	<script>
     // set for S3FileGen
     var base_url = '<?php echo($SETTINGS['base_url']); ?>';
   </script>
-
-	<script src='../js/S3FileGen.js'></script>
-	<!-- Able Player CSS -->
-	<link rel="stylesheet" href="../ableplayer/build/ableplayer.css" type="text/css"/>
-	<link rel="stylesheet" href="../css/main.css" type="text/css"/>
-
 	<?php
 		session_start();
 		$user = getUser($_SESSION['username']);
@@ -209,6 +199,7 @@
 
 	</style>
 	<script src='../js/main.js'></script>
+	<script src='../js/S3FileGen.js'></script>
 	<script>
 		var captionMode = '<?php echo($captionMode);?>';
 		var hasTranscript = '<?php echo($hasTranscript);?>';
@@ -272,6 +263,12 @@
 	</script>
 	<!-- Able Player JavaScript -->
 	<script src="../ableplayer/build/ableplayer.js"></script>
+	<script src="../ableplayer/thirdparty/modernizr.custom.js"></script>
+	<script src="../ableplayer/thirdparty/js.cookie.js"></script>
+
+	<!-- Able Player CSS -->
+	<link rel="stylesheet" href="../ableplayer/build/ableplayer.css" type="text/css"/>
+	<link rel="stylesheet" href="../css/main.css" type="text/css"/>
 </head>
 	<body>
 		<span id='userMsg' name='userMsg' class='msg' style='display:none;float:left;max-height:50px;'></span>
