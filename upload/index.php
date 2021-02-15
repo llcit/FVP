@@ -268,7 +268,7 @@
 					'access_code'=>$access_code,
 					'grant_internal'=>$grant_internal,
 					'grant_public'=>$grant_public,
-					'findBy'=$findBy
+					'findBy'=>$findBy
 				];
 			?>
 			<script src='./js/upload.js.php?data=<?php echo(json_encode($data)); ?>'></script>
