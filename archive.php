@@ -90,7 +90,7 @@
 			$input .= "</select>";
 			$pullDowns .= "
 							<div class='fv_select col-sm-4'>
-								<p class='fv_select_label'>".ucfirst($key).":</p>  
+								<p class='fv_select_label'>".ucfirst($k).":</p>  
 								$input
 							</div>
 		";
