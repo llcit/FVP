@@ -84,25 +84,31 @@
             }
           }
           if ($_POST['send'] == 1 || $_POST['auto_send']) {
+            $url = $SETTINGS['base_url']."/passwordSetup.php?email=".$email;
+            $link = "<a href='$url'>$url</a>";
             // auto-send checked on add new user
             if ($_POST['auto_send']) {
               $email = $_POST['email'];
+              $emailVars = [
+                'recipient' => $email,
+                'subject' => "Welcome to the Flagship Video Project",
+                'bodyText' => "You have been added to the system with $role privileges. 
+                               To set up your password, click the following link : $url",
+                'bodyHtml' => "<p>You have been added to the Flagship Video Project system with " . 
+                               $user->role . " privileges. To set up your password, click the following link :</p><p>$link</p>"
+              ];
             }
             else {
               $emailUser = getSavedUser($_POST['post_id']);
               $email = $emailUser->email;
+              $emailVars = [
+                'recipient' => $email,
+                'subject' => "Set New Password for Your Flagship Video Project Account",
+                'bodyText' => "To set up or change your password, click the following link: $url",
+                'bodyHtml' => "<p>To set up or change your password, click the following link: </p><p>$link</p>"
+              ];
             }
             $mailer = new PHPMailer(true);
-            $url = $SETTINGS['base_url']."/passwordSetup.php?email=".$email;
-            $link = "<a href='$url'>$url</a>";
-            $emailVars = [
-              'recipient' => $email,
-              'subject' => "Welcome to the Flagship Video Project",
-              'bodyText' => "You have been added to the system with $role privileges. 
-                             To set up your password, click the following link : $url",
-              'bodyHtml' => "<p>You have been added to the system with $role privileges. 
-                             To set up your password, click the following link :</p><p>$link</p>"
-            ];
             $response = sendMail($mailer,$emailVars);
             if ($response == 'success') {
               $msg = "
