@@ -73,6 +73,7 @@
 	    }
 	}
 	function formatList($existingUsers) {
+		global $user;
     $userList = "<div class='fv_table_wrapper'>
                     <table class='fv_table table-striped'>
                       <tr>
@@ -93,7 +94,8 @@
                       <tr>                                                   
                       ";
     foreach($existingUsers as $thisUser) {
-      if ($user['numVideos'] == 0) {
+    	// do not let admin users delete themselves
+      if ($thisUser['id'] != $user->id) {
         $deleteButton = "
                           <a href='#' data-href='javascript:remove(".$thisUser['id'].")' data-toggle='modal' data-target='#confirm-remove' class='btn btn-sm btn-danger fv_mng_btn'>
                             <i class='far fa-times-circle' aria-hidden='true' data-toggle='tooltip' data-placement='top' title='Delete User'></i>
