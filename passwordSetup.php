@@ -30,8 +30,12 @@
               'bodyText' => "Go to this link to set or reset your password: ".$url,
               'bodyHtml' => "
                              <p>
-                              Click or copy/paste the link below to set or reset your password:  ".$link."
-                             </p>"
+                              Click or copy/paste the link below to set or reset your password: 
+                             </p>
+                             <p>
+                              ".$link."
+                             </p>
+                             "
             ];
             $response = sendMail($mailer,$emailVars);
             if ($response == 'success') {
