@@ -22,11 +22,12 @@
              );
             $expDate = date("Y-m-d H:i:s",$expFormat);
             $success = updatePassword($password,$emailId,$token,$expDate); 
-            $link = "<p>Click or copy & paste the link below to set your password.</p> <a href='".$SETTINGS['password_reset_base_url']."/passwordSet.php?email=".$emailId."&token=".$token."'>".$SETTINGS['password_reset_base_url']."/passwordSet.php?email=".$emailId."&token=".$token."</a>";
+            $url = $SETTINGS['password_reset_base_url']."/passwordSet.php?email=".$emailId."&token=".$token
+            $link = "<p>Click or copy & paste the link below to set or reset your password.</p> <a href='".$url."'>".$SETTINGS['password_reset_base_url']."/passwordSet.php?email=".$emailId."&token=".$token."</a>";
             $emailVars = [
               'recipient' => $_POST['email'],
               'subject' => "Flagship Video Project: Setup New Password",
-              'bodyText' => "Go to this link to set or reset your password: ".$link,
+              'bodyText' => "Go to this link to set or reset your password: ".$url,
               'bodyHtml' => "
                              <p>
                               Click or copy & paste the link below to set or reset your password:  ".$link."
