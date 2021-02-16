@@ -83,7 +83,7 @@
               ";
             }
           }
-          if ($_POST['send'] == 1) {
+          if ($_POST['send'] == 1 || $_POST['auto_send'] == 1) {
             $mailer = new PHPMailer(true);
             $emailUser = getSavedUser($_POST['post_id']);
             $url = $SETTINGS['base_url']."/passwordSetup.php?email=".$emailUser->email;

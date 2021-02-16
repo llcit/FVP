@@ -1,8 +1,4 @@
 <?php
-/*START HERE:
-1. Reconcile locations -- add new location?
-
-*/
 	function getExisting() {
 	    global $pdo;
 	    $sql = "
@@ -135,8 +131,18 @@
   function buildManager($user_id) {
   	global $SETTINGS;
   	$savedUser = getSavedUser($user_id);
+  	if (!$savedUser) {
+  		$autoSendCheck = "
+			<span>
+			   <label for='auto_send' style='min-width:80px;'>Auto-send Invite Email:</label>
+			   <input type='checkbox' class='checkbox' style='margin-right:40px;'id='auto_send' name='auto_send' CHECKED>
+			</span>
+
+  		";
+  	}
     $userManager = "
     	<div class='float-right fv_buttonWrapper'>
+    		$autoSendCheck
 	      <span>
 	        <a href='javascript:cancel();' class='btn btn-danger' id='cancelButton'>
 	          <i class='fa fa-window-close' aria-hidden='true'></i>
