@@ -83,13 +83,20 @@
               ";
             }
           }
-          if ($_POST['send'] == 1 || $_POST['auto_send'] == 1) {
+          if ($_POST['send'] == 1 || $_POST['auto_send']) {
+            // auto-send checked on add new user
+            if ($_POST['auto_send']) {
+              $email = $_POST['email'];
+            }
+            else {
+              $emailUser = getSavedUser($_POST['post_id']);
+              $email = $emailUser->email;
+            }
             $mailer = new PHPMailer(true);
-            $emailUser = getSavedUser($_POST['post_id']);
-            $url = $SETTINGS['base_url']."/passwordSetup.php?email=".$emailUser->email;
+            $url = $SETTINGS['base_url']."/passwordSetup.php?email=".$email;
             $link = "<a href='$url'>$url</a>";
             $emailVars = [
-              'recipient' => $emailUser->email,
+              'recipient' => $email,
               'subject' => "Welcome to the Flagship Video Project",
               'bodyText' => "You have been added to the system with $role privileges. 
                              To set up your password, click the following link : $url",
@@ -101,7 +108,7 @@
               $msg = "
                 <div class='msg success'>
                   Email sent to " . 
-                  $emailUser->email . "
+                  $email . "
                 </div>
               ";
             }
