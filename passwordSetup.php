@@ -25,10 +25,12 @@
             $link = "<p>Click or copy & paste the link below to set your password.</p> <a href='".$SETTINGS['password_reset_base_url']."/passwordSet.php?email=".$emailId."&token=".$token."'>".$SETTINGS['password_reset_base_url']."/passwordSet.php?email=".$emailId."&token=".$token."</a>";
             $emailVars = [
               'recipient' => $_POST['email'],
-              'subject' => "Flagship Video: Reset Password",
-              'bodyText' => "Click On This Link to Reset Your Password: ".$link,
-              'bodyHtml' => "<h1>Password Reset for the Flagship Video Project</h1>
-                             <p>Click On This Link to Reset Your Password:  ".$link."</p>"
+              'subject' => "Flagship Video Project: Setup New Password",
+              'bodyText' => "Go to this link to set or reset your password: ".$link,
+              'bodyHtml' => "
+                             <p>
+                              Click or copy & paste the link below to set or reset your password:  ".$link."
+                             </p>"
             ];
             $response = sendMail($mailer,$emailVars);
             if ($response == 'success') {
