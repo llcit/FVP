@@ -2,9 +2,9 @@
 	function getExisting() {
 	    global $pdo;
 	    $sql = "
-	        SELECT p.*,COUNT(a.`id`) AS `numAffiliations`
+	        SELECT p.*,COUNT(a.`id`) AS `studentCount`
 	        FROM `programs` p 
-	        LEFT JOIN `affiliations` a on a.`program_id`=p.`id`
+	        LEFT JOIN `affiliations` a on (a.`program_id`=p.`id` and a.`role`='student')
 	        WHERE 1 
 	        GROUP BY p.`id` 
 	        ORDER BY `start` DESC
@@ -80,12 +80,13 @@
                         <th>
                         	Years
                         </th>
-                        <th>
+                        <th colspan=2>
+                          Students
                         </th>
                       <tr>                                                   
                       ";
     foreach($existingPrograms as $program) {
-      if ($program['numAffiliations'] == 0) {
+      if ($program['studentCount'] == 0) {
         $deleteButton = "
                           <a href='#' data-href='javascript:remove(".$program['id'].")' data-toggle='modal' data-target='#confirm-remove' class='btn btn-sm btn-danger' class='deleteButton'>
                             <i class='far fa-times-circle' aria-hidden='true' data-toggle='tooltip' data-placement='top' title='Delete Program'></i>
@@ -100,7 +101,10 @@
                         <td>".$program['start']."</td>
                         <td>".$program['end']."</td>
                         <td>".$program['progYrs']."</td>
-                        <td>
+                        <td style='text-align:center;min-width:100px;;'>
+                          <a class='mngStudents' href='javascript:manageStudents(".$program['id'].")' data-toggle='tooltip' data-placement='top' title='Manage Students'>".$program['studentCount']."</a>
+                        </td>
+                        <td align=right>
                           <a href='javascript:manage(".$program['id'].")' class='btn btn-sm btn-primary' data-toggle='tooltip' data-placement='top' title='Edit Program'>
                             <i class='fa fa-cog' aria-hidden='true'></i>
                           </a>

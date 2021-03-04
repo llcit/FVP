@@ -35,15 +35,26 @@
 	}
 	function writeCDNDepandencies() {
 		$dependencies = "
+			<!-- -------------- jquery -------------- -->
+
 	    <link rel='stylesheet' href='https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css'>
 	    <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
 	    <script src='https://code.jquery.com/ui/1.12.1/jquery-ui.js'></script>
-	    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js'></script>
-	    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'>
+	    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js'></script>
+
+	    <!-- -------------- popper for tooltips -------------- -->
+
 	    <script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js' integrity='sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q' crossorigin='anonymous'></script>
+
+	    <!-- -------------- bootstrap -------------- -->
+
+	    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'>
 	    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js' integrity='sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl' crossorigin='anonymous'></script>
 	    <script src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js' integrity='sha512-yDlE7vpGDP7o2eftkCiPZ+yuUyEcaBwoJoIhdXv71KZWugFqEphIS3PU60lEkFaz8RxaVsMpSvQxMBaKVwA5xg==' crossorigin='anonymous'></script>
 	    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css' integrity='sha512-ARJR74swou2y0Q2V9k0GbzQ/5vJ2RBSoCWokg4zkfM29Fb3vZEQyv0iWBMW/yvKgyHSR/7D64pFMmU8nYmbRkg=='' crossorigin='anonymous' />
+
+	    <!-- -------------- fontawesome -------------- -->
+
 	    <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.1.0/css/all.css' integrity='sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt' crossorigin='anonymous'>
 		";
 		return $dependencies;
@@ -226,8 +237,14 @@
 						<table border=0 cellpadding=0 cellspacing=0 width=100%>
 							<tr>
 								<td colspan=2>
-									<p class='studentName'>".$video['first_name']." ".$video['last_name']."</p>
-									$deleteButton
+									<div class='row'>
+										<div class='col-sm-8'>
+											<p class='studentName'>".$video['first_name']." ".$video['last_name']."</p>
+										</div>
+										<div class='col-sm-4'>
+											$deleteButton
+										</div>
+									</div>
 								</td>
 							</tr>
 							<tr>

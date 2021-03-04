@@ -1,20 +1,20 @@
 <?php
-    function getUser($username) {
-        global $pdo;
-        $sql ="SELECT u.`id`,u.`first_name`,u.`last_name`, a.`role` 
-               FROM `users` u
-               JOIN `affiliations` a ON a.`user_id` = u.`id` 
-               WHERE (u.`username`=:username)
-               ";
-        $query= $pdo->prepare($sql);
-        $query->bindParam(':username', $username, PDO::PARAM_STR);
-        $query->execute();
-        if($query->rowCount() > 0) {
-            $result = $query->fetch(PDO::FETCH_OBJ);
-            return($result); 
-        }  
-    }
-   function getVideos($id=null,$id_type=null,$filters=null) {
+function getUser($username) {
+    global $pdo;
+    $sql ="SELECT u.`id`,u.`first_name`,u.`last_name`, a.`role` 
+           FROM `users` u
+           LEFT JOIN `affiliations` a ON a.`user_id` = u.`id` 
+           WHERE (u.`username`=:username)
+           ";
+    $query= $pdo->prepare($sql);
+    $query->bindParam(':username', $username, PDO::PARAM_STR);
+    $query->execute();
+    if($query->rowCount() > 0) {
+        $result = $query->fetch(PDO::FETCH_OBJ);
+        return($result); 
+    }  
+}
+function getVideos($id=null,$id_type=null,$filters=null) {
     global $pdo;
     $matchVals = [
         'programs' => ['table_handle'=>'prog','field'=>'name'],
@@ -245,6 +245,34 @@ function deleteObjectFromDB($id) {
     } catch(PDOException $e) {
         return $e->getMessage();
     }  
+}
+function getInstitution($institution) {
+    global $pdo;
+    try { 
+        $sql = "
+           SELECT `id` FROM `institutions`
+           WHERE `name` LIKE '$institution%' 
+        ";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchObject();
+    }catch (Exception $e) {
+      echo json_encode(array("error" => "$e"));
+    }
+}
+function getAffiliation($user_id, $program_id) {
+    global $pdo;
+    try { 
+        $sql = "
+           SELECT `id` FROM `affiliations`
+           WHERE `user_id`='$user_id' AND `program_id` = '$program_id' 
+        ";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchObject();
+    }catch (Exception $e) {
+      echo json_encode(array("error" => "$e"));
+    }
 }
 function initLogging($pid) {
     global $pdo;

@@ -20,13 +20,24 @@
       require '../vendor/autoload.php';
       use PHPMailer\PHPMailer\PHPMailer;
       use PHPMailer\PHPMailer\Exception;
-			$subTitle = "Manage $contextLabel"."s";
-			$titleText = "You may select an existing $context to edit or add a new $context. ";
+			
+      if ($context == 'roster') {
+        $subTitle = "Preview Roster";
+        $titleText = "The roster listed below is ready to be saved.  Please review the information and click save.  If you want the system to send an invite email automatically, do it. ";
+      }
+      else {
+        $subTitle = "Manage $contextLabel"."s";
+        $titleText = "You may select an existing $context to edit or add a new $context. ";
+      }
+			
       if ($context == 'event') {
         $deleteMsg = " You may only delete an event if it  does not have any videos uploaded to it.";
       }
       else if ($context == 'program') {
-        $deleteMsg = " You may only delete a program if it does not have any users affiliated with it.";
+        $deleteMsg = " You may only delete a program if it does not have any users affiliated with it.  To add/edit students or upload a student roster, click the box showing the number of students in it to the right of the program.";
+      } 
+      else if ($context == 'student') {
+        $deleteMsg = " You may only delete a student if he/she does not have any saved videos.";
       } 
       $titleText .= $deleteMsg; 
 			session_start();
@@ -47,22 +58,34 @@
           }
         }
         else {
+          // generate roster preview after upload
+          if ($_POST["context"]=='roster' && $_POST['save'] == 0) {
+            saveTmpRoster();
+          }
           if ($_POST['save'] == 1) {
-            $response = save($_POST);
-            if ($response == 'success') {
-              $msg = "
-                <div class='msg success'>
-                  $contextLabel successfully saved!
-                </div>
-              ";
-            }
-            else {
-              $msg = "
-                <div class='msg error'>
-                  There was a problem saving your $context!
-                  <p>Error: $response</p>
-                </div>
-              ";
+            // prevent double save on refresh -- only save if cookie is true
+            if ($_COOKIE['doSave']) {
+              $response = save($_POST);
+              if ($response == 'success') {
+                $msg = "
+                  <div class='msg success'>
+                    $contextLabel successfully saved!
+                  </div>
+                ";
+              }
+              else {
+                $msg = "
+                  <div class='msg error'>
+                    There was a problem saving your $context!
+                    <p>Error: $response</p>
+                  </div>
+                ";
+              }
+              // prevent double save on refresh -- kill cookie after 1st save
+              setcookie ("doSave", "", time() - 3600, "/");
+              if ($_POST["context"]=='roster') {
+                $rosterRedirect = "manageStudents(".$_POST['post_id'].")";
+              }
             }
           }
           if ($_POST['remove'] == 1) {
@@ -129,18 +152,59 @@
               ";
             }
           }
-          $existing = getExisting();
+          // set post_id in student context as parentKey (program_id)
+          if($context == 'student') {
+            $student_program_id = $_POST['post_id'];
+            $rosterButtons = " 
+              <span>
+                <a class='btn btn-primary' href='javascript:downloadTemplate();' style='display:inline;'> 
+                  <i class='fas fa-download'></i>
+                  Download Template 
+                </a>
+                <input type='file' id='rosterFile' name='rosterFile' class='rosterFile'  accept='.csv'>
+              </span>
+              <span>
+                <a class='btn btn-primary' style='margin-left:10px;margin-right:10px;display:inline;' href='javascript:importRoster();' > 
+                  <i class='fas fa-file-import'></i>
+                  Import Roster 
+                </a>
+              </span>
+            ";
+          }
+          $existing = getExisting($student_program_id);
           $displayList = formatList($existing);
           if ($user->role == 'admin' || $user->role == 'staff') {
+            if ($context == 'roster') {
+              $contextHeader = "Your Roster";
+              $action = 'save';
+              $actionLabel = "Save This";
+              $icon = "fa-save";
+              $disabled = 'disabled';
+            }
+            else{
+              $contextHeader = "Existing ".$contextLabel."s";
+              $action = 'manage';
+              $actionLabel = "Add";
+              $icon = "fa-plus-circle";
+            }
             $pageContent = "
               <div class='panel'>
-                <h4 style='display:inline;'>
-                  Existing ".$contextLabel."s
-                </h4>
-                <a class='btn btn-primary float-right' href='javascript:manage();'> 
-                <i class='fa fa-plus-circle' aria-hidden='true'></i>
-                Add $contextLabel 
-                </a>
+                <div style='min-width:100%; border-bottom:solid 1px;padding-bottom:20px;margin-bottom:20px;'>
+                  <h4 style='display:inline;'>
+                    $contextHeader
+                  </h4>
+                </div>
+                <div style='text-align:right;min-width:100%;overflow:none;white-space: nowrap;'>
+                  $rosterButtons
+                  <span>
+                    <a class='btn btn-primary $disabled' href='javascript:$action();' id='actionButton' name='actionButton' style='display:inline;' 
+                      data-toggle='tooltip' data-placement='top' title='$actionLabel $contextLabel'
+                    > 
+                      <i class='fa $icon' aria-hidden='true'></i>
+                      $actionLabel $contextLabel 
+                    </a>
+                  </span>
+                </div>
                 $displayList
               </div>
             ";
@@ -176,10 +240,10 @@
               <a class="nav-link <?php echo($active['event']); ?>" href="javascript:setContext('event');">Events</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link <?php echo($active['program']); ?>" href="javascript:setContext('program');">Programs</a>
+              <a class="nav-link <?php echo($active['program'] . $active['student'] . $active['roster']); ?>" href="javascript:setContext('program');">Programs & Students</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link <?php echo($active['user']); ?>" href="javascript:setContext('user');">Users</a>
+              <a class="nav-link <?php echo($active['user']); ?>" href="javascript:setContext('user');">Admin Users</a>
             </li>
           </ul>
            <div class="row fv_main">
@@ -196,10 +260,12 @@
         </div>
         <input type='hidden' name='post_id' id='post_id' value='<?php echo($post_id); ?>'>
         <input type='hidden' id='context' name='context' value ='<?php echo($context); ?>'>
-        <input type='hidden' id='manage' name='manage' value =0>
-        <input type='hidden' id='save' name='save' value =0>
-        <input type='hidden' id='remove' name='remove' value =0>
-        <input type='hidden' id='send' name='send' value =0>
+        <input type='hidden' id='manage' name='manage' value=0>
+        <input type='hidden' id='save' name='save' value=0>
+        <input type='hidden' id='remove' name='remove' value=0>
+        <input type='hidden' id='send' name='send' value=0>
+        <input type='hidden' id='uploadRoster' name='uploadRoster' value=0>
+        
       </form>
       <div class="footer">
         <p> </p>
@@ -210,7 +276,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    Delete Event
+                    Delete <?php echo($contextLabel); ?>
                 </div>
                 <div class="modal-body">
                     Are you sure you want to permanently delete this <?php echo($context); ?>?
@@ -224,5 +290,8 @@
     </div>
     <script src='../js/main.js'></script>
     <script src='./js/manage.js'></script>
+    <script>
+      <?php echo($rosterRedirect); ?>
+    </script>
   </body>
 </html>

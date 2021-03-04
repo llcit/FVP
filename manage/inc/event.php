@@ -35,13 +35,14 @@
       if ($vals['post_id'] == '') $vals['post_id'] = null;
       $startDate = date ('Y-m-d H:i:s', strtotime($vals['start_date']));
       $endDate = date ('Y-m-d H:i:s', strtotime($vals['end_date']));
+      list($city,$country)=preg_split("/\,/",$vals['location']);
       $sql = "
           REPLACE INTO `events`(`id`,`program_id`,`start_date`,`end_date`,`phase`,`city`,`country`)
           VALUES(?,?,?,?,?,?,?);
           ";
       $stmt = $pdo->prepare($sql);
       $stmt->execute([$vals['post_id'],$vals['program_id'],$startDate,$endDate
-                      ,$vals['phase'],$vals['city'],$vals['country']]);
+                      ,$vals['phase'],$city,$country]);
       return 'success';
     } catch(PDOException $e) {
         return $e->getMessage();

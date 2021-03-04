@@ -7,7 +7,25 @@
     $('#post_id').val(id);
     $('#manageForm').submit();
   }
+  function manageStudents(program_id) {
+    setContext('student');
+    $('#post_id').val(program_id);
+    $('#manageForm').submit();
+  }
+  function viewVideos(uname) {
+    window.open('../personal.php?uname='+uname, 'videoView');
+    return false;
+  }
+  function importRoster() {
+    $("input[type='file']").trigger('click');
+  }
+  function downloadTemplate() {
+    var doc_uri = "./Roster_template.csv";
+    window.location = doc_uri;
+  }
   function save() {
+    // prevent double save on refresh -- set cookie to true on button press
+    $.cookie('doSave', true, { path: '/', expires: 1});
     $('#save').val(1);
     $('#manageForm').submit();
   }
@@ -49,7 +67,13 @@
     $(function () {
       $('[data-toggle="tooltip"]').tooltip()
     });
-    timerID=setTimeout(function(){$(".msg").hide();},2500);
+    $('input[type="file"]').on('change', function() {
+      $('#manageForm').attr("enctype", "multipart/form-data")
+        .attr("encoding", "multipart/form-data");
+      setContext('roster');
+      $('#manageForm').submit(); 
+    })
+    timerID=setTimeout(function(){$(".success").hide();},2500);
   });
   function enableSave() {
     var enable = false;
@@ -61,8 +85,7 @@
             $("#phase option:selected").val() != '' &&
             dateString.test($("#start_date").val()) &&
             dateString.test($("#end_date").val()) &&
-            $("#city option:selected").val() != '' &&
-            $("#country option:selected").val() != ''
+            $("#location option:selected").val() != '' 
           ) {
           enable = true;
         }
@@ -83,6 +106,15 @@
             $("#last_name").val() != '' && 
             isEmail($("#email").val()) &&
             $("#role option:selected").val() != '' 
+          ) {
+          enable = true;
+        }
+        break;
+      case 'student':
+        if(
+            $("#first_name").val() != '' && 
+            $("#last_name").val() != '' && 
+            isEmail($("#email").val()) 
           ) {
           enable = true;
         }
