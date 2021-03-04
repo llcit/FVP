@@ -88,6 +88,18 @@ function getPrograms() {
     $stmt->execute();
     return $stmt->fetchAll();    
 }
+function getProgram($id) {
+    global $pdo;
+    $sql = "
+        SELECT *
+        FROM `programs` p 
+        WHERE p.`id` = '$id' 
+        ORDER BY `start` DESC
+        ";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchObject();    
+}
 function getLocations() {
     global $pdo;
     $sql = "
@@ -245,6 +257,20 @@ function deleteObjectFromDB($id) {
     } catch(PDOException $e) {
         return $e->getMessage();
     }  
+}
+function getInstitutions() {
+    global $pdo;
+    try { 
+        $sql = "
+           SELECT `id`,`name` FROM `institutions`
+           WHERE 1 
+        ";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(); 
+    }catch (Exception $e) {
+      echo json_encode(array("error" => "$e"));
+    }
 }
 function getInstitution($institution) {
     global $pdo;

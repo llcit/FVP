@@ -287,7 +287,7 @@
 					";
 		if ($displayPublicLink) {
 			$row .= "
-					<div class='fv_linkWrapper'>
+					<div class='fv_linkWrapper'  style='margin-left:25px;''>
 						<span class='extras'>
 							<b>Public Link:</b> http://video.thelanguageflagship.tech/player/index.php?v=".$video['id']."&ac=".$video['access_code']."
 						</span>

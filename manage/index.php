@@ -23,7 +23,7 @@
 			
       if ($context == 'roster') {
         $subTitle = "Preview Roster";
-        $titleText = "The roster listed below is ready to be saved.  Please review the information and click save.  If you want the system to send an invite email automatically, do it. ";
+        $titleText = "The roster listed below is ready to be saved.  Please review the information and click save.  If you want the system to send an invite email automatically, check the box below. ";
       }
       else {
         $subTitle = "Manage $contextLabel"."s";
@@ -47,7 +47,7 @@
 		  else {
         $user = getUser($_SESSION['username']);
         if ($_POST['manage'] == 1) {
-          $pageContent = buildManager($_POST['post_id']);
+          $pageContent = buildManager($_POST['post_id'],$_POST['student_program_id']);
           if ($_POST['post_id']) {
             $subTitle = "Edit Existing $contextLabel";
             $titleText = "You may change any of the details listed below and click the save button to save your changes.";
@@ -85,6 +85,9 @@
               setcookie ("doSave", "", time() - 3600, "/");
               if ($_POST["context"]=='roster') {
                 $rosterRedirect = "manageStudents(".$_POST['post_id'].")";
+              }
+              if ($_POST["context"]=='student') {
+               $_POST['post_id'] = $_POST['student_program_id'];
               }
             }
           }
@@ -169,6 +172,7 @@
                   Import Roster 
                 </a>
               </span>
+              <input type=hidden name='student_program_id' id='student_program_id' value='$student_program_id'>
             ";
           }
           $existing = getExisting($student_program_id);
@@ -182,7 +186,15 @@
               $disabled = 'disabled';
             }
             else{
-              $contextHeader = "Existing ".$contextLabel."s";
+              if ($context == 'student') {
+                $program = getProgram($_POST['post_id']);
+                if (!$program) {
+                  header('Location: ./index.php');
+                  exit;
+                }
+                $progQualifier = " for " . $program->name;
+              }
+              $contextHeader = "Existing ".$contextLabel."s" . $progQualifier;
               $action = 'manage';
               $actionLabel = "Add";
               $icon = "fa-plus-circle";
