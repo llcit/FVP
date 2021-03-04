@@ -86,6 +86,7 @@
               if ($_POST["context"]=='roster') {
                 $rosterRedirect = "manageStudents(".$_POST['post_id'].")";
               }
+              // return to student list for program
               if ($_POST["context"]=='student') {
                $_POST['post_id'] = $_POST['student_program_id'];
               }
@@ -107,6 +108,10 @@
                   <p>Error: $response</p>
                 </div>
               ";
+            }
+            // return to student list for program
+            if ($_POST["context"]=='student') {
+             $_POST['post_id'] = $_POST['student_program_id'];
             }
           }
           if ($_POST['send'] == 1 || $_POST['auto_send']) {

@@ -2,7 +2,7 @@
 	function getExisting($student_program_id) {
 	    global $pdo;
 	    $sql = "
-	        SELECT u.*,i.`name` AS `institution`, COUNT(p.`id`) AS `numVideos`
+	        SELECT u.*,MIN(i.`name`) AS `institution`, COUNT(p.`id`) AS `numVideos`
 	        FROM `users` u 
 	        JOIN `affiliations` a ON a.`user_id`=u.`id` 
           JOIN `institutions` i ON i.`id`=a.`domestic_institution_id` 
@@ -65,11 +65,11 @@ function getSavedUser($user_id) {
         return $e->getMessage();
     }
 	}
-	function remove($program_id) {
+	function remove($user_id) {
 	    global $pdo;
 	    try {
 	        $sql = "
-	          DELETE FROM `programs` WHERE `id` = '$program_id';
+	          DELETE FROM `users` WHERE `id` = '$user_id';
 	        ";
 	        $stmt = $pdo->prepare($sql);
 	        $stmt->execute();
@@ -103,7 +103,7 @@ function getSavedUser($user_id) {
       foreach($existingStudents as $student) {
         if ($student['numVideos'] == 0) {
           $deleteButton = "
-                            <a href='#' data-href='javascript:remove(".$program['id'].")' data-toggle='modal' data-target='#confirm-remove' class='btn btn-sm btn-danger' class='deleteButton'>
+                            <a href='#' data-href='javascript:remove(".$student['id'].")' data-toggle='modal' data-target='#confirm-remove' class='btn btn-sm btn-danger' class='deleteButton'>
                               <i class='far fa-times-circle' aria-hidden='true' data-toggle='tooltip' data-placement='top' title='Delete Student'></i>
                             </a>
           ";
