@@ -159,6 +159,10 @@
                 </div>
               ";
             }
+            // return to student list for program
+            if ($_POST["context"]=='student') {
+             $_POST['post_id'] = $_POST['student_program_id'];
+            }
           }
           // set post_id in student context as parentKey (program_id)
           if($context == 'student') {
