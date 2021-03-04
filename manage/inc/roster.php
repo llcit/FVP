@@ -36,6 +36,9 @@
 					    ";
 					$stmt = $pdo->prepare($sql);
 					$stmt->execute([$user_id,$student->first_name,$student->last_name,$student->email,$student->email]);
+					if (!$user_id) {
+						$user_id = $pdo->lastInsertId();
+					}
 		      $institution = getInstitution($student->institution);
 		      if ($institution) {
 		      	$institution_id = $institution->id;
