@@ -124,7 +124,7 @@ function getSavedUser($user_id) {
                             <a href='javascript:manage(".$student['id'].")' class='btn btn-sm btn-primary'data-toggle='tooltip' data-placement='top' title='Edit Student'>
                               <i class='fa fa-cog' aria-hidden='true'></i>
                             </a>
-                            <a href='javascript:sendInvite(".$thisUser['id'].")' data-href='javascript:remove(".$thisUser['id'].")' class='btn btn-sm btn-success fv_mng_btn' data-toggle='tooltip' data-placement='top' title='Send Invite'>
+                            <a href='javascript:sendInvite(".$student['id'].")'; class='btn btn-sm btn-success fv_mng_btn' data-toggle='tooltip' data-placement='top' title='Send Invite'>
                               <i class='fa fa-paper-plane' aria-hidden='true'></i>
                             </a>
                             $deleteButton
