@@ -18,7 +18,6 @@
 
   function save($vals) {
     global $pdo;
-    $newUser = false;
     try {
       if ($vals['rosterData']) {
         $program_id = $vals['student_program_id'];
@@ -30,7 +29,7 @@
           }
           else {
             $user_id = null;
-            $newUser = true;
+            $student->newUser = true;
           }
           $sql = "
               REPLACE INTO `users`(`id`,`first_name`,`last_name`,`email`,`username`)
@@ -71,12 +70,18 @@
     } catch(PDOException $e) {
         return $e->getMessage();
     }
-    if($newUser && $_POST['auto_send']) {
-      include_once "../inc/SESMailer.php";
-      $emailVars = [
-        'email' => $student->email
-      ];
+    if($_POST['auto_send']) {
+    	include_once "../inc/SESMailer.php";
+    	if ($vals['rosterData']) {
+        foreach ($rosterData as $student) {
+        	if ($student->newUser) {
+        		$emailVars = [
+		        'email' => $student->email
+		      ];
       $msg .= sendMail('Welcome',$emailVars);
+        	}
+        }
+      }
     } // end auto-send
     return $msg;
   }  
