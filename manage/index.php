@@ -16,7 +16,7 @@
       include_once "../inc/htmlFunctions.php";
       include_once "./inc/".$context.".php";
       $SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
-			
+      
       if ($context == 'roster') {
         $student_program_id = ($_POST['student_program_id']) ? $_POST['student_program_id'] : $_POST['post_id'];
         if ($_POST['save'] == 1) {
@@ -37,7 +37,7 @@
         $subTitle = "Manage $contextLabel"."s";
         $titleText = "You may select an existing $context to edit or add a new $context. ";
       }
-			
+      
       if ($context == 'event') {
         $deleteMsg = " You may only delete an event if it  does not have any videos uploaded to it.";
       }
@@ -49,11 +49,11 @@
         $student_program_id = ($_POST['student_program_id']) ? $_POST['student_program_id'] : $_POST['post_id'];
       } 
       $titleText .= $deleteMsg; 
-			session_start();
-			if (!isset($_SESSION['username'])) { 
-		    exit(header("location:../login.php"));
-		  } 
-		  else {
+      session_start();
+      if (!isset($_SESSION['username'])) { 
+        exit(header("location:../login.php"));
+      } 
+      else {
         $user = getUser($_SESSION['username']);
         if ($_POST['manage'] == 1) {
           $pageContent = buildManager($_POST['post_id'],$_POST['student_program_id']);
@@ -228,7 +228,7 @@
             ";
           }
         }
-		  }
+      }
     ?>
     <link rel="stylesheet" href="../css/main.css" type="text/css"/>
     <script>

@@ -7,18 +7,18 @@
         include_once("./inc/sqlFunctions.php");
         include_once("./inc/htmlFunctions.php");
         $SETTINGS = parse_ini_file(__DIR__."/inc/settings.ini");
-				$pageTitle = "Flagship Video Project";
-				$subTitle = "Your Videos";
-				$titleText = "Click a video from the list below to play it or edit captions.  You may share the public link with anyone you would like to see the video.";
+        $pageTitle = "Flagship Video Project";
+        $subTitle = "Your Videos";
+        $titleText = "Click a video from the list below to play it or edit captions.  You may share the public link with anyone you would like to see the video.";
         if ($_POST['deleteVideo'] > 0) {
           include_once("./inc/S3DeleteObject.php");
           deleteObject($_POST['deleteVideo']);
         }
-				session_start();
-				if (!isset($_SESSION['username'])) { 
-			    exit(header("location:./login.php"));
-			  } 
-			  else {
+        session_start();
+        if (!isset($_SESSION['username'])) { 
+          exit(header("location:./login.php"));
+        } 
+        else {
           if ($_GET['uname']) {
             $userName = $_GET['uname'];
           }
@@ -28,7 +28,7 @@
             $navLinks = writeNavLinks($user->role,'header');
           }
           $user = getUser($userName);
-			  }
+        }
         
         if ($displayUserName) {
           $welcomeMsg = "
@@ -52,7 +52,7 @@
           ";
         }
         else {
-       	  $pageContent = buildVideoList($userVideos,true);
+           $pageContent = buildVideoList($userVideos,true);
         }
       ?>
       <link rel="stylesheet" href="./css/main.css" type="text/css"/>

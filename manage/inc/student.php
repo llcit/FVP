@@ -1,22 +1,22 @@
 <?php
-	function getExisting($student_program_id) {
-	    global $pdo;
-	    $sql = "
-	        SELECT u.*,MIN(i.`name`) AS `institution`, COUNT(p.`id`) AS `numVideos`
-	        FROM `users` u 
-	        JOIN `affiliations` a ON a.`user_id`=u.`id` 
+  function getExisting($student_program_id) {
+      global $pdo;
+      $sql = "
+          SELECT u.*,MIN(i.`name`) AS `institution`, COUNT(p.`id`) AS `numVideos`
+          FROM `users` u 
+          JOIN `affiliations` a ON a.`user_id`=u.`id` 
           JOIN `institutions` i ON i.`id`=a.`domestic_institution_id` 
           LEFT JOIN `presentations` p ON p.`user_id` = u.`id`
-	        WHERE a.`program_id` = '$student_program_id' AND a.`role`='student' 
-	        GROUP BY u.`id` 
-	        ORDER BY u.`last_name`,u.`first_name` 
-	        ";
-	    $stmt = $pdo->prepare($sql);
-	    $stmt->execute();
-	    return $stmt->fetchAll();
-	}
+          WHERE a.`program_id` = '$student_program_id' AND a.`role`='student' 
+          GROUP BY u.`id` 
+          ORDER BY u.`last_name`,u.`first_name` 
+          ";
+      $stmt = $pdo->prepare($sql);
+      $stmt->execute();
+      return $stmt->fetchAll();
+  }
 
-function getSavedUser($user_id) {
+  function getSavedUser($user_id) {
     global $pdo;
     $sql = "
         SELECT u.*,a.`role`,a.`domestic_institution_id` 
@@ -28,7 +28,7 @@ function getSavedUser($user_id) {
     $stmt->execute();
     return $stmt->fetchObject();    
   }
-	function save($vals) {
+  function save($vals) {
     global $pdo;
     try {
      if ($vals['post_id'] == '') $vals['post_id'] = null;
@@ -64,26 +64,26 @@ function getSavedUser($user_id) {
     } catch(PDOException $e) {
         return $e->getMessage();
     }
-	}
-	function remove($user_id) {
-	    global $pdo;
-	    try {
-	        $sql = "
-	          DELETE FROM `users` WHERE `id` = '$user_id';
-	        ";
-	        $stmt = $pdo->prepare($sql);
-	        $stmt->execute();
+  }
+  function remove($user_id) {
+      global $pdo;
+      try {
+          $sql = "
+            DELETE FROM `users` WHERE `id` = '$user_id';
+          ";
+          $stmt = $pdo->prepare($sql);
+          $stmt->execute();
           $sql = "
             DELETE FROM `affiliations` WHERE `user_id` = '$user_id';
           ";
           $stmt = $pdo->prepare($sql);
           $stmt->execute();
-	        return 'success';
-	    } catch(PDOException $e) {
-	        return $e->getMessage();
-	    }
-	}
-	function formatList($existingStudents) {
+          return 'success';
+      } catch(PDOException $e) {
+          return $e->getMessage();
+      }
+  }
+  function formatList($existingStudents) {
     $studentList = "<div class='fv_table_wrapper'>
                     <table class='fv_table table-striped'>
                       <tr>

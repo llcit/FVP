@@ -71,15 +71,15 @@
         return $e->getMessage();
     }
     if($_POST['auto_send']) {
-    	include_once "../inc/SESMailer.php";
-    	if ($vals['rosterData']) {
+      include_once "../inc/SESMailer.php";
+      if ($vals['rosterData']) {
         foreach ($rosterData as $student) {
-        	if ($student->newUser) {
-        		$emailVars = [
-		        'email' => $student->email
-		      ];
+          if ($student->newUser) {
+            $emailVars = [
+            'email' => $student->email
+          ];
       $msg .= sendMail('Welcome',$emailVars);
-        	}
+          }
         }
       }
     } // end auto-send

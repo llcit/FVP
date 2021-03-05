@@ -1,22 +1,22 @@
 <?php
-	function getExisting() {
-	    global $pdo;
-	    $sql = "
-	        SELECT e.`id`,prog.`id` AS `progId`,prog.`name` AS `progName`,prog.`progYrs`,
-	        DATE_FORMAT(e.`start_date`,'%M %Y') as `date`, 
-	        e.`start_date`,e.`end_date`,e.`phase`,e.`city`,e.`country`,COUNT(pres.`id`) AS `numVideos`
-	        FROM `events` e 
-	        JOIN `programs` prog on prog.`id`=e.`program_id`
-	        LEFT JOIN `presentations` pres on pres.`event_id`=e.`id`
-	        WHERE 1 
-	        GROUP BY e.`id` 
-	        ORDER BY `start_date` DESC
-	        ";
-	    $stmt = $pdo->prepare($sql);
-	    $stmt->execute();
-	    return $stmt->fetchAll();
-	}
-	function getSavedEvent($event_id) {
+  function getExisting() {
+      global $pdo;
+      $sql = "
+          SELECT e.`id`,prog.`id` AS `progId`,prog.`name` AS `progName`,prog.`progYrs`,
+          DATE_FORMAT(e.`start_date`,'%M %Y') as `date`, 
+          e.`start_date`,e.`end_date`,e.`phase`,e.`city`,e.`country`,COUNT(pres.`id`) AS `numVideos`
+          FROM `events` e 
+          JOIN `programs` prog on prog.`id`=e.`program_id`
+          LEFT JOIN `presentations` pres on pres.`event_id`=e.`id`
+          WHERE 1 
+          GROUP BY e.`id` 
+          ORDER BY `start_date` DESC
+          ";
+      $stmt = $pdo->prepare($sql);
+      $stmt->execute();
+      return $stmt->fetchAll();
+  }
+  function getSavedEvent($event_id) {
     global $pdo;
     $sql = "
         SELECT e.`id`,p.`id` AS `progId`, p.`name` AS `progName`,p.`progYrs`, 
@@ -28,8 +28,8 @@
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
     return $stmt->fetchObject();    
-	}
-	function save($vals) {
+  }
+  function save($vals) {
     global $pdo;
     try {
       if ($vals['post_id'] == '') $vals['post_id'] = null;
@@ -47,20 +47,20 @@
     } catch(PDOException $e) {
         return $e->getMessage();
     }
-	}
-	function remove($event_id) {
-	    global $pdo;
-	    try {
-	        $sql = "
-	            DELETE FROM `events` WHERE `id` = '$event_id';
-	            ";
-	        $stmt = $pdo->prepare($sql);
-	        $stmt->execute();
-	        return 'success';
-	    } catch(PDOException $e) {
-	        return $e->getMessage();
-	    }
-	}
+  }
+  function remove($event_id) {
+      global $pdo;
+      try {
+          $sql = "
+              DELETE FROM `events` WHERE `id` = '$event_id';
+              ";
+          $stmt = $pdo->prepare($sql);
+          $stmt->execute();
+          return 'success';
+      } catch(PDOException $e) {
+          return $e->getMessage();
+      }
+  }
   function formatList($existingEvents) {
     $eventList = "<div class='fv_table_wrapper'>
                     <table class='fv_table table-striped'>
@@ -113,20 +113,20 @@
     }
 
     $eventManager = "
-     	<div class='float-right fv_buttonWrapper'>
-	      <span>
-	        <a href='javascript:cancel();' class='btn btn-danger' id='cancelButton'>
-	          <i class='fa fa-window-close' aria-hidden='true'></i>
-	          Cancel
-	        </a>
-	      </span>
-	      <span>
-	        <a href='javascript:save();' class='btn btn-primary disabled' id='saveButton'>
-	        <i class='fa fa-save' aria-hidden='true'></i>
-	          Save Event
-	        </a>
-	      </span>
-	    </div>
+       <div class='float-right fv_buttonWrapper'>
+        <span>
+          <a href='javascript:cancel();' class='btn btn-danger' id='cancelButton'>
+            <i class='fa fa-window-close' aria-hidden='true'></i>
+            Cancel
+          </a>
+        </span>
+        <span>
+          <a href='javascript:save();' class='btn btn-primary disabled' id='saveButton'>
+          <i class='fa fa-save' aria-hidden='true'></i>
+            Save Event
+          </a>
+        </span>
+      </div>
       <div class='form-group'>
     ";
     $programs = getPrograms();
@@ -164,12 +164,12 @@
     ";
     $eventManager .= $phaseSelect;
     if($savedEvent->start_date){
-			$startDate = new DateTime($savedProgram->start_date);
-			$displayStartDate = $startDate->format('m/d/Y');
-		}
-		else {
-			$displayStartDate = null;
-		}
+      $startDate = new DateTime($savedProgram->start_date);
+      $displayStartDate = $startDate->format('m/d/Y');
+    }
+    else {
+      $displayStartDate = null;
+    }
     $startDateSelect = "
         <div class='fv_inputWrapper'>
           <label for='start_date' style='width:110px;'>Start Date:</label>
@@ -179,12 +179,12 @@
     ";
     $eventManager .= $startDateSelect; 
      if($savedEvent->end_date){
-			$endDate = new DateTime($savedProgram->end_date);
-			$displayEndDate = $startDate->format('m/d/Y');
-		}
-		else {
-			$displayEndDate = null;
-		}  
+      $endDate = new DateTime($savedProgram->end_date);
+      $displayEndDate = $startDate->format('m/d/Y');
+    }
+    else {
+      $displayEndDate = null;
+    }  
     $endDateSelect = "
         <div class='fv_inputWrapper'>
           <label for='end_date' style='width:110px;'>End Date:</label>
@@ -212,31 +212,31 @@
     ";
     $eventManager .= $locationSelect;
     $eventManager .= "
-    		<div class='new_location_wrapper' id='new_location_wrapper'>
-	    		<a id='location_action_button' href='javascript:showAddLocation();' class='btn btn-xs btn-icon btn-primary location_action_button'>
-	            <i id='location_action_icon' class='fa fa-plus'></i>
-	          </a>
-	    		<span>Add New Location</span>
-	    		<div id='location_addNew' class='location_addNew'>
-						<div class='float-right fv_buttonWrapper'>
-				      <span>
-				        <a href='javascript:addLocation();' class='btn btn-primary' id='addLocationButton'>
-				        <i class='fa fa-save' aria-hidden='true'></i>
-				          Add
-				        </a>
-				      </span>
-				    </div>
+        <div class='new_location_wrapper' id='new_location_wrapper'>
+          <a id='location_action_button' href='javascript:showAddLocation();' class='btn btn-xs btn-icon btn-primary location_action_button'>
+              <i id='location_action_icon' class='fa fa-plus'></i>
+            </a>
+          <span>Add New Location</span>
+          <div id='location_addNew' class='location_addNew'>
+            <div class='float-right fv_buttonWrapper'>
+              <span>
+                <a href='javascript:addLocation();' class='btn btn-primary' id='addLocationButton'>
+                <i class='fa fa-save' aria-hidden='true'></i>
+                  Add
+                </a>
+              </span>
+            </div>
 
-		    	 <div class='fv_inputWrapper'>
-					   <label for='city' style='min-width:80px;'>City:</label>
-					   <input type='text' class='fv_text_box fv_inline_select' id='city' name='city' placeholder='City' value=''/>
-						</div>
-		    	 	<div class='fv_inputWrapper'>
-					   <label for='country' style='min-width:80px;'>Country:</label>
-					   <input type='text' class='fv_text_box fv_inline_select' id='country' name='country' placeholder='Country' value=''/>
-						</div>
-		    	</div>
-	    	</div>
+           <div class='fv_inputWrapper'>
+             <label for='city' style='min-width:80px;'>City:</label>
+             <input type='text' class='fv_text_box fv_inline_select' id='city' name='city' placeholder='City' value=''/>
+            </div>
+             <div class='fv_inputWrapper'>
+             <label for='country' style='min-width:80px;'>Country:</label>
+             <input type='text' class='fv_text_box fv_inline_select' id='country' name='country' placeholder='Country' value=''/>
+            </div>
+          </div>
+        </div>
 
     ";
     $eventManager .= "
