@@ -81,11 +81,12 @@
     }
     if($isOwner && !$isShowcase) {
       if ($editCaptions) {
+      	$final = ($_POST['captionLanguage'] == 'English') ? 'translation_final':'translation_final' ;
         $editControls = "
           <div id = 'edit_controls' class = 'edit_controls'>
             <a style='margin-left:20px;' class='btn btn-secondary' href=\"javascript:cancelEdit();\">Cancel</a>
             <div class='form-check' style='display:inline;'>
-              <input type='checkbox' class='transcript_final' id='transcript_final' name='transcript_final'>
+              <input type='checkbox' class='transcript_final' id='$final' name='$final'>
               <label class='form-check-label' for='transcript_final'>Save as Final</label>
             </div>
             <a style='margin-left:20px;' class='btn btn-primary' href=\"javascript:saveCaptions();\">Save Captions</a>
