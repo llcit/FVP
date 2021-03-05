@@ -64,8 +64,15 @@
 						$stmt = $pdo->prepare($sql);
 						$stmt->execute([null,$user_id,$program_id,$institution_id,'student']);		
 		      }
-    		}
-    	}
+		      if($_POST['auto-send']) {
+            include_once "../inc/SESMailer.php";
+            $emailVars = [
+              'user_id' => $user_id
+            ];
+            $msg = sendMail('Welcome',$emailVars);
+          } // end auto-send
+    		} // end foreach ($rosterData as $student)
+    	} // end if ($vals['rosterData'])
     } catch(PDOException $e) {
         return $e->getMessage();
     }
