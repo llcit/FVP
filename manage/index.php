@@ -110,7 +110,7 @@
              $_POST['post_id'] = $_POST['student_program_id'];
             }
           }
-          if ($_POST["context"]!='roster' && ($_POST['send'] == 1 || $_POST['auto_send']) {
+          if ($_POST["context"]!='roster' && ($_POST['send'] == 1 || $_POST['auto_send'])) {
             include_once "../inc/SESMailer.php";
             $emailVars = [
               'user_id' => $_POST['post_id']
