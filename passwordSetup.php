@@ -12,7 +12,31 @@
         include "./inc/sqlFunctions.php";
         $userMsg = '';
         if (isset($_POST['password-reset']) && $_POST['email']) {
-          $userMsg = sendEmail("Password Reset", null, $_POST['email']);
+          $emailId = $_POST['email'];
+          $userExists = getExistingUser($emailId,null);
+          if($userExists){
+             $token = md5($emailId).rand(10,9999);
+             $expFormat = mktime(
+             date("H"), date("i"), date("s"), date("m") ,date("d")+1, date("Y")
+             );
+            $expDate = date("Y-m-d H:i:s",$expFormat);
+            $success = updatePassword($password,$emailId,$token,$expDate);
+            if($success) {
+              $emailVars = [
+                'email' => $emailId,
+                'token' => $token
+              ];
+              $userMsg = sendMail("Password_Reset", $emailVars); 
+            }
+            else {
+              $userMsg =  "Unable to generate a reset token!"; 
+              $msgClass = " error";              
+            }
+          }
+          else {
+                $userMsg =  "We are unable to locate that email address in the system.  Please use the address to which your invitation was sent."; 
+                $msgClass = " error";
+          }
         }
         if ($userMsg != '') {
           $userMsgPanel = "

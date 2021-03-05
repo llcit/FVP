@@ -112,7 +112,10 @@
           }
           if ($_POST['send'] == 1 || $_POST['auto_send']) {
             include_once "../inc/SESMailer.php";
-            $msg = sendMail('Welcome',$_POST['post_id'],null);
+            $emailVars = [
+              'user_id' => $_POST['post_id']
+            ];
+            $msg = sendMail('Welcome',$emailVars);
             // return to student list for program
             if ($_POST["context"]=='student') {
              $_POST['post_id'] = $_POST['student_program_id'];

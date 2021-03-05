@@ -2,8 +2,9 @@
   require $SETTINGS['base_path'] . '/vendor/autoload.php';
   use PHPMailer\PHPMailer\PHPMailer;
   use PHPMailer\PHPMailer\Exception;
-	function send($mailer,$vars) {
+	function send($vars) {
 		global $SETTINGS;
+		$mailer = new PHPMailer(true);
 		$recipient = $vars['recipient'];
 		$subject = $vars['subject'];
 		$bodyText = $vars['bodyText'];
@@ -33,18 +34,18 @@
 	  }
 	  return $userMsg;
 	}
-	function sendMail($message,$user_id=null,$email=null) {
+	function sendMail($message,$vars) {
 		global $SETTINGS;
 		// for password reset link, email is typed in by the user
 		// otherwise, user id is passed by admin interaction for 
 		// manual and auto-send of Welcome message
-		if ($email) {
+		if ($vars['email']) {
 			// call global function to look up by username
 			$emailUser = getUser($email);
 		}
 		else {
 			// get user by id using functions in /manage/inc/
-			$emailUser = getSavedUser($user_id);
+			$emailUser = getSavedUser($vars['user_id']);
 		}
     $email = $emailUser->email;
     $role = $emailUser->role;
@@ -63,17 +64,24 @@
 	      ];
 	      break;
 	    case 'Password_Reset' :
-	      $url = $SETTINGS['base_url']."/passwordSetup.php?email=".$email;
+	      $url = $SETTINGS['base_url']."/passwordSet.php?email=".$vars['email']."&token=".$vars['token'];
 	      $link = "<a href='$url'>$url</a>";
 	      $emailVars = [
 	        'recipient' => $email,
-	        'subject' => "Set New Password for Your Flagship Video Project Account",
-	        'bodyText' => "To set up or change your password, click the following link: $url",
-	        'bodyHtml' => "<p>To set up or change your password, click the following link: </p><p>$link</p>"
+	        'subject' => "Flagship Video Project: Setup New Password",
+	        'bodyText' => "Copy/paste the link below to set or reset your password: ".$url,
+          'bodyHtml' => "
+                         <p>
+                          Click or copy/paste the link below to set or reset your password: 
+                         </p>
+                         <p>
+                          ".$link."
+                         </p>
+                         "
 	      ];
+
     }
-    $mailer = new PHPMailer(true);
-    $response = send($mailer,$emailVars);
+    $response = send($emailVars);
     if ($response == 'success') {
       $msg = "
         <div class='msg success'>
