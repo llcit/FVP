@@ -35,6 +35,7 @@
       } 
       else if ($context == 'student') {
         $deleteMsg = " You may only delete a student if he/she does not have any saved videos.";
+        $student_program_id = $_POST['post_id'];
       } 
       $titleText .= $deleteMsg; 
 			session_start();
@@ -132,7 +133,6 @@
           }
           // set post_id in student context as parentKey (program_id)
           if($context == 'student') {
-            $student_program_id = $_POST['post_id'];
             $rosterButtons = " 
               <span>
                 <a class='btn btn-primary' href='javascript:downloadTemplate();' style='display:inline;'> 
@@ -147,7 +147,6 @@
                   Import Roster 
                 </a>
               </span>
-              <input type=hidden name='student_program_id' id='student_program_id' value='$student_program_id'>
             ";
           }
 
