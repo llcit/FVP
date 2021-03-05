@@ -18,6 +18,7 @@
 
 	function save($vals) {
     global $pdo;
+    $newUser = false;
     try {
     	if ($vals['rosterData']) {
     		$program_id = $vals['post_id'];
@@ -29,6 +30,7 @@
     			}
     			else {
     				$user_id = null;
+    				$newUser = true;
     			}
 					$sql = "
 					    REPLACE INTO `users`(`id`,`first_name`,`last_name`,`email`,`username`)
@@ -64,7 +66,7 @@
 						$stmt = $pdo->prepare($sql);
 						$stmt->execute([null,$user_id,$program_id,$institution_id,'student']);		
 		      }
-		      if($_POST['auto_send']) {
+		      if($newUser && $_POST['auto_send']) {
             include_once "../inc/SESMailer.php";
             $emailVars = [
               'email' => $student->email
@@ -76,7 +78,7 @@
     } catch(PDOException $e) {
         return $e->getMessage();
     }
-    return 'success';
+    return $msg;
 	}	
 	function getExisting() {
 		global $fileName;
