@@ -175,7 +175,12 @@
           $displayList = formatList($existing);
           if ($user->role == 'admin' || $user->role == 'staff') {
             if ($context == 'roster') {
-              $contextHeader = "Your Roster";
+              $program = getProgram($student_program_id);
+              if (!$program) {
+                header('Location: ./index.php');
+                exit;
+              }
+              $contextHeader = "Upload Roster for " . $program->name;
               $action = 'save';
               $actionLabel = "Save This";
               $icon = "fa-save";
@@ -189,7 +194,7 @@
             }
             else{
               if ($context == 'student') {
-                $program = getProgram($_POST['post_id']);
+                $program = getProgram($student_program_id);
                 if (!$program) {
                   header('Location: ./index.php');
                   exit;
