@@ -154,12 +154,9 @@
               <input type=hidden name='student_program_id' id='student_program_id' value='$student_program_id'>
             ";
           }
-          // do not render list when roster auto send email messages are displayed
-          $renderList = ($context == 'roster' && $_POST['auto_send']) ? false : true;
-          if ($renderList) {
-            $existing = getExisting($student_program_id);
-            $displayList = formatList($existing);
-          }
+
+          $existing = getExisting($student_program_id);
+          $displayList = formatList($existing);
           if ($user->role == 'admin' || $user->role == 'staff') {
             if ($context == 'roster') {
               $contextHeader = "Your Roster";
@@ -178,6 +175,7 @@
               if ($context == 'student') {
                 $program = getProgram($_POST['post_id']);
                 if (!$program) {
+                  dump($_POST);
                   header('Location: ./index.php');
                   exit;
                 }
@@ -188,28 +186,32 @@
               $actionLabel = "Add";
               $icon = "fa-plus-circle";
             }
-            $pageContent = "
-              <div class='panel'>
-                <div style='min-width:100%; border-bottom:solid 1px;padding-bottom:20px;margin-bottom:20px;'>
-                  <h4 style='display:inline;'>
-                    $contextHeader
-                  </h4>
+            // do not render list when roster auto send email messages are displayed
+            $renderList = ($context == 'roster' && $_POST['auto_send']) ? false : true;
+            if ($renderList) {
+              $pageContent = "
+                <div class='panel'>
+                  <div style='min-width:100%; border-bottom:solid 1px;padding-bottom:20px;margin-bottom:20px;'>
+                    <h4 style='display:inline;'>
+                      $contextHeader
+                    </h4>
+                  </div>
+                  <div style='text-align:right;min-width:100%;overflow:none;white-space: nowrap;'>
+                    $rosterButtons
+                    $autoSendInput
+                    <span>
+                      <a class='btn btn-primary $disabled' href='javascript:$action();' id='actionButton' name='actionButton' style='display:inline;' 
+                        data-toggle='tooltip' data-placement='top' title='$actionLabel $contextLabel'
+                      > 
+                        <i class='fa $icon' aria-hidden='true'></i>
+                        $actionLabel $contextLabel 
+                      </a>
+                    </span>
+                  </div>
+                  $displayList
                 </div>
-                <div style='text-align:right;min-width:100%;overflow:none;white-space: nowrap;'>
-                  $rosterButtons
-                  $autoSendInput
-                  <span>
-                    <a class='btn btn-primary $disabled' href='javascript:$action();' id='actionButton' name='actionButton' style='display:inline;' 
-                      data-toggle='tooltip' data-placement='top' title='$actionLabel $contextLabel'
-                    > 
-                      <i class='fa $icon' aria-hidden='true'></i>
-                      $actionLabel $contextLabel 
-                    </a>
-                  </span>
-                </div>
-                $displayList
-              </div>
-            ";
+              ";
+            }
           }
           else {
             $pageContent = "
