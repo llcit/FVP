@@ -18,9 +18,20 @@
       $SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
 			
       if ($context == 'roster') {
-        $subTitle = "Preview Roster";
-        $titleText = "The roster listed below is ready to be saved.  Please review the information and click save.  If you want the system to send an invite email automatically, check the box below. ";
         $student_program_id = ($_POST['student_program_id']) ? $_POST['student_program_id'] : $_POST['post_id'];
+        if ($_POST['save'] == 1) {
+          $subTitle = "Auto-send Emails:";
+          $titleText = "We attempted to send the following emails. 
+            <a class='btn btn-primary' href='javascript:manageStudents($student_program_id);' style='display:inline;'> 
+              <i class='fas fa-check'></i>
+              Continue 
+            </a>
+          ";
+        }
+        else {
+          $subTitle = "Preview Roster";
+          $titleText = "The roster listed below is ready to be saved.  Please review the information and click save.  If you want the system to send an invite email automatically, check the box below. ";
+        }
       }
       else {
         $subTitle = "Manage $contextLabel"."s";
@@ -89,7 +100,7 @@
               if ($context=='roster') {
                 // return to student list for program
                 if (!$_POST['auto_send']) {
-                  $rosterRedirect = "manageStudents(".$_POST['post_id'].");";
+                  $rosterRedirect = "manageStudents($student_program_id);";
                 }
               }
               // return to student list for program
