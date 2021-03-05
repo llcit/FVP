@@ -12,7 +12,7 @@
         include "./inc/sqlFunctions.php";
         $userMsg = '';
         if (isset($_POST['password-reset']) && $_POST['email']) {
-          $userMsg = sendEmail();
+          $userMsg = sendEmail("Password Reset", null, $_POST['email']);
         }
         if ($userMsg != '') {
           $userMsgPanel = "
