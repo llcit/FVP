@@ -81,7 +81,7 @@
     }
     if($isOwner && !$isShowcase) {
       if ($editCaptions) {
-      	$final = ($_POST['captionLanguage'] == 'English') ? 'translation_final':'translation_final' ;
+      	$final = ($_GET['language'] == 'en') ? 'translation_final':'translation_final' ;
         $editControls = "
           <div id = 'edit_controls' class = 'edit_controls'>
             <a style='margin-left:20px;' class='btn btn-secondary' href=\"javascript:cancelEdit();\">Cancel</a>
