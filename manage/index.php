@@ -62,20 +62,25 @@
             // prevent double save on refresh -- only save if cookie is true
             if ($_COOKIE['doSave']) {
               $response = save($_POST);
-              if ($response == 'success') {
-                $msg = "
-                  <div class='msg success'>
-                    $contextLabel successfully saved!
-                  </div>
-                ";
+              if ($_POST["context"]!='roster') {
+                if ($response == 'success') {
+                  $msg = "
+                    <div class='msg success'>
+                      $contextLabel successfully saved!
+                    </div>
+                  ";
+                }
+                else {
+                  $msg = "
+                    <div class='msg error'>
+                      There was a problem saving your $context!
+                      <p>Error: $response</p>
+                    </div>
+                  ";
+                }
               }
               else {
-                $msg = "
-                  <div class='msg error'>
-                    There was a problem saving your $context!
-                    <p>Error: $response</p>
-                  </div>
-                ";
+                $msg = $response;
               }
               // prevent double save on refresh -- kill cookie after 1st save
               setcookie ("doSave", "", time() - 3600, "/");
@@ -112,7 +117,6 @@
           }
           if ($_POST["context"]!='roster' && ($_POST['send'] == 1 || $_POST['auto_send'])) {
             include_once "../inc/SESMailer.php";
-            // START HERE: Push $msgs to global
             $emailVars = [
               'user_id' => $_POST['post_id']
             ];

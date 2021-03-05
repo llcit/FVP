@@ -73,7 +73,8 @@
       setContext('roster');
       $('#manageForm').submit(); 
     })
-    timerID=setTimeout(function(){$(".success").hide();},2500);
+    var timeout = (context == 'roster') ? 5000 : 2500;
+    timerID=setTimeout(function(){$(".success").hide();},timeout);
   });
   function enableSave() {
     var enable = false;

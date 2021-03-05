@@ -71,7 +71,7 @@
             $emailVars = [
               'email' => $student->email
             ];
-            $msg = sendMail('Welcome',$emailVars);
+            $msg .= sendMail('Welcome',$emailVars);
           } // end auto-send
     		} // end foreach ($rosterData as $student)
     	} // end if ($vals['rosterData'])
