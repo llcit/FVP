@@ -86,8 +86,16 @@
               setcookie ("doSave", "", time() - 3600, "/");
               if ($context=='roster') {
                 if ($_POST['auto_send'] != 1) {
-                  $rosterRedirect = "manageStudents(".$_POST['post_id'].")";
+                  // let email messages linger for 5 seconds
+                  $timeout = 5000;
                 }
+                else {
+                  $timeout = 0;
+                }
+                // return to student list for program
+                $rosterRedirect = "timerID=setTimeout(function(){manageStudents(".$_POST['post_id'].")},$timeout);";
+
+
               }
               // return to student list for program
               if ($context=='student') {
@@ -148,8 +156,11 @@
               <input type=hidden name='student_program_id' id='student_program_id' value='$student_program_id'>
             ";
           }
-          $existing = getExisting($student_program_id);
-          $displayList = formatList($existing);
+          // do not render list when roster auto send email messages are displayed
+          if !($context == 'roster' && $_POST['auto_send']) {
+            $existing = getExisting($student_program_id);
+            $displayList = formatList($existing);
+          }
           if ($user->role == 'admin' || $user->role == 'staff') {
             if ($context == 'roster') {
               $contextHeader = "Your Roster";
