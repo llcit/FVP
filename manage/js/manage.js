@@ -39,6 +39,7 @@
     $('#save').val(0);
     $('#remove').val(0);
     $('#post_id').val(0);
+    $('#student_program_id').val(0);
     $('#manageForm').submit();        
   }
   function sendInvite(user_id) {

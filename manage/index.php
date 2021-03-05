@@ -263,6 +263,7 @@
         <input type='hidden' id='remove' name='remove' value=0>
         <input type='hidden' id='send' name='send' value=0>
         <input type='hidden' id='uploadRoster' name='uploadRoster' value=0>
+        <input type=hidden id='student_program_id' name='student_program_id' value='<?php echo($student_program_id); ?>'>
         
       </form>
       <div class="footer">
