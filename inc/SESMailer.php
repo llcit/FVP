@@ -1,5 +1,8 @@
 <?php
-	function sendMail($mailer,$vars) {
+  require '../vendor/autoload.php';
+  use PHPMailer\PHPMailer\PHPMailer;
+  use PHPMailer\PHPMailer\Exception;
+	function send($mailer,$vars) {
 		global $SETTINGS;
 		$recipient = $vars['recipient'];
 		$subject = $vars['subject'];
@@ -29,5 +32,54 @@
 	      $userMsg =  "Email not sent. {$mailer->ErrorInfo}"; //Catch errors from Amazon SES.
 	  }
 	  return $userMsg;
+	}
+	function sendMail($user_id,$message) {
+		global $SETTINGS;
+	  $emailUser = getSavedUser($user_id);
+    $email = $emailUser->email;
+    $role = $emailUser->role;
+		switch($message) {
+    	case 'Welcome':
+	      $url = $SETTINGS['base_url']."/passwordSetup.php?email=".$email;
+	      $link = "<a href='$url'>$url</a>";
+	      $emailVars = [
+	        'recipient' => $email,
+	        'subject' => "Welcome to the Flagship Video Project",
+	        'bodyText' => "You have been added to the system with $role privileges. 
+	                       To set up your password, click the following link : $url",
+	        'bodyHtml' => "<p>You have been added to the Flagship Video Project system with " . 
+	                       $role . " privileges. To set up your password, click the following link :</p>
+	                       <p>$link</p>"
+	      ];
+	      break;
+	    case 'Password_Reset' :
+	      $url = $SETTINGS['base_url']."/passwordSetup.php?email=".$email;
+	      $link = "<a href='$url'>$url</a>";
+	      $emailVars = [
+	        'recipient' => $email,
+	        'subject' => "Set New Password for Your Flagship Video Project Account",
+	        'bodyText' => "To set up or change your password, click the following link: $url",
+	        'bodyHtml' => "<p>To set up or change your password, click the following link: </p><p>$link</p>"
+	      ];
+    }
+    $mailer = new PHPMailer(true);
+    $response = send($mailer,$emailVars);
+    if ($response == 'success') {
+      $msg = "
+        <div class='msg success'>
+          Email sent to " . 
+          $email . "
+        </div>
+      ";
+    }
+    else {
+      $msg = "
+        <div class='msg error'>
+          There was a problem sending the email to " . 
+          $email . ": <p>" . $response ."</p>
+        </div>
+      ";
+    }
+    return $msg;
 	}
 ?>

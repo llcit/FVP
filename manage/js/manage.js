@@ -114,7 +114,8 @@
         if(
             $("#first_name").val() != '' && 
             $("#last_name").val() != '' && 
-            isEmail($("#email").val()) 
+            isEmail($("#email").val()) && 
+            $("#institution option:selected").val() != ''
           ) {
           enable = true;
         }

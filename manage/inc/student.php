@@ -19,7 +19,7 @@
 function getSavedUser($user_id) {
     global $pdo;
     $sql = "
-        SELECT u.*,a.`domestic_institution_id` 
+        SELECT u.*,a.`role`,a.`domestic_institution_id` 
         FROM `users` u 
         JOIN `affiliations` a on a.`user_id`=u.`id`
         WHERE u.`id` = '$user_id'
@@ -73,6 +73,11 @@ function getSavedUser($user_id) {
 	        ";
 	        $stmt = $pdo->prepare($sql);
 	        $stmt->execute();
+          $sql = "
+            DELETE FROM `affiliations` WHERE `user_id` = '$user_id';
+          ";
+          $stmt = $pdo->prepare($sql);
+          $stmt->execute();
 	        return 'success';
 	    } catch(PDOException $e) {
 	        return $e->getMessage();
