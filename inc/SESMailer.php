@@ -42,12 +42,13 @@
 		if ($vars['email']) {
 			// call global function to look up by username
 			$emailUser = getUser($vars['email']);
+			$email = $vars['email'];
 		}
 		else {
 			// get user by id using functions in /manage/inc/
 			$emailUser = getSavedUser($vars['user_id']);
+			$email = $emailUser->email;
 		}
-    $email = $emailUser->email;
     $role = $emailUser->role;
 		switch($message) {
     	case 'Welcome':
