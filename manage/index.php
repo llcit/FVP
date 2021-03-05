@@ -94,8 +94,6 @@
                 }
                 // return to student list for program
                 $rosterRedirect = "timerID=setTimeout(function(){manageStudents(".$_POST['post_id'].")},$timeout);";
-
-
               }
               // return to student list for program
               if ($context=='student') {
@@ -157,7 +155,8 @@
             ";
           }
           // do not render list when roster auto send email messages are displayed
-          if !($context == 'roster' && $_POST['auto_send']) {
+          $renderList = ($context == 'roster' && $_POST['auto_send'])  false : true;
+          if ($renderList) {
             $existing = getExisting($student_program_id);
             $displayList = formatList($existing);
           }
