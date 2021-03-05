@@ -33,9 +33,19 @@
 	  }
 	  return $userMsg;
 	}
-	function sendMail($user_id,$message) {
+	function sendMail($message,$user_id=null,$email=null) {
 		global $SETTINGS;
-	  $emailUser = getSavedUser($user_id);
+		// for password reset link, email is typed in by the user
+		// otherwise, user id is passed by admin interaction for 
+		// manual and auto-send of Welcome message
+		if ($email) {
+			// call global function to look up by username
+			$emailUser = getUser($email);
+		}
+		else {
+			// get user by id using functions in /manage/inc/
+			$emailUser = getSavedUser($user_id);
+		}
     $email = $emailUser->email;
     $role = $emailUser->role;
 		switch($message) {
@@ -82,4 +92,5 @@
     }
     return $msg;
 	}
+
 ?>

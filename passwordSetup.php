@@ -12,45 +12,7 @@
         include "./inc/sqlFunctions.php";
         $userMsg = '';
         if (isset($_POST['password-reset']) && $_POST['email']) {
-          $mailer = new PHPMailer(true);
-          $emailId = $_POST['email'];
-          $userExists = getExistingUser($emailId,null);
-          if($userExists){
-             $token = md5($emailId).rand(10,9999);
-             $expFormat = mktime(
-             date("H"), date("i"), date("s"), date("m") ,date("d")+1, date("Y")
-             );
-            $expDate = date("Y-m-d H:i:s",$expFormat);
-            $success = updatePassword($password,$emailId,$token,$expDate); 
-            $url = $SETTINGS['password_reset_base_url']."/passwordSet.php?email=".$emailId."&token=".$token;
-            $link = "<a href='".$url."'>".$url."</a>";
-            $emailVars = [
-              'recipient' => $_POST['email'],
-              'subject' => "Flagship Video Project: Setup New Password",
-              'bodyText' => "Go to this link to set or reset your password: ".$url,
-              'bodyHtml' => "
-                             <p>
-                              Click or copy/paste the link below to set or reset your password: 
-                             </p>
-                             <p>
-                              ".$link."
-                             </p>
-                             "
-            ];
-            $response = sendMail($mailer,$emailVars);
-            if ($response == 'success') {
-              $userMsg =  "Check your email and click on the link to set your new password.";
-              $msgClass = "success";
-            }
-            else {
-              $userMsg =  $response;
-              $msgClass = " error";
-            }
-          }
-          else {
-                $userMsg =  "We are unable to locate that email address in the system.  Please use the address to which your invitation was sent."; 
-                $msgClass = " error";
-          }
+          $userMsg = sendEmail();
         }
         if ($userMsg != '') {
           $userMsgPanel = "
