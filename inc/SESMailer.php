@@ -41,7 +41,7 @@
 		// manual and auto-send of Welcome message
 		if ($vars['email']) {
 			// call global function to look up by username
-			$emailUser = getUser($email);
+			$emailUser = getUser($vars['email']);
 		}
 		else {
 			// get user by id using functions in /manage/inc/
