@@ -163,7 +163,7 @@
           else if($context == 'roster'){
             $rosterButtons = " 
               <span>
-                <a class='btn btn-danger' href='javascript:manageStudents($student_program_id);' style='display:inline;'> 
+                <a class='btn btn-danger' href='javascript:manageStudents($student_program_id);' style='display:inline; paddin-right:15px;'> 
                   <i class='fas fa-times'></i>
                   Cancel 
                 </a>
@@ -212,8 +212,8 @@
                     </h4>
                   </div>
                   <div style='text-align:right;min-width:100%;overflow:none;white-space: nowrap;'>
-                    $rosterButtons
                     $autoSendInput
+                    $rosterButtons
                     <span>
                       <a class='btn btn-primary $disabled' href='javascript:$action();' id='actionButton' name='actionButton' style='display:inline;' 
                         data-toggle='tooltip' data-placement='top' title='$actionLabel $contextLabel'
