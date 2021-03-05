@@ -163,7 +163,7 @@
           else if($context == 'roster'){
             $rosterButtons = " 
               <span>
-                <a class='btn btn-danger' href='javascript:manageStudents($student_program_id);' style='display:inline; paddin-right:15px;'> 
+                <a class='btn btn-danger' href='javascript:manageStudents($student_program_id);' style='display:inline; margin-right:15px;'> 
                   <i class='fas fa-times'></i>
                   Cancel 
                 </a>
