@@ -21,7 +21,7 @@
     $newUser = false;
     try {
     	if ($vals['rosterData']) {
-    		$program_id = $vals['post_id'];
+    		$program_id = $vals['student_program_id'];
     		$rosterData = json_decode($vals['rosterData']);
     		foreach ($rosterData as $student) {
     			$user = getUser($student->email);
@@ -57,7 +57,7 @@
 						$stmt->execute([null,$student->institution]);
 						$institution_id = $pdo->lastInsertId();
 		      }
-		      $affiliation = getAffiliation($user->id, $program_id);
+		      $affiliation = getAffiliation($user_id, $program_id);
 		      if (!$affiliation) {
 						$sql = "
 						    INSERT INTO `affiliations`(`id`,`user_id`,`program_id`,`domestic_institution_id`,`role`)
