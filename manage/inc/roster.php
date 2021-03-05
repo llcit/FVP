@@ -2,18 +2,18 @@
 	$fileName = null;
 	function saveTmpRoster() {
 		global $fileName;
-	 if (isset($_FILES["rosterFile"])) {
-	    if ($_FILES["file"]["error"] > 0) {
-	      echo "There was an error uploading your file: " . $_FILES["file"]["error"] . "<br />";
-	    }
-	    else {
-	      $fileName = $_FILES["rosterFile"]["name"];
-        move_uploaded_file($_FILES["rosterFile"]["tmp_name"], "./tmpRosters/" . $fileName);
-	    }
-	  } 
-	  else {
-	    echo "No file selected <br />";
-	  }
+		if (isset($_FILES["rosterFile"])) {
+		  if ($_FILES["file"]["error"] > 0) {
+		    echo "There was an error uploading your file: " . $_FILES["file"]["error"] . "<br />";
+		  }
+		  else {
+		    $fileName = $_FILES["rosterFile"]["name"];
+		    move_uploaded_file($_FILES["rosterFile"]["tmp_name"], "./tmpRosters/" . $fileName);
+		  }
+		} 
+		else {
+		  echo "No file selected <br />";
+		}
 	}
 
 	function save($vals) {
@@ -67,7 +67,7 @@
 		      if($_POST['auto-send']) {
             include_once "../inc/SESMailer.php";
             $emailVars = [
-              'user_id' => $user_id
+              'email' => $student->email
             ];
             $msg = sendMail('Welcome',$emailVars);
           } // end auto-send
