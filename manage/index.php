@@ -20,6 +20,7 @@
       if ($context == 'roster') {
         $subTitle = "Preview Roster";
         $titleText = "The roster listed below is ready to be saved.  Please review the information and click save.  If you want the system to send an invite email automatically, check the box below. ";
+        $student_program_id = $_POST['post_id'];
       }
       else {
         $subTitle = "Manage $contextLabel"."s";
