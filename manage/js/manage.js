@@ -80,7 +80,9 @@
       $('#context').val('roster');
       $('#manageForm').submit(); 
     })
-    timerID=setTimeout(function(){$(".success").hide();},2500);
+    if ($('#context').val() != 'roster') {
+      timerID=setTimeout(function(){$(".success").hide();},2500);
+    }
   });
   function enableSave() {
     var enable = false;

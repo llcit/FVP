@@ -22,7 +22,7 @@
         if ($_POST['save'] == 1) {
           $subTitle = "Auto-send Emails:";
           $titleText = "We attempted to send the following emails. 
-            <a class='btn btn-primary' href='javascript:manageStudents($student_program_id);' style='display:inline;'> 
+            <a class='btn btn-primary float-right' href='javascript:manageStudents($student_program_id);' style='display:inline;'> 
               <i class='fas fa-check'></i>
               Continue 
             </a>
@@ -243,7 +243,7 @@
     ?>
       <form method="post" id='manageForm' action=''>
         <div class="container">
-          <?php if($msg) echo("<div style='width:100%;margin-top:30px;'>$msg</div>"); ?>
+          <?php if($msg) echo("<div style='width:100%;margin-top:20px auto 0px auto;max-width: 800px;'>$msg</div>"); ?>
           <ul class="nav nav-pills fv-nav-container">
             <li class="nav-item">
               <a class="nav-link <?php echo($active['event']); ?>" href="javascript:setContext('event');">Events</a>
