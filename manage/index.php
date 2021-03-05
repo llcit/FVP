@@ -155,7 +155,7 @@
             ";
           }
           // do not render list when roster auto send email messages are displayed
-          $renderList = ($context == 'roster' && $_POST['auto_send'])  false : true;
+          $renderList = ($context == 'roster' && $_POST['auto_send']) ? false : true;
           if ($renderList) {
             $existing = getExisting($student_program_id);
             $displayList = formatList($existing);
