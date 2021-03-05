@@ -8,7 +8,7 @@
 	include_once("../inc/htmlFunctions.php");
 	$SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
 	session_start();
-	$videoId = ($_GET['v']) ? $_GET['v'] : 204;
+	$videoId = ($_GET['v']) ? $_GET['v'] : 187;
 	if (!isset($_SESSION['username'])) { 
     $role = 'anonymous'; 
   } 
@@ -70,7 +70,6 @@
 		global $audioDescription;
 		$isSelected[$videoId] = " SELECTED";
 		$userSelect = "<select id='v' name='v' class='selectpicker fv_block fv_showcase_select' onChange='updateUI();'>";
-		$userSelect .= "<option value='204'". $isSelected['204'].">About the Flagship Video Project</option>";
 		foreach($showcaseVideos as $video) {
 			$progYrs = preg_replace("/(A|C)Y\ /","",$video['progYrs']);
 			$userSelect .= "<option value='".$video['id']."'". $isSelected[$video['id']].">".$video['last_name']." (".$video['language'].", " .$progYrs. ")</option>";

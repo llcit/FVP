@@ -64,7 +64,7 @@
 						$stmt = $pdo->prepare($sql);
 						$stmt->execute([null,$user_id,$program_id,$institution_id,'student']);		
 		      }
-		      if($_POST['auto-send']) {
+		      if($_POST['auto_send']) {
             include_once "../inc/SESMailer.php";
             $emailVars = [
               'email' => $student->email
