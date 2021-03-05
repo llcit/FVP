@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta charset="utf-8"/>
     <?php
+      $SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
       $context = ($_POST['context']) ? $_POST['context'] : 'event';
       $contextLabel = ucfirst($context);
       $post_id = $_POST['post_id'];
@@ -15,8 +16,6 @@
       include_once "../inc/sqlFunctions.php";
       include_once "../inc/htmlFunctions.php";
       include_once "./inc/".$context.".php";
-      $SETTINGS = parse_ini_file(__DIR__."/../inc/settings.ini");
-			
       if ($context == 'roster') {
         $subTitle = "Preview Roster";
         $titleText = "The roster listed below is ready to be saved.  Please review the information and click save.  If you want the system to send an invite email automatically, check the box below. ";
