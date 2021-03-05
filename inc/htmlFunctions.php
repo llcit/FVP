@@ -238,10 +238,10 @@
               <tr>
                 <td colspan=2>
                   <div class='row'>
-                    <div class='col-sm-8'>
+                    <div class='col-sm-10'>
                       <p class='studentName'>".$video['first_name']." ".$video['last_name']."</p>
                     </div>
-                    <div class='col-sm-4'>
+                    <div class='col-sm-2'>
                       $deleteButton
                     </div>
                   </div>

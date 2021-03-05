@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+
       <?php
         include_once("./inc/db_pdo.php");
         include_once("./inc/dump.php");
         include_once("./inc/sqlFunctions.php");
         include_once("./inc/htmlFunctions.php");
         $SETTINGS = parse_ini_file(__DIR__."/inc/settings.ini");
+      ?>
+      <script>
+        // set for S3FileGen
+        var base_url = '<?php echo($SETTINGS['base_url']); ?>';
+      </script>
+      <script src='./js/S3FileGen.js'></script>
+      <?php
         $pageTitle = "Flagship Video Project";
         $subTitle = "Your Videos";
         $titleText = "Click a video from the list below to play it or edit captions.  You may share the public link with anyone you would like to see the video.";
@@ -93,10 +101,7 @@
             });
           });
         });
-        // set for S3FileGen
-        var base_url = '<?php echo($SETTINGS['base_url']); ?>';
       </script>
-      <script src='./js/S3FileGen.js'></script>
       <script src='./js/main.js'></script>
     </body>
 </html>
