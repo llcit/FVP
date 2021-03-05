@@ -1,4 +1,5 @@
 <?php
+	$SETTINGS = parse_ini_file(__DIR__."/settings.ini");
   require $SETTINGS['base_path'] . '/vendor/autoload.php';
   use PHPMailer\PHPMailer\PHPMailer;
   use PHPMailer\PHPMailer\Exception;
