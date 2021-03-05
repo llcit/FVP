@@ -1,5 +1,5 @@
 <?php
-  require '../vendor/autoload.php';
+  require $SETTING['base_path'] . '/vendor/autoload.php';
   use PHPMailer\PHPMailer\PHPMailer;
   use PHPMailer\PHPMailer\Exception;
 	function send($mailer,$vars) {
