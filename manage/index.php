@@ -80,20 +80,15 @@
                 }
               }
               else {
-                $msg = $response;
+                $pageContent  = $response;
               }
               // prevent double save on refresh -- kill cookie after 1st save
               setcookie ("doSave", "", time() - 3600, "/");
               if ($context=='roster') {
-                if ($_POST['auto_send'] != 1) {
-                  // let email messages linger for 5 seconds
-                  $timeout = 5000;
-                }
-                else {
-                  $timeout = 0;
-                }
                 // return to student list for program
-                $rosterRedirect = "timerID=setTimeout(function(){manageStudents(".$_POST['post_id'].")},$timeout);";
+                if (!$_POST['auto_send']) {
+                  $rosterRedirect = "manageStudents(".$_POST['post_id'].");";
+                }
               }
               // return to student list for program
               if ($context=='student') {
@@ -167,7 +162,7 @@
               $autoSendInput = "
                 <span>
                   <label for='auto_send' style='min-width:80px;'>Auto-send Invite Emails to All New Students:</label>
-                  <input type='checkbox' class='checkbox' style='margin-right:40px;'id='auto_send' name='auto_send'>
+                  <input type='checkbox' class='checkbox' style='margin-right:40px;' id='auto_send' name='auto_send'>
                 </span>
               ";
             }
@@ -175,7 +170,6 @@
               if ($context == 'student') {
                 $program = getProgram($_POST['post_id']);
                 if (!$program) {
-                  dump($_POST);
                   header('Location: ./index.php');
                   exit;
                 }
@@ -186,9 +180,9 @@
               $actionLabel = "Add";
               $icon = "fa-plus-circle";
             }
-            // do not render list when roster auto send email messages are displayed
-            $renderList = ($context == 'roster' && $_POST['auto_send']) ? false : true;
-            if ($renderList) {
+            // do not render content when roster auto send email messages are displayed
+            $renderContent = ($context == 'roster' && $_POST['auto_send']) ? false : true;
+            if ($renderContent) {
               $pageContent = "
                 <div class='panel'>
                   <div style='min-width:100%; border-bottom:solid 1px;padding-bottom:20px;margin-bottom:20px;'>
