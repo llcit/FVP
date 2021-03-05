@@ -84,8 +84,13 @@
               }
               // prevent double save on refresh -- kill cookie after 1st save
               setcookie ("doSave", "", time() - 3600, "/");
+              if ($context=='roster') {
+                if ($_POST['auto_send'] != 1) {
+                  $rosterRedirect = "manageStudents(".$_POST['post_id'].")";
+                }
+              }
               // return to student list for program
-              if ($context == 'student') {
+              if ($context=='student') {
                $_POST['post_id'] = $_POST['student_program_id'];
               }
             }
@@ -108,11 +113,11 @@
               ";
             }
             // return to student list for program
-            if ($context == 'student') {
+            if ($context=='student') {
              $_POST['post_id'] = $_POST['student_program_id'];
             }
           }
-          if ($context !='roster' && ($_POST['send'] == 1 || $_POST['auto_send'])) {
+          if ($context!='roster' && ($_POST['send'] == 1 || $_POST['auto_send'])) {
             include_once "../inc/SESMailer.php";
             $emailVars = [
               'user_id' => $_POST['post_id']
@@ -123,12 +128,8 @@
              $_POST['post_id'] = $_POST['student_program_id'];
             }
           }
-          // return to student view after roster save
-          if ($context == 'roster' && $_POST['save'] == 1) {
-            $context = 'student';
-          }
+          // set post_id in student context as parentKey (program_id)
           if($context == 'student') {
-            // set post_id in student context as parentKey (program_id)
             $student_program_id = $_POST['post_id'];
             $rosterButtons = " 
               <span>
