@@ -55,14 +55,14 @@
         }
         else {
           // generate roster preview after upload
-          if ($_POST["context"]=='roster' && $_POST['save'] == 0) {
+          if ($context=='roster' && $_POST['save'] == 0) {
             saveTmpRoster();
           }
           if ($_POST['save'] == 1) {
             // prevent double save on refresh -- only save if cookie is true
             if ($_COOKIE['doSave']) {
               $response = save($_POST);
-              if ($_POST["context"]!='roster') {
+              if ($context!='roster') {
                 if ($response == 'success') {
                   $msg = "
                     <div class='msg success'>
@@ -84,11 +84,8 @@
               }
               // prevent double save on refresh -- kill cookie after 1st save
               setcookie ("doSave", "", time() - 3600, "/");
-              if ($_POST["context"]=='roster') {
-                $rosterRedirect = "manageStudents(".$_POST['post_id'].")";
-              }
               // return to student list for program
-              if ($_POST["context"]=='student') {
+              if ($context == 'student') {
                $_POST['post_id'] = $_POST['student_program_id'];
               }
             }
@@ -111,23 +108,27 @@
               ";
             }
             // return to student list for program
-            if ($_POST["context"]=='student') {
+            if ($context == 'student') {
              $_POST['post_id'] = $_POST['student_program_id'];
             }
           }
-          if ($_POST["context"]!='roster' && ($_POST['send'] == 1 || $_POST['auto_send'])) {
+          if ($context !='roster' && ($_POST['send'] == 1 || $_POST['auto_send'])) {
             include_once "../inc/SESMailer.php";
             $emailVars = [
               'user_id' => $_POST['post_id']
             ];
             $msg = sendMail('Welcome',$emailVars);
             // return to student list for program
-            if ($_POST["context"]=='student') {
+            if ($context=='student') {
              $_POST['post_id'] = $_POST['student_program_id'];
             }
           }
-          // set post_id in student context as parentKey (program_id)
+          // return to student view after roster save
+          if ($context == 'roster' && $_POST['save'] == 1) {
+            $context = 'student';
+          }
           if($context == 'student') {
+            // set post_id in student context as parentKey (program_id)
             $student_program_id = $_POST['post_id'];
             $rosterButtons = " 
               <span>
