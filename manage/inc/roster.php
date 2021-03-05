@@ -177,6 +177,7 @@
     if($valid) {
     	$studentList .= "
     		<input type=hidden id='rosterData' name='rosterData' value='".json_encode($saveData, JSON_UNESCAPED_SLASHES)."'>
+    		<input type=hidden id='student_program_id' name='student_program_id' value='$student_program_id'>
     		<script>
     			$('#actionButton').removeClass('disabled');
     		</script>
