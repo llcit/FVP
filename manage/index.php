@@ -20,7 +20,7 @@
       if ($context == 'roster') {
         $subTitle = "Preview Roster";
         $titleText = "The roster listed below is ready to be saved.  Please review the information and click save.  If you want the system to send an invite email automatically, check the box below. ";
-        $student_program_id = $_POST['post_id'];
+        $student_program_id = $_POST['student_program_id']) ? $_POST['student_program_id'] : $_POST['post_id'];
       }
       else {
         $subTitle = "Manage $contextLabel"."s";
@@ -35,7 +35,7 @@
       } 
       else if ($context == 'student') {
         $deleteMsg = " You may only delete a student if he/she does not have any saved videos.";
-        $student_program_id = $_POST['post_id'];
+        $student_program_id = $_POST['student_program_id']) ? $_POST['student_program_id'] : $_POST['post_id'];
       } 
       $titleText .= $deleteMsg; 
 			session_start();

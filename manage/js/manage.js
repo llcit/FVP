@@ -1,5 +1,11 @@
   function setContext(context) {
     $('#context').val(context);
+    $('#manage').val(0);
+    $('#save').val(0);
+    $('#remove').val(0);
+    $('#post_id').val(0);
+    $('#student_program_id').val(0);
+    $('#auto_send').prop( "checked", false );
     $('#manageForm').submit();
   }
   function manage(id) {
@@ -8,7 +14,7 @@
     $('#manageForm').submit();
   }
   function manageStudents(program_id) {
-    setContext('student');
+    $('#context').val('student');
     $('#post_id').val(program_id);
     $('#manageForm').submit();
   }
@@ -71,7 +77,7 @@
     $('input[type="file"]').on('change', function() {
       $('#manageForm').attr("enctype", "multipart/form-data")
         .attr("encoding", "multipart/form-data");
-      setContext('roster');
+      $('#context').val('roster');
       $('#manageForm').submit(); 
     })
     timerID=setTimeout(function(){$(".success").hide();},2500);
