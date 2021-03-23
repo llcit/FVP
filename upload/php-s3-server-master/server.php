@@ -49,8 +49,7 @@
                 'watson_exec_time'=>0,
                 'google_exec_time'=>0
             ];
-            
-            preg_match("/(.*)\.(mov|mp4|m4a)/",$_REQUEST['key'],$matches);
+            preg_match("/(.*)\.(mov|mpeg4|mp4|avi|wmv)/",$_REQUEST['key'],$matches);
             $file_name = $matches[1];
             $video_extension = $matches[2];
             $pid = ($_REQUEST['pid'] > 0) ? $_REQUEST['pid'] : registerVideo($_REQUEST,$video_extension);
@@ -269,6 +268,7 @@
             }
         }
         try { 
+            $key = "transcripts/$pid.vtt";
             $stream = fopen("s3://$expectedBucketName/$key", 'w');
             fwrite($stream, $fileContent);
             fclose($stream);

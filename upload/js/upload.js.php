@@ -58,7 +58,7 @@
 				validation: {
 					itemLimit: 1,
 					sizeLimit: '<?php echo($SETTINGS['S3_MAX_FILE_SIZE']); ?>',
-					allowedExtensions: ['mp4']
+					allowedExtensions: ['mp4','mov','mpeg4','avi','wmv']
 				},
 				thumbnails: {
 					placeholders: {
