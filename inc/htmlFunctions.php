@@ -288,9 +288,16 @@
     if ($displayPublicLink) {
       $row .= "
           <div class='fv_linkWrapper'  style='margin-left:25px;''>
-            <span class='extras'>
-              <b>Public Link:</b> http://video.thelanguageflagship.tech/player/index.php?v=".$video['id']."&ac=".$video['access_code']."
+            <span class='fv_copyLinkWrapper'>
+              Public Link:</b>
+
+
+              <a class='fv_copyButton' data-value='".$video['id']."' id='cb_".$video['id']."' data-toggle='tooltip' data-placement='top' title='Link copied!'>
+                <i class='far fa-copy'></i> Copy
+              </a>
+              <textarea readonly class='fv_link' id='cl_".$video['id']."' name='cl_".$video['id']."'>http://video.thelanguageflagship.tech/player/?v=".$video['id']."&ac=".$video['access_code']."</textarea>
             </span>
+
           </div>
       ";
     }

@@ -551,8 +551,21 @@
     margin-left:15px;
     margin-right:15px;
   }
+  .fv_copyButton {
+    margin-left:25px;
+    padding:5px;
+  }
+  .fv_copyButton:hover{
+    background-color:#AFC6D5;
+  }
   .fv_linkWrapper {
-    width:40%;
+    width:60%;
+  }
+  .fv_link {
+    display:block;
+    width:100%; 
+    padding:8px;
+    font-size:10px;
   }
   .fv_buttonWrapper {
     margin-bottom:25px;
@@ -610,7 +623,5 @@
 
   }
   .mngStudents:hover{
-    
     text-decoration: none;
-    
   }

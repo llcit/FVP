@@ -72,7 +72,7 @@
       ?>
         <form method="post" action="">
           <div class="container">
-             <div class="row fv_main">
+             <div class="row fv_main" style='margin-top:40px;'>
                 <div class="card fv_card">
                     <div class="card-body fv_card_body" style='border-bottom:solid 1px gray;'>
                        <h2 class="card-title"><?php echo($subTitle); ?></h2>
@@ -95,13 +95,23 @@
       </form>
       <script>
         $( document ).ready(function() {
+          $(function () {
+            $('[data-toggle="tooltip"]').tooltip({ trigger: 'click' });
+          });
           $('.videoPanel').each(function() {
             $(this).click(function(){ 
               playVideo($(this).attr('id'),false)
             });
           });
+          $('.fv_copyButton').each(function() {
+            $(this).mouseout(function(){     
+                 $(this).tooltip("hide");   
+            });
+          });
         });
       </script>
       <script src='./js/main.js'></script>
+
+
     </body>
 </html>

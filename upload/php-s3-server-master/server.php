@@ -223,7 +223,7 @@
         // set config
         $config = (new RecognitionConfig())
             ->setEncoding($encoding)
-            ->setSampleRateHertz($sampleRateHertz)
+            //->setSampleRateHertz($sampleRateHertz)
             ->setLanguageCode($languageCode)
             ->setEnableWordTimeOffsets(1);
         // create the speech client
