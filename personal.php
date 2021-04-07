@@ -103,9 +103,13 @@
               playVideo($(this).attr('id'),false)
             });
           });
+
           $('.fv_copyButton').each(function() {
+            $(this).click(function(){ 
+              copyToClipboard($(this).data('value'));
+            });
             $(this).mouseout(function(){     
-                 $(this).tooltip("hide");   
+              $(this).tooltip("hide");   
             });
           });
         });
