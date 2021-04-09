@@ -104,7 +104,7 @@
           Flagship Video Project Release Form
         </h3>
         <p class='card_text fv_pageContent'>
-          I hereby grant permission to the American Councils for International Education and NSEP/DLNSEO to post the video recording of [target language] presentation at the end of the Capstone program, internally within the Flagship community of language programs organization for training purposes with future language students and instructors, US government employees or contracted employees on a need-to-know basis.  I understand that my name and a brief description of my program participation (name of program, year, home institution, host institution and host country) as well as a brief description of the topic of my presentation will be attached to this video. 
+          I hereby grant permission to the American Councils for International Education and NSEP/DLNSEO to post this video recording of my presentation  at the end of the Capstone program, internally within the Flagship community of language programs organization for training purposes with future language students and instructors, US government employees or contracted employees on a need-to-know basis.  I understand that my name and a brief description of my program participation (name of program, year, home institution, host institution and host country) as well as a brief description of the topic of my presentation will be attached to this video. 
         </p>
         <span class='form-check card_text fv_pageContent' style='white-space: nowrap;'>
           <input class='form-check-input' type='radio' name='grant_internal' id='grant_internal' value='1' ".$isChecked_internal[1].">
