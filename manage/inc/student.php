@@ -153,7 +153,7 @@
   function buildManager($user_id,$student_program_id) {
     global $SETTINGS;
     $savedStudent = getSavedUser($user_id);
-    if (!$savedStudent) {
+  /*  if (!$savedStudent) {
       $autoSendCheck = "
         <span>
            <label for='auto_send' style='min-width:80px;'>Auto-send Invite Email:</label>
@@ -161,6 +161,7 @@
         </span>
       ";
     }
+*/
     $studentManager = "
       <div class='float-right fv_buttonWrapper'>
         $autoSendCheck

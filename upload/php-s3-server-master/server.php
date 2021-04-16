@@ -226,7 +226,8 @@
             ->setEncoding($encoding)
             ->setSampleRateHertz($sampleRateHertz)
             ->setLanguageCode($languageCode)
-            ->setEnableWordTimeOffsets(1);
+            ->setEnableWordTimeOffsets(1)
+	    ->setEnableAutomaticPunctuation(1);
         // create the speech client
         $googleClient = new SpeechClient(['keyFilePath'=>$SETTINGS['GOOGLE_CREDS']]);
         // create the asyncronous recognize operation
@@ -268,8 +269,9 @@
                 }
             }
         }
-        try { 
-            $stream = fopen("s3://$expectedBucketName/$key", 'w');
+        try {
+	    $fileName=substr_replace($audioFile , 'vtt', strrpos($audioFile , '.') +1); 
+            $stream = fopen("s3://$expectedBucketName/transcripts/".$fileName, 'w');
             fwrite($stream, $fileContent);
             fclose($stream);
             $success = 1;

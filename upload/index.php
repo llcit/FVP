@@ -60,7 +60,7 @@
 												<h4>Progress</h4>
 													<div class='progress_status' id='ps_upload' name='ps_upload'>Upload Video</div>
 													<div class='progress_status' id='ps_audio' name='ps_audio'>Extract Audio</div>
-													<div class='progress_status' id='ps_transcribe' name='ps_transcribe'>Creat Transcript</div>
+													<div class='progress_status' id='ps_transcribe' name='ps_transcribe'>Create Transcript</div>
 													<div class='progress_status' id='ps_cleanup' name='ps_cleanup'>Cleanup</div>
 													<a class='btn btn-primary ps_finished' id='ps_finished' name='ps_finished'>View Video</a>
 											</div>
