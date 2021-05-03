@@ -212,10 +212,10 @@
             'name' => $objectName
         ]);
         $languages = [
-            'Russian' => 'ru-RU'
+            'Russian' => 'ru-RU',
+            'Persian' => 'fa-IR'
         ];
         $encoding = AudioEncoding::FLAC;
-        $sampleRateHertz = 48000;
         $languageCode = $languages[$language];
         $gcsURI = "gs://".$SETTINGS['GOOGLE_BUCKET_NAME']."/$audioFile";
         $audio = (new RecognitionAudio())
@@ -348,7 +348,8 @@
         $time_post = microtime(true);
         $logData['ffmpeg_exec_time'] = ($time_post - $time_pre)*1000;
         $audioFile = $pid . "." . $audio_extension;
-        if ($language != 'Russian') {
+        $GoogleLanguages = ['Russian','Persian'];
+        if (!in_array($language, $GoogleLanguages)) {
             $response = transcribe_Watson($audioFile,$language);
             $transcribeSuccess = writeVTTFile($response['file'],$response['response'],$language);
         }
