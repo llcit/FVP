@@ -211,19 +211,18 @@
         $object = $bucket->upload($file, [
             'name' => $objectName
         ]);
-        $languages = [
+        $languageCodes = [
             'Russian' => 'ru-RU',
             'Persian' => 'fa-IR'
         ];
         $encoding = AudioEncoding::FLAC;
-        $languageCode = $languages[$language];
+        $languageCode = $languageCodes[$language];
         $gcsURI = "gs://".$SETTINGS['GOOGLE_BUCKET_NAME']."/$audioFile";
         $audio = (new RecognitionAudio())
             ->setUri($gcsURI);
         // set config
         $config = (new RecognitionConfig())
             ->setEncoding($encoding)
-            //->setSampleRateHertz($sampleRateHertz)
             ->setLanguageCode($languageCode)
             ->setEnableWordTimeOffsets(1);
         // create the speech client
@@ -233,16 +232,17 @@
         $operation->pollUntilComplete();
         if ($operation->operationSucceeded()) {
             $response = $operation->getResult();
-            $vttLang = substr($languages[$language],0,2);
+            $vttLang = substr($languageCode,0,2);
             $fileContent = "WEBVTT\r\nKind: captions\r\nLanguage: $vttLang\r\n\r\n";
             $startNewLine = true;
-            $totalWordCount = 0;
+            $isLastWord = false;
+            $resultCount = 0;
             foreach ($response->getResults() as $result) {
+                $resultCount++;
                 $alternatives = $result->getAlternatives();
                 $mostLikely = $alternatives[0];
                 if ($mostLikely) {
                     foreach ($mostLikely->getWords() as $wordInfo) {
-                        $totalWordCount++;
                         if ($startNewLine) {
                             $startTime = $wordInfo->getStartTime();
                             $start = time_format($startTime->serializeToJsonString());
@@ -250,13 +250,16 @@
                             $caption = '';
                             $space = '';
                         }
+                        $wordCount++;
                         $caption .=  $space . $wordInfo->getWord();
                         $space = ' ';
-                        if ($wordCount<=7 && $totalWordCount != count($mostLikely->getWords())) {
+                        if ($wordCount<=7) {
                             $startNewLine = false;
-                            $wordCount++;
                         }
-                        else {
+                        if ($resultCount==count($response->getResults()) && $wordCount==count($mostLikely->getWords())) {
+                            $isLastWord = true;
+                        }
+                        if($startNewLine || $isLastWord) {
                             $endTime = $wordInfo->getEndTime();
                             $end = time_format($endTime->serializeToJsonString());
                             $fileContent .= $start . " --> " . $end ."\r\n";
@@ -299,7 +302,7 @@
         global $SETTINGS,$client,$expectedBucketName,$logData;
         $time_pre = microtime(true);
         $audio_extension = $SETTINGS['tmp_audio_extension'];
-        echo ("\n\nRIP pid: $pid\n\n");
+        //echo ("\n\nRIP pid: $pid\n\n");
         $output_dir = './tmpAudio/';
         $ffmpeg = FFMpeg\FFMpeg::create([
             'ffmpeg.binaries'  => '/usr/bin/ffmpeg', // the path to the FFMpeg binary
