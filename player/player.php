@@ -108,14 +108,15 @@
         ";
       }
     }
-    $languages = [
-        'Arabic' => 'ar',
-        'Chinese' => 'zh',
-        'English' => 'en',
-        'Korean' => 'ko',
-        'Portuguese' => 'pt',
-        'Russian' => 'ru'
-    ];
+    $languages = $SETTINGS['languages'];
+    $language_abbr;
+    while ($language = current($languages)) {
+    if ($language == $presentationData[0]['language']) {
+        $language_abbr = key($language);
+        break;
+    }
+      next($languages);
+    }
     $hasTrancript = '';
     $hasTranlation = '';
     // caption language for editing
@@ -141,7 +142,7 @@
           <video id='video1' preload='auto' width='480' height='360' poster='../ableplayer/media/wwa.jpg' data-able-player data-transcript-div='transcript' playsinline $editCaptionTag>
       ";
       if ($hasTranscript) {
-        $pageContent .= "<track kind='captions' src='".$SETTINGS['base_url']. "/inc/S3LinkGen.php?type=transcript&id=".$_GET['v']."&ext=vtt' srclang='".$languages[$presentationData[0]['language']]."' label='".$presentationData[0]['language']."'/>";
+        $pageContent .= "<track kind='captions' src='".$SETTINGS['base_url']. "/inc/S3LinkGen.php?type=transcript&id=".$_GET['v']."&ext=vtt' srclang='".$language_abbr."' label='".$language_abbr."'/>";
       } 
       if ($hasTranslation) {
         $pageContent .= "<track kind='captions' src='".$SETTINGS['base_url']. "/inc/S3LinkGen.php?type=translation&id=".$_GET['v']."&ext=vtt' srclang='en' label='English'/>";
@@ -206,7 +207,7 @@
     var hasTranscript = '<?php echo($hasTranscript);?>';
     var hasTranslation = '<?php echo($hasTranslation);?>';
     var annotations = '<?php echo($presentationData[0]['annotations']); ?>';
-    var DEFAULT_LANGUAGE = '<?php echo($languages[$presentationData[0]['language']]); ?>';
+    var DEFAULT_LANGUAGE = '<?php echo($language_abbr); ?>';
     var SELECTED_LANGUAGE = '<?php echo($_GET['language']); ?>';
     // after save, keep selected language
     if (captionMode != 'edit' && SELECTED_LANGUAGE != '') {

@@ -9726,7 +9726,7 @@ AblePlayer.prototype.showDescription = function(now) {
 
     // FVP: set direction for Arabic & Persian
     var RTLLanguages = ['ar','fa'];
-    if ($.inArray(this.transcriptLang,RTLLanguages)) {
+    if ($.inArray(this.transcriptLang,RTLLanguages) !== -1) {
       $main.addClass('rightToLeft');
     }    
 

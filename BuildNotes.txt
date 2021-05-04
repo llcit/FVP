@@ -55,6 +55,8 @@ Image: ami-070c174a96e4d6cdb
 	GOOGLE SPEECH TO TEXT FOR RUSSIAN
 
 		composer require google/cloud-speech
+		composer require google/cloud-storage
+		composer require google/cloud-translate
 		export GOOGLE_APPLICATION_CREDENTIALS="/var/www/html/FVP/inc/client_secret.json"
 		Added export GOOGLE_APPLICATION_CREDENTIALS to ~/.bashrc
 		sudo apt install php-bcmath
@@ -64,7 +66,10 @@ Image: ami-070c174a96e4d6cdb
 		 - add "extension=protobuf.so" to php.ini
 		sudo grpc install protobuf
 		 - add "extension=grpc.so" to php.ini		 
-
+	
+	AWS SDK v.3
+		 composer require aws/aws-sdk-php "3.*"
+	
 SES
 
 	SMTP Credentials: 
@@ -113,16 +118,7 @@ IAM
 			"Version": "2012-10-17",
 			"Statement": [
 				{
-					"Effect": "Allow",
-					"Action": [
-						"s3:ListBucket"
-					],
-					"Resource": [
-						"arn:aws:s3:::test"
-					]
-				},
-				{
-					"Effect": "Allow",
+					"Effect": "Allow",						
 					"Action": [
 						"s3:PutObject",
 						"s3:GetObject",
@@ -139,3 +135,37 @@ IAM
 Deal with :
 
 sg-c405ffab
+
+New EC2 instance:
+
+ ec2-18-206-81-14.compute-1.amazonaws.com
+ ssh -i ~/aws_fvp.pem ubuntu@video.thelanguageflagship.tech  -t 'cd /var/www/html/FVP; pwd; git status; bash --login'
+
+//2e51e94
+
+
+NEW S3 Bucket:
+
+Secret key: GGl3+TOM6nuIpEKsoxvh+oh9UDsscrkVs5T0Dx8m
+Access key: AKIA6QV2GJRAFZI2WWGT
+
+https://s3.console.aws.amazon.com/s3/buckets/videos-techcenter?region=us-east-1&tab=objects
+aws s3 cp s3://flagship-video-project s3://videos-techcenter --recursive --exclude "*" --include "thumbs/214*"
+
+aws s3 cp s3://flagship-video-project s3://videos-techcenter --recursive --exclude "*" --include "thumbs/214*" --acl bucket-owner-full-control
+
+
+S3TranferAdmin2021!
+
+S3TranferAdmin
+AKIA5GGQGDXJ7L6AGSPE
++k/Qo9YXUdx315XRx+0hdT7P+l5PpdK6VLzhQ8Gw
+
+AKIA5GGQGDXJQHZ3M35Y
+NKI4Mpj32OfcAwfKX/cy7hVHZgXkpxHqszv5OHRS
+
+aws s3 cp s3://videos-techcenter s3://videos-techcenter  —-profile tmp --recursive --acl bucket-owner-full-control --storage-class STANDARD
+
+[default]
+aws_access_key_id = AKIA6QV2GJRAFZI2WWGT
+aws_secret_access_key = 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
