@@ -242,8 +242,10 @@
                 $alternatives = $result->getAlternatives();
                 $mostLikely = $alternatives[0];
                 if ($mostLikely) {
+                    $i=0;
                     foreach ($mostLikely->getWords() as $wordInfo) {
-                        if ($startNewLine) {
+                        $i++; // count words in each result to find lastWord
+                        if ($startNewLine) { // reset each new line
                             $startTime = $wordInfo->getStartTime();
                             $start = time_format($startTime->serializeToJsonString());
                             $wordCount = 0;
@@ -253,24 +255,26 @@
                         $wordCount++;
                         $caption .=  $space . $wordInfo->getWord();
                         $space = ' ';
-                        if ($wordCount<=7) {
+                        if ($wordCount<=7) { // limit words per line to 8
                             $startNewLine = false;
                         }
-                        if ($resultCount==count($response->getResults()) && $wordCount==count($mostLikely->getWords())) {
-                            $isLastWord = true;
+                        else {
+                            $startNewLine = true;
+                        }
+                        if ($resultCount==count($response->getResults()) && $i==count($mostLikely->getWords())) {
+                            $isLastWord = true; // make sure to process final line
                         }
                         if($startNewLine || $isLastWord) {
                             $endTime = $wordInfo->getEndTime();
                             $end = time_format($endTime->serializeToJsonString());
                             $fileContent .= $start . " --> " . $end ."\r\n";
                             $fileContent .= $caption ."\r\n\r\n";
-                            $startNewLine = true;
                         }
                     }
                 }
             }
         }
-        try { 
+        try {
             $key = "transcripts/$pid.vtt";
             $stream = fopen("s3://$expectedBucketName/$key", 'w');
             fwrite($stream, $fileContent);
