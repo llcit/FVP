@@ -112,7 +112,7 @@
     $language_abbr;
     while ($language = current($languages)) {
     if ($language == $presentationData[0]['language']) {
-        $language_abbr = key($language);
+        $language_abbr = key($languages);
         break;
     }
       next($languages);
@@ -142,7 +142,7 @@
           <video id='video1' preload='auto' width='480' height='360' poster='../ableplayer/media/wwa.jpg' data-able-player data-transcript-div='transcript' playsinline $editCaptionTag>
       ";
       if ($hasTranscript) {
-        $pageContent .= "<track kind='captions' src='".$SETTINGS['base_url']. "/inc/S3LinkGen.php?type=transcript&id=".$_GET['v']."&ext=vtt' srclang='".$language_abbr."' label='".$language_abbr."'/>";
+        $pageContent .= "<track kind='captions' src='".$SETTINGS['base_url']. "/inc/S3LinkGen.php?type=transcript&id=".$_GET['v']."&ext=vtt' srclang='".$language_abbr."' label='".$presentationData[0]['language']."'/>";
       } 
       if ($hasTranslation) {
         $pageContent .= "<track kind='captions' src='".$SETTINGS['base_url']. "/inc/S3LinkGen.php?type=translation&id=".$_GET['v']."&ext=vtt' srclang='en' label='English'/>";

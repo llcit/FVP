@@ -98,7 +98,7 @@
         for($i=0;$i<count($sentences);$i++) {
             //echo("Sentence in: " . $sentences[$i]['sentence'] . "<br>");
 
-            if (!in_array($language, $GoogleLanguages)) {
+            if (!in_array($targetLanguage, $GoogleLanguages)) {
                 $translation = translate_Watson(trim($sentences[$i]['sentence']),$targetLanguage);
             }
             else {
@@ -188,10 +188,10 @@
     function translate_Google($sentence,$language) {
         try {
             $translate = new TranslateClient();
-            $result = $translate->translate($sentence, [
-                'model' => '$language',
-                'target' => 'en'
-            ]);
+            $result = $translate->translate($sentence,[
+                'SourceLanguageCode' => '$language',
+                'TargetLanguageCode' => 'en'
+             ]);
         }catch (Exception $e) {
             echo $e->getMessage();
         }
