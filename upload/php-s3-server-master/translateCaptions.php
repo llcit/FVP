@@ -184,7 +184,6 @@
             return true;
         }
     }
-
     function translate_Google($sentence,$language) {
         try {
             $translate = new TranslateClient();
@@ -197,11 +196,6 @@
         }
         return $result['text'];
     }
-
-
-
-
-
     function time_format($rawTime) {
         if ($rawTime) {
             list($seconds, $ms) = preg_split("/\./",$rawTime);
