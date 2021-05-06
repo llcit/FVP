@@ -185,12 +185,12 @@
               $actionLabel = "Save This";
               $icon = "fa-save";
               $disabled = 'disabled';
-              $autoSendInput = "
+             /* $autoSendInput = "
                 <span>
                   <label for='auto_send' style='min-width:80px;'>Auto-send Invite Emails to All New Students:</label>
                   <input type='checkbox' class='checkbox' style='margin-right:40px;' id='auto_send' name='auto_send'>
                 </span>
-              ";
+              ";*/
             }
             else{
               if ($context == 'student') {

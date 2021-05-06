@@ -87,9 +87,7 @@
          <div class="panel-heading fv_heading">
             <img src='./img/logo_lf.png'>
             &nbsp;&nbsp;&nbsp;Flagship Video Password Reset 
-            <span class='pull-right'>
-               <img src='./img/logo_ac.png'>
-            </span>
+           
          </div>
          <div class="panel-body">
            <div class="container">

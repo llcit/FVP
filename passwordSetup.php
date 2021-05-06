@@ -67,9 +67,7 @@
         <div class="panel-heading fv_heading">
           <img src='./img/logo_lf.png'>
           &nbsp;&nbsp;&nbsp;Flagship Video Password Setup
-          <span class='pull-right'>
-            <img src='./img/logo_ac.png'>
-          </span>
+          
         </div>
         <div class="panel-body">
           <form method="post" action="">

@@ -21,9 +21,9 @@
           <div class='pageTitle col-6'>
               $pageTitle
           </div>
-          <div class='col-3'>
+         <!-- <div class='col-3'>
             <img src='".$base_url."/img/logo_ac.png' class='logo-img-fluid float-right'>
-          </div>
+          </div>-->
         </div>
       </div>
       <div class='fv_subHeader'>
@@ -104,7 +104,7 @@
           Flagship Video Project Release Form
         </h3>
         <p class='card_text fv_pageContent'>
-          I hereby grant permission to the American Councils for International Education and NSEP/DLNSEO to post the video recording of [target language] presentation at the end of the Capstone program, internally within the Flagship community of language programs organization for training purposes with future language students and instructors, US government employees or contracted employees on a need-to-know basis.  I understand that my name and a brief description of my program participation (name of program, year, home institution, host institution and host country) as well as a brief description of the topic of my presentation will be attached to this video. 
+          I hereby grant permission to the Language Flagship Technology Innovation Center (Tech Center) and NSEP/DLNSEO to post the video recording presentation at the end of the Capstone program, internally within the Flagship community of language programs organization for training purposes with future language students and instructors, US government employees or contracted employees on a need-to-know basis.  I understand that my name and a brief description of my program participation (name of program, year, home institution, host institution and host country) as well as a brief description of the topic of my presentation will be attached to this video. 
         </p>
         <span class='form-check card_text fv_pageContent' style='white-space: nowrap;'>
           <input class='form-check-input' type='radio' name='grant_internal' id='grant_internal' value='1' ".$isChecked_internal[1].">
@@ -119,7 +119,7 @@
           </label>
         </span>       
         <p class='card_text fv_pageContent'>
-          I hereby grant permission to American Councils for International Education and NSEP/DLNSEO to post the video of my presentation on a public-facing portion of websites that are only accessible to the general public to showcase participants’ language proficiency and professional performance in the target language.  I understand that my name and a brief description of my program participation (name of program, year, home institution, host institution and host country) as well as a brief description of the topic of my presentation will be attached to this video. 
+          I hereby grant permission to the Language Flagship Technology Innovation Center (Tech Center) and NSEP/DLNSEO to post the video of my presentation on a public-facing portion of websites that are only accessible to the general public to showcase participants’ language proficiency and professional performance in the target language.  I understand that my name and a brief description of my program participation (name of program, year, home institution, host institution and host country) as well as a brief description of the topic of my presentation will be attached to this video. 
         </p>
         <span class='form-check card_text fv_pageContent' style='white-space: nowrap;'>
           <input class='form-check-input' type='radio' name='grant_public' id='grant_public' value='1' ".$isChecked_public[1].">
@@ -205,7 +205,7 @@
         ){
           $allowDelete = true;
         }
-    
+    /*
     if ($allowDelete) {
       $deleteButton = "
                       <a href='javascript:deleteVideo(".$video['id'].")'>
@@ -216,6 +216,7 @@
     else {
       $deleteButton = "&nbsp;";
     }
+*/
     if (abs($video['grant_public']) == 1)  {
       $consent_pub_color = ($video['grant_public'] == 1) ? '#2EAE32' : '#BA3D40';
     }

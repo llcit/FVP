@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+	<title>The Language Flagship Video Project Website</title>
       <?php
         include "./inc/db_pdo.php";
         include "./inc/dump.php";
         include "./inc/sqlFunctions.php";
         include "./inc/htmlFunctions.php";
-        $SETTINGS = parse_ini_file(__DIR__."/inc/settings.ini");
+                                $SETTINGS = parse_ini_file(__DIR__."/inc/settings.ini");
 				$pageTitle = "Flagship Video Home";
 				$subTitle = "Main Menu";
 				$titleText = "Select one of the links below.";

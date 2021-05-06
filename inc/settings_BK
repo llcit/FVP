@@ -1,0 +1,54 @@
+[GENERAL]
+
+base_url = 'http://18.207.158.2';
+base_path = '/var/www/html/FVP';
+tmp_audio_extension = 'flac';
+
+[LANGUAGES]
+
+languages[ar] = 'Arabic'
+languages[zh] = 'Chinese'
+languages[ko] = 'Korean'
+languages[fa] = 'Persian'
+languages[pt] = 'Portuguese'
+languages[ru] = 'Russian'
+
+
+
+[SES]
+
+sender='tech.center@hawaii.edu';
+senderName='FVP Admin';
+usernameSmtp='AKIA6QV2GJRAKNXVTDGP';
+passwordSmtp='BGbAQfyQ39An3rKldX5+XTxgVrSJW8AUMbdP91t0vqQO';
+hostSmtp='email-smtp.us-east-1.amazonaws.com';
+portSmtp = 587;
+password_reset_base_url='http://video.thelanguageflagship.tech';
+
+[FINEUPLOADER S3]
+
+FINEUPLOADER_BACKEND_PATH = "http://video.thelanguageflagship.tech/upload/php-s3-server-master"
+FINEUPLOADER_BACKEND_SCRIPT = "server.php"
+FINEUPLOADER_FRONTEND_PATH = "http://video.thelanguageflagship.tech/upload/s3.fine-uploader"
+
+[AWS]
+
+AWS_CLIENT_SECRET_KEY = "GGl3+TOM6nuIpEKsoxvh+oh9UDsscrkVs5T0Dx8m"
+AWS_SERVER_PRIVATE_KEY = "AKIA6QV2GJRAFZI2WWGT"
+S3_BUCKET_NAME = "videos-techcenter"
+S3_HOST_NAME = ""
+S3_MAX_FILE_SIZE = "3000000000"
+S3_PLAYBACK_PATH = "https://videos-techcenter.s3.amazonaws.com"
+
+[WATSON]
+
+WATSON_SPEECH_URL = "https://stream.watsonplatform.net/speech-to-text/api/v1/models"
+WATSON_SPEECH_USER = "apikey"
+WATSON_SPEECH_PWD = "PbXs0RWtjBLAO-lXXFFYyo-3IkqbFmodihWclHLRkO57"
+WATSON_TRANSLATE_URL = "https://gateway.watsonplatform.net/language-translator/api/v3/translate?version=2018-05-01"
+WATSON_TRANSLATE_KEY = "bm2lZPJY4bqLFcklUzi0TPXeYKJzt6Rdf48NSue9ZVAV"
+
+[GOOGLE]
+
+GOOGLE_CREDS = "/var/www/html/FVP/inc/client_secret.json"
+GOOGLE_BUCKET_NAME ="flagship-video"
