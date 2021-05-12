@@ -104,7 +104,11 @@
           Flagship Video Project Release Form
         </h3>
         <p class='card_text fv_pageContent'>
+<<<<<<< HEAD
           I hereby grant permission to the Language Flagship Technology Innovation Center (Tech Center) and NSEP/DLNSEO to post the video recording presentation at the end of the Capstone program, internally within the Flagship community of language programs organization for training purposes with future language students and instructors, US government employees or contracted employees on a need-to-know basis.  I understand that my name and a brief description of my program participation (name of program, year, home institution, host institution and host country) as well as a brief description of the topic of my presentation will be attached to this video. 
+=======
+          I hereby grant permission to the American Councils for International Education and NSEP/DLNSEO to post this video recording of my presentation  at the end of the Capstone program, internally within the Flagship community of language programs organization for training purposes with future language students and instructors, US government employees or contracted employees on a need-to-know basis.  I understand that my name and a brief description of my program participation (name of program, year, home institution, host institution and host country) as well as a brief description of the topic of my presentation will be attached to this video. 
+>>>>>>> 6b9ddf61dd9ecdfce714fb2c630b3ae8f30c28e9
         </p>
         <span class='form-check card_text fv_pageContent' style='white-space: nowrap;'>
           <input class='form-check-input' type='radio' name='grant_internal' id='grant_internal' value='1' ".$isChecked_internal[1].">
@@ -289,9 +293,16 @@
     if ($displayPublicLink) {
       $row .= "
           <div class='fv_linkWrapper'  style='margin-left:25px;''>
-            <span class='extras'>
-              <b>Public Link:</b> http://video.thelanguageflagship.tech/player/index.php?v=".$video['id']."&ac=".$video['access_code']."
+            <span class='fv_copyLinkWrapper'>
+              Public Link:</b>
+
+
+              <a class='fv_copyButton' data-value='".$video['id']."' id='cb_".$video['id']."' data-toggle='tooltip' data-placement='top' title='Link copied!'>
+                <i class='far fa-copy'></i> Copy
+              </a>
+              <textarea readonly class='fv_link' id='cl_".$video['id']."' name='cl_".$video['id']."'>http://video.thelanguageflagship.tech/player/?v=".$video['id']."&ac=".$video['access_code']."</textarea>
             </span>
+
           </div>
       ";
     }

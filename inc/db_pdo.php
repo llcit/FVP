@@ -2,8 +2,8 @@
 
 $host = 'localhost';
 $db   = 'FVP';
-$user = 'FVPUser';
-$pass = '1400KStreetStreetNW!';
+$user = 'mamp';
+$pass = '';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";

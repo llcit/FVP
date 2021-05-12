@@ -1,6 +1,7 @@
 <?php
     require '/var/www/html/FVP/upload/php-s3-server-master//vendor/autoload.php';
     use Aws\S3\S3Client;
+    use Google\Cloud\Translate\V2\TranslateClient;
     function translateVTTFile($pid) {
         $SETTINGS = parse_ini_file(__DIR__."/../../inc/settings.ini");
         $expectedBucketName = $SETTINGS['S3_BUCKET_NAME'];
@@ -93,10 +94,17 @@
                 }
             }
         }
+        $GoogleLanguages = ['fa'];
         for($i=0;$i<count($sentences);$i++) {
             //echo("Sentence in: " . $sentences[$i]['sentence'] . "<br>");
-            $translation = translate(trim($sentences[$i]['sentence']),$targetLanguage);
-            //echo("Translation: " . $translation . "<br>");
+
+            if (!in_array($targetLanguage, $GoogleLanguages)) {
+                $translation = translate_Watson(trim($sentences[$i]['sentence']),$targetLanguage);
+            }
+            else {
+                $translation = translate_Google(trim($sentences[$i]['sentence']),$targetLanguage);
+            }
+            echo("Translation: " . $translation . "<br>");
             // if the entire sentence goes on one line, just add it to the line
             if (count($sentences[$i]['line_proportions'])<2) {
                 $lineNum = $sentences[$i]['line_proportions'][0]['lineNumber'];
@@ -150,7 +158,7 @@
         }
         return $lineData;
     }
-    function translate($text,$targetLanguage) {
+    function translate_Watson($text,$targetLanguage) {
         global $SETTINGS;
         $data = ['text' => [$text],'model_id'=>$targetLanguage.'-en'];
         $url = $SETTINGS['WATSON_TRANSLATE_URL'];
@@ -175,6 +183,18 @@
         } else {
             return true;
         }
+    }
+    function translate_Google($sentence,$language) {
+        try {
+            $translate = new TranslateClient();
+            $result = $translate->translate($sentence,[
+                'SourceLanguageCode' => '$language',
+                'TargetLanguageCode' => 'en'
+             ]);
+        }catch (Exception $e) {
+            echo $e->getMessage();
+        }
+        return $result['text'];
     }
     function time_format($rawTime) {
         if ($rawTime) {
