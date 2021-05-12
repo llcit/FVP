@@ -49,8 +49,7 @@
                 'watson_exec_time'=>0,
                 'google_exec_time'=>0
             ];
-            
-            preg_match("/(.*)\.(mov|mp4|m4a)/",$_REQUEST['key'],$matches);
+            preg_match("/(.*)\.(mov|mpeg4|mp4|avi|wmv)/",$_REQUEST['key'],$matches);
             $file_name = $matches[1];
             $video_extension = $matches[2];
             $pid = ($_REQUEST['pid'] > 0) ? $_REQUEST['pid'] : registerVideo($_REQUEST,$video_extension);
@@ -212,19 +211,18 @@
         $object = $bucket->upload($file, [
             'name' => $objectName
         ]);
-        $languages = [
-            'Russian' => 'ru-RU'
+        $languageCodes = [
+            'Russian' => 'ru-RU',
+            'Persian' => 'fa-IR'
         ];
         $encoding = AudioEncoding::FLAC;
-        $sampleRateHertz = 48000;
-        $languageCode = $languages[$language];
+        $languageCode = $languageCodes[$language];
         $gcsURI = "gs://".$SETTINGS['GOOGLE_BUCKET_NAME']."/$audioFile";
         $audio = (new RecognitionAudio())
             ->setUri($gcsURI);
         // set config
         $config = (new RecognitionConfig())
             ->setEncoding($encoding)
-            ->setSampleRateHertz($sampleRateHertz)
             ->setLanguageCode($languageCode)
             ->setEnableWordTimeOffsets(1)
 	    ->setEnableAutomaticPunctuation(1);
@@ -235,43 +233,51 @@
         $operation->pollUntilComplete();
         if ($operation->operationSucceeded()) {
             $response = $operation->getResult();
-            $vttLang = substr($languages[$language],0,2);
+            $vttLang = substr($languageCode,0,2);
             $fileContent = "WEBVTT\r\nKind: captions\r\nLanguage: $vttLang\r\n\r\n";
             $startNewLine = true;
-            $totalWordCount = 0;
+            $isLastWord = false;
+            $resultCount = 0;
             foreach ($response->getResults() as $result) {
+                $resultCount++;
                 $alternatives = $result->getAlternatives();
                 $mostLikely = $alternatives[0];
                 if ($mostLikely) {
+                    $i=0;
                     foreach ($mostLikely->getWords() as $wordInfo) {
-                        $totalWordCount++;
-                        if ($startNewLine) {
+                        $i++; // count words in each result to find lastWord
+                        if ($startNewLine) { // reset each new line
                             $startTime = $wordInfo->getStartTime();
                             $start = time_format($startTime->serializeToJsonString());
                             $wordCount = 0;
                             $caption = '';
                             $space = '';
                         }
+                        $wordCount++;
                         $caption .=  $space . $wordInfo->getWord();
                         $space = ' ';
-                        if ($wordCount<=7 && $totalWordCount != count($mostLikely->getWords())) {
+                        if ($wordCount<=7) { // limit words per line to 8
                             $startNewLine = false;
-                            $wordCount++;
                         }
                         else {
+                            $startNewLine = true;
+                        }
+                        if ($resultCount==count($response->getResults()) && $i==count($mostLikely->getWords())) {
+                            $isLastWord = true; // make sure to process final line
+                        }
+                        if($startNewLine || $isLastWord) {
                             $endTime = $wordInfo->getEndTime();
                             $end = time_format($endTime->serializeToJsonString());
                             $fileContent .= $start . " --> " . $end ."\r\n";
                             $fileContent .= $caption ."\r\n\r\n";
-                            $startNewLine = true;
                         }
                     }
                 }
             }
         }
         try {
-	    $fileName=substr_replace($audioFile , 'vtt', strrpos($audioFile , '.') +1); 
-            $stream = fopen("s3://$expectedBucketName/transcripts/".$fileName, 'w');
+            $key = "transcripts/$pid.vtt";
+            $stream = fopen("s3://$expectedBucketName/$key", 'w');
             fwrite($stream, $fileContent);
             fclose($stream);
             $success = 1;
@@ -301,7 +307,7 @@
         global $SETTINGS,$client,$expectedBucketName,$logData;
         $time_pre = microtime(true);
         $audio_extension = $SETTINGS['tmp_audio_extension'];
-        echo ("\n\nRIP pid: $pid\n\n");
+        //echo ("\n\nRIP pid: $pid\n\n");
         $output_dir = './tmpAudio/';
         $ffmpeg = FFMpeg\FFMpeg::create([
             'ffmpeg.binaries'  => '/usr/bin/ffmpeg', // the path to the FFMpeg binary
@@ -350,7 +356,8 @@
         $time_post = microtime(true);
         $logData['ffmpeg_exec_time'] = ($time_post - $time_pre)*1000;
         $audioFile = $pid . "." . $audio_extension;
-        if ($language != 'Russian') {
+        $GoogleLanguages = ['Russian','Persian'];
+        if (!in_array($language, $GoogleLanguages)) {
             $response = transcribe_Watson($audioFile,$language);
             $transcribeSuccess = writeVTTFile($response['file'],$response['response'],$language);
         }
