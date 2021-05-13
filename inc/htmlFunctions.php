@@ -1,7 +1,7 @@
 <?php
   function writePageHeader($base_url,$user=null,$pageTitle) {
     $navLinks = writeNavLinks($user->role,'header');
-    $pageTitle = "<a href='".$base_url."'>Flagship Video Project</a>";
+    $pageTitle = "Flagship Video Project";
     if ($user->first_name != '' ) {
       $userName = "<h5 style='display:inline'>" . $user->first_name . " " . $user->last_name . "</h5>";
       $welcomeMsg = "
@@ -13,15 +13,15 @@
     }
     $cdnDependencies = writeCDNDepandencies();
     $html = "
+    
       <div class='panel-heading fv_heading' style='overflow:none;'>
         <div class='row flex-nowrap'>
           <div class='col-3'>
-            <img src='".$base_url."/img/logo_lf.png' class='logo-img-fluid'>
+          <a href='".$base_url."'><img src='".$base_url."/img/logo_lf.png' class='logo-img-fluid'></a>
           </div>
           <div class='pageTitle col-6'>
               $pageTitle
           </div>
-          
         </div>
       </div>
       <div class='fv_subHeader'>
