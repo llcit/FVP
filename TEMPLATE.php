@@ -59,9 +59,6 @@
           <span class='pageTitle'>
           		<?php echo($pageTitle); ?>
           </span>
-          <span class='pull-right'>
-            <img src='./img/logo_ac.png' class='logo'>
-          </span>
         </div>
         <div class='fv_subHeader'>
           <?php echo($navLinks); ?>
