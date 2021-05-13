@@ -1,7 +1,7 @@
 <?php
   function writePageHeader($base_url,$user=null,$pageTitle) {
     $navLinks = writeNavLinks($user->role,'header');
-    $pageTitle = "Flagship Video Project";
+    $pageTitle = "<a href='".$base_url."'>Flagship Video Project</a>";
     if ($user->first_name != '' ) {
       $userName = "<h5 style='display:inline'>" . $user->first_name . " " . $user->last_name . "</h5>";
       $welcomeMsg = "
@@ -21,9 +21,7 @@
           <div class='pageTitle col-6'>
               $pageTitle
           </div>
-          <div class='col-3'>
-            <img src='".$base_url."/img/logo_ac.png' class='logo-img-fluid float-right'>
-          </div>
+          
         </div>
       </div>
       <div class='fv_subHeader'>
