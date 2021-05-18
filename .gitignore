@@ -20,6 +20,7 @@ upload.bak/
 vendor/
 inc/settings.ini
 inc/client_secret.json
+inc/db_pdo.php
 upload/s3.fine-uploader/
 upload/package.json
 upload/package-lock.json
@@ -31,3 +32,6 @@ upload/php-s3-server-master/tmpVtt/
 upload/php-s3-server-master/progress/
 upload/php-s3-server-master/test.php
 manage/tmpRosters
+*.png
+*.jpg
+
