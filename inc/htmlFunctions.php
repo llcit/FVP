@@ -203,7 +203,7 @@
         ){
           $allowDelete = true;
         }
-    
+    /*
     if ($allowDelete) {
       $deleteButton = "
                       <a href='javascript:deleteVideo(".$video['id'].")'>
@@ -214,6 +214,7 @@
     else {
       $deleteButton = "&nbsp;";
     }
+    */
     if (abs($video['grant_public']) == 1)  {
       $consent_pub_color = ($video['grant_public'] == 1) ? '#2EAE32' : '#BA3D40';
     }

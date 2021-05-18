@@ -9,10 +9,12 @@
   include_once("./inc/htmlFunctions.php");
   $SETTINGS = parse_ini_file(__DIR__."/./inc/settings.ini");
   session_start();
+  /*
   if ($_POST['deleteVideo'] > 0) {
     include_once("./inc/S3DeleteObject.php");
     deleteObject($_POST['deleteVideo']);
   }
+  */
   if (!isset($_SESSION['username'])) { 
     header('Location: ./login.php'); 
   } 
@@ -143,8 +145,10 @@
       });
     });
   </script>
+  <!--
   <form id='deleteForm' name='deleteForm' method='post'>
     <input type='hidden' id='deleteVideo' name='deleteVideo' value='0'>
   </form>
+  -->
 </body>
 </html>
