@@ -68,7 +68,7 @@
       ['label'=>'Video Archive','href'=>$SETTINGS['base_url'].'/archive.php','req'=>['staff','admin']],
       ['label'=>'About This Site','href'=>$SETTINGS['base_url'].'/about.php','req'=>[]]
     ];
-    if ($context == 'header') {
+    if ($context == 'header' || $role == 'staff') {
       $class = 'linkList_header';
     }
     else {
