@@ -257,7 +257,7 @@
     var $endTime = $('<div>',{
       'class': 'endTime'
     });
-    var rightToLeft = (SELECTED_LANGUAGE == 'ar') ? 'rightToLeft' : '';
+    var rightToLeft = (SELECTED_LANGUAGE == 'ar' || 'fa') ? 'rightToLeft' : '';
     var $capInput =  $('<textarea>',{
       'class': 'captionEditInput ' + rightToLeft,
       'wrap': 'soft'
