@@ -114,7 +114,8 @@
         'English' => 'en',
         'Korean' => 'ko',
         'Portuguese' => 'pt',
-        'Russian' => 'ru'
+        'Russian' => 'ru',
+        'Persian' => 'fa'
     ];
     $hasTrancript = '';
     $hasTranlation = '';
