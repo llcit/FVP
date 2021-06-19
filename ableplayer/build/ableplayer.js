@@ -9725,14 +9725,11 @@ AblePlayer.prototype.showDescription = function(now) {
     $main.attr('lang', this.transcriptLang);
 
     // FVP: set direction for Arabic and Persian
-    console.log(this.transcriptLang );
+    console.log('this.transcriptLang ');
     if (this.transcriptLang == 'ar' ) {
       $main.addClass('rightToLeft');
     }    
 
-    if (this.transcriptLang == 'fa' ) {
-      $main.addClass('rightToLeft');
-    }   
 
     if (typeof this.transcriptTitle !== 'undefined') {
       transcriptTitle = this.transcriptTitle;
