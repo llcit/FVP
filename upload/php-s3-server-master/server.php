@@ -215,6 +215,7 @@
             'Russian' => 'ru-RU',
             'Persian' => 'fa-IR',
             'Chinese' => 'zh',
+            'Korean' => 'ko',
             'Portuguese' => 'pt-PT'
         ];
         $encoding = AudioEncoding::FLAC;
@@ -351,7 +352,7 @@
         $time_post = microtime(true);
         $logData['ffmpeg_exec_time'] = ($time_post - $time_pre)*1000;
         $audioFile = $pid . "." . $audio_extension;
-        if (!in_array($language, ['Russian','Persian', 'Portuguese', 'Chinese'])) {
+        if (!in_array($language, ['Russian','Persian', 'Portuguese', 'Chinese', 'Korean'])) {
             $response = transcribe_Watson($audioFile,$language);
             $transcribeSuccess = writeVTTFile($response['file'],$response['response'],$language);
         }
