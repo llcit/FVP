@@ -34,4 +34,4 @@ upload/php-s3-server-master/test.php
 manage/tmpRosters
 *.png
 *.jpg
-
+*.json
