@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "fvp-video-project",
+  "private_key_id": "b35cc1f19b1fe086f4cc7a35b5e181c26813f23e",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDKvoz/U8+h0Mkx\nVoy2XJtdBNLkdzqdlsKGO/V4diaSDTVqP1Czw6DXcTVXMtmig/2gTwvFDMJ6u8GO\nikxN88whOYYvTBWQAZTVmesiB6PVPsuVooWAeisjP+9ZLlOIqcSbBQaPOYdyYRbN\nmG7zN5M5BcNC4I6xchgBDlGNIfPPmv9HEF1dPaV7eWe/DpVSwheIc+U1P6+MaZmg\nA66m0Oz4hZTkQ7p/aSmSI6EAkTwv5ClT9W9ainR8dxed8c4KJYls7sggQx911e9j\na8TUDDk8aMsZbWnWpqiR20PTdt/N7SxdifKfDVs5N45nUuS/UdtNnYmQ4KON2yI+\n1kCPxTf1AgMBAAECggEAA3ENoq3xCd2p9Kjz9YqH5qHU1KUDfTZYcf/lkFhtGjCY\nNggCHjMVcWLOFX9a+2vDK+v7lqo7SOsUA4/scKxRTEUWNopTmWC1fpTAzZCUouOQ\ngCdEneQ1BEGrFff32guLt1fz/w1qc7IbOX07cOyCFsc2w9VdBr0ZlDcCgmNPqLgA\nnjNw/bzF1+8FkPRKtf7fZ21A9O6KD3xaj3P8f+J/wGU/ToA6i8mVv1bYYW0QQBrL\nz5BxfyF1TBX9bOx8CJMuRfcbghNEXPDMRZ6T9oigvivMfKPysKsEeA/QVqxSShqY\nRvj17Qmx+xxcBabNIOFX6VwC/0g5bedmBA93YCn5sQKBgQDlvaSU5fihAKA67eP2\nOnP4GWeSmBzCeN4PAGf/4bO83hz9DhSPBesXDHYC9vfj7Uk1Mykz7/qJCVhLorAR\nOMDv3Xpr0NORPKE5Y0gO+Nt5tWPJgzfPWBaFOWx+Qvmo0VtRcB9qkB353elpE+hO\nXq5wXst10HvyzNMEy6OiJXZvSQKBgQDh6vmaZvxl///VfrQwzhMfP/QwDeRzzSaC\n9YtbCer99oLk+3ROywmDLfvrhd9flce63L24lJFumoS75Ln7KirC8m4nV6gP9YQN\nAITp83JEO8NjSI+7QjnQfJw96oqR5e4oWD+jjp6bRkll3qzLm1LPrOk8h2O4qdR5\nKMKvEYTHTQKBgQCE4/bQnln8H5WPoM2tP1CXoXJUzKJOJ4YjXVPLIq5KQJy6ECv6\nMy0ybuXQfzUS5c3j9Q0PWvAr1nj5f0ijHZYU6aMHvIq0x0JnJLOo3XBu7WqkRL/C\nsyyLsZS9UFaDvV46NEYn6Oc+AowiWP6WXpQ+sca1Bny8DJi/fF/RyiPA6QKBgQCW\nMZNztRgD7+fz1eKRt886rVf4QqQo4LDDy96zzaou4R4wgYPXhmByl7Wt5TiV4YwB\njROMjSkKsSuhhvSmKGh5ZpcZDMusoHsD8d5rcu/6sQi7DtiPk/2/v7hX6X/qc0Sc\nCd91KzIC5P2S/jE+w6qQatI87X28nRum2RRlM25k2QKBgGult5Mi4ajTVKccG2Ac\npW6FU6hq54jpH1LbolIRWdScTVvqKbSjBzSZywvbMHjLxs4hcm9zEJaFOLju6HHg\nb95vu3KUvFB9viPojKlyF3FhDeSZ3BUP2olVCiuZsY/REI/zjqK3vdrJOFNr2QL7\nawP5t+UAaUKQf+PFkBF5tNTb\n-----END PRIVATE KEY-----\n",
+  "client_email": "fvp-speech@fvp-video-project.iam.gserviceaccount.com",
+  "client_id": "113174520425204860843",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/fvp-speech%40fvp-video-project.iam.gserviceaccount.com"
+}

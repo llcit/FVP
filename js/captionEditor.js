@@ -257,12 +257,31 @@
     var $endTime = $('<div>',{
       'class': 'endTime'
     });
-    var rightToLeft = (SELECTED_LANGUAGE == 'ar' || 'fa') ? 'rightToLeft' : '';
+    /*var rightToLeft = (SELECTED_LANGUAGE == 'ar' || 'fa') ? 'rightToLeft' : '';
     var $capInput =  $('<textarea>',{
       'class': 'captionEditInput ' + rightToLeft,
       'wrap': 'soft'
     });
+*/
+//Changed for RTL
 
+   var URLquery = window.location.search;
+	var urlParams = new URLSearchParams(URLquery);
+	var lang = urlParams.get('language');
+	var rtl_lang = ['ar', 'fa'];
+	if (rtl_lang.includes(lang)) {
+		var $capInput =  $('<textarea>',{
+			'class': 'captionEditInput ' + 'rightToLeft',
+			'wrap': 'soft'
+		  });
+		
+	}
+	else{
+		var $capInput =  $('<textarea>',{
+			'class': 'captionEditInput',
+			'wrap': 'soft'
+		  });
+	}
     var flattenComponentForCaption = function(comp) {
       var result = [];
 
