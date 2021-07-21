@@ -241,7 +241,7 @@
       var i=0;
       var data = [];
       //$('.captionEditInput').each(function() {
-        $('.reseizers').each(function() {
+        $('.resizers').each(function() {
         var text = $(this).find('.captionEditInput').val();
         console.log(text);
         //var startTimeMatch = $('#st_'+i).html().match(/(\d{2}\:\d{2})$/);
