@@ -238,33 +238,23 @@
     }  
 
     function saveCaptions() {
-      
-      var i=0;
       var data = [];
-      //$('.captionEditInput').each(function() {
         $('.resizers').each(function() {
         var text = $(this).find('.captionEditInput').val();
-        //var startTimeMatch = $('#st_'+i).html().match(/(\d{2}\:\d{2})$/);
         var startTimeMatch = $(this).find('.startTime').html().match(/(\d{2}\:\d{2})$/);
         var startTime = startTimeMatch[1];
         var endTimeMatch = $(this).find('.endTime').html().match(/(\d{2}\:\d{2})$/);
-        //var endTimeMatch = $('#et_'+i).html().match(/(\d{2}\:\d{2})$/);
-        var endTime = endTimeMatch[1];
-        console.log(startTime);
-        console.log(text);
-        console.log(endTime);
-        /*
+      
+        
         data.push({
           start: startTime,
           end: endTime,
           text:text
         });
-        i++;
-        */
       });
-      //$('#captionData').val(JSON.stringify(data));
-      //$('#saveCaptions').val(1);
-      //$('#saveCaptionForm').submit();
+      $('#captionData').val(JSON.stringify(data));
+      $('#saveCaptions').val(1);
+      $('#saveCaptionForm').submit();
       
     }    
     function translate() {
