@@ -240,11 +240,16 @@
     function saveCaptions() {
       var i=0;
       var data = [];
-      $('.captionEditInput').each(function() {
-        var text = $(this).val();
-        var startTimeMatch = $('#st_'+i).html().match(/(\d{2}\:\d{2})$/);
+      //$('.captionEditInput').each(function() {
+        $('.reseizers').each(function() {
+        var text = $(this).find('.captionEditInput').val();
+        console.log(text);
+        //var startTimeMatch = $('#st_'+i).html().match(/(\d{2}\:\d{2})$/);
+        var startTimeMatch = $(this).find('.startTime').html().match(/(\d{2}\:\d{2})$/);
         var startTime = startTimeMatch[1];
-        var endTimeMatch = $('#et_'+i).html().match(/(\d{2}\:\d{2})$/);
+        console.log(startTime);
+        var endTimeMatch = $(this).find('.endTime').html().match(/(\d{2}\:\d{2})$/);
+        //var endTimeMatch = $('#et_'+i).html().match(/(\d{2}\:\d{2})$/);
         var endTime = endTimeMatch[1];
         data.push({
           start: startTime,
