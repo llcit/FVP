@@ -251,12 +251,14 @@
         var endTimeMatch = $(this).find('.endTime').html().match(/(\d{2}\:\d{2})$/);
         //var endTimeMatch = $('#et_'+i).html().match(/(\d{2}\:\d{2})$/);
         var endTime = endTimeMatch[1];
+        /*
         data.push({
           start: startTime,
           end: endTime,
           text:text
         });
         i++;
+        */
       });
       $('#captionData').val(JSON.stringify(data));
       $('#saveCaptions').val(1);
