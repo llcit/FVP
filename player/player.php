@@ -258,11 +258,12 @@
           text:text
         });
         i++;
-        */
+        
       });
       $('#captionData').val(JSON.stringify(data));
       $('#saveCaptions').val(1);
       $('#saveCaptionForm').submit();
+      */
     }    
     function translate() {
       displayMessage('Generating translation... please wait.');
