@@ -238,10 +238,12 @@
     }  
 
     function saveCaptions() {
+      console.log('here');
       var i=0;
       var data = [];
       //$('.captionEditInput').each(function() {
         $('.resizers').each(function() {
+          console.log('here');
         var text = $(this).find('.captionEditInput').val();
         console.log(text);
         //var startTimeMatch = $('#st_'+i).html().match(/(\d{2}\:\d{2})$/);
