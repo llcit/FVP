@@ -14,7 +14,9 @@ function getUser($username) {
         return($result); 
     }  
 }
-function getVideos($id=null,$id_type=null,$filters=null) {
+
+//only for staff
+function getVideosStaff($id=null,$id_type=null,$filters=null) {
     global $pdo;
     $matchVals = [
         'programs' => ['table_handle'=>'prog','field'=>'name'],
@@ -60,6 +62,57 @@ function getVideos($id=null,$id_type=null,$filters=null) {
         LEFT JOIN `institutions` i on i.`id`=a.`domestic_institution_id` 
         WHERE $where 
         AND pres.`grant_internal`=1
+        ";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
+//only for admin
+function getVideos($id=null,$id_type=null,$filters=null) {
+    global $pdo;
+    $matchVals = [
+        'programs' => ['table_handle'=>'prog','field'=>'name'],
+        'years' => ['table_handle'=>'prog','field'=>'progYrs'],
+        'locations' => ['table_handle'=>'e','field'=>'city'],
+        'institutions' => ['table_handle'=>'i','field'=>'name'],
+        'types' => ['table_handle'=>'pres','field'=>'type'],
+        'periods' => ['table_handle'=>'e','field'=>'phase'],
+        'is_showcase'=> ['table_handle'=>'pres','field'=>'is_showcase']
+    ];
+    $where = '';
+    $and = '';
+    if ($id) {
+        $where = "pres.`$id_type`='$id'";
+    }
+    else {
+        foreach($filters as $key=>$value) {
+            $filterList = '';
+            if ($filters[$key]) {
+                $comma ="";
+                foreach($filters[$key] as $selectedVal) {
+                    $filterList .= $comma . "'$selectedVal'";
+                    $comma =",";
+                }
+                $where .= " $and ".$matchVals[$key]['table_handle'].".`".$matchVals[$key]['field']."` in($filterList)";
+                $and = 'and';
+            }
+        }
+    }
+    if ($where == '') $where = '1';
+    $sql = "
+        SELECT pres.`id`,pres.`extension`,pres.`description`,pres.`duration`,pres.`transcript_raw`,
+               pres.`transcript_final`,pres.`translation_raw`,pres.`translation_final`,pres.`annotations`,
+               pres.`grant_internal`,pres.`grant_public`,pres.`access_code`,
+               u.`first_name`,u.`last_name`,
+               pres.`user_id`,i.`name` as `institution`,prog.`name` as `program`,prog.`progYrs`,prog.`language`,
+               DATE_FORMAT(e.`start_date`,'%M %Y') as `date`, pres.`type`,e.`phase`,e.`city`,e.`country`,pres.`is_showcase`
+        FROM `presentations` pres 
+        LEFT JOIN `users` u on u.`id` = pres.`user_id` 
+        LEFT JOIN `events` e on e.`id`= pres.`event_id` 
+        LEFT JOIN `programs` prog on prog.`id` = e.`program_id`
+        LEFT JOIN `affiliations` a on (a.`user_id` = u.`id` and a.`program_id`=prog.`id`) 
+        LEFT JOIN `institutions` i on i.`id`=a.`domestic_institution_id` 
+        WHERE $where 
         ";
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
