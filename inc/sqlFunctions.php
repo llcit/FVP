@@ -59,6 +59,7 @@ function getVideos($id=null,$id_type=null,$filters=null) {
         LEFT JOIN `affiliations` a on (a.`user_id` = u.`id` and a.`program_id`=prog.`id`) 
         LEFT JOIN `institutions` i on i.`id`=a.`domestic_institution_id` 
         WHERE $where 
+        AND pres.`grant_internal`=1
         ";
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
