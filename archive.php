@@ -31,7 +31,9 @@
     ];
     /*  ------------ /READ IN POST VALS ------------- */
     /* ---------- MAIN ---------- */
-    $videoData = getVideos(null,null,$filters);
+    if($user->role == 'admin'){$videoData = getVideos(null,null,$filters);}
+    else if ($user->role == 'staff'){$videoData = getVideosStaff(null,null,$filters);}
+    
     $videoList =buildVideoList($videoData);
     $filterPulldowns = buildPullDowns($filters);
     $pageContent = "
